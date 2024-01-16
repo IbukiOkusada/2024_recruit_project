@@ -118,15 +118,6 @@ void CMotion::Update(void)
 		float fRotDiffZ = setRot.z + m_aInfo[nNowMotion].pKeyInfo[nNextkey].aKey[nCntParts].fRotZ	// Z向き
 			- m_OldKey[nCntParts].fRotZ;
 
-		if (fRotDiffZ < -D3DX_PI)
-		{// z座標角度限界
-			fRotDiffZ += D3DX_PI * 2;
-		}
-		else if (fRotDiffZ > D3DX_PI)
-		{// z座標角度限界
-			fRotDiffZ += -D3DX_PI * 2;
-		}
-
 		if (fRotDiffX < -D3DX_PI)
 		{// x座標角度限界
 			fRotDiffX += D3DX_PI * 2;
@@ -145,6 +136,15 @@ void CMotion::Update(void)
 			fRotDiffY += -D3DX_PI * 2;
 		}
 
+		if (fRotDiffZ < -D3DX_PI)
+		{// z座標角度限界
+			fRotDiffZ += D3DX_PI * 2;
+		}
+		else if (fRotDiffZ > D3DX_PI)
+		{// z座標角度限界
+			fRotDiffZ += -D3DX_PI * 2;
+		}
+
 		//現在のフレームの座標を求める
 		float fPosDestX = m_OldKey[nCntParts].fPosX
 			+ fPosDiffX * fFrame;
@@ -160,6 +160,33 @@ void CMotion::Update(void)
 			+ fRotDiffY * fFrame;
 		float fRotDestZ = m_OldKey[nCntParts].fRotZ
 			+ fRotDiffZ * fFrame;
+
+		if (fRotDestZ < -D3DX_PI)
+		{// z座標角度限界
+			fRotDestZ += D3DX_PI * 2;
+		}
+		else if (fRotDiffZ > D3DX_PI)
+		{// z座標角度限界
+			fRotDiffZ += -D3DX_PI * 2;
+		}
+
+		if (fRotDestX < -D3DX_PI)
+		{// x座標角度限界
+			fRotDestX += D3DX_PI * 2;
+		}
+		else if (fRotDestX > D3DX_PI)
+		{// x座標角度限界
+			fRotDestX += -D3DX_PI * 2;
+		}
+
+		if (fRotDestY < -D3DX_PI)
+		{// x座標角度限界
+			fRotDestY += D3DX_PI * 2;
+		}
+		else if (fRotDestY > D3DX_PI)
+		{// x座標角度限界
+			fRotDestY += -D3DX_PI * 2;
+		}
 
 		// 設定
 		m_FileData.ppParts[nCntParts]->SetCurrentPosition(D3DXVECTOR3(fPosDestX, fPosDestY, fPosDestZ));

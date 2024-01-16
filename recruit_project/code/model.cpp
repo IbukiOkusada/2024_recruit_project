@@ -351,6 +351,33 @@ void CModel::SetCurrentPosition(const D3DXVECTOR3 pos)
 void CModel::SetCurrentRotation(const D3DXVECTOR3 rot)
 {
 	m_CurRot = rot;
+
+	if (m_CurRot.z < -D3DX_PI)
+	{// zç¿ïWäpìxå¿äE
+		m_CurRot.z += D3DX_PI * 2;
+	}
+	else if (m_CurRot.z > D3DX_PI)
+	{// zç¿ïWäpìxå¿äE
+		m_CurRot.z += -D3DX_PI * 2;
+	}
+
+	if (m_CurRot.x < -D3DX_PI)
+	{// xç¿ïWäpìxå¿äE
+		m_CurRot.x += D3DX_PI * 2;
+	}
+	else if (m_CurRot.x > D3DX_PI)
+	{// xç¿ïWäpìxå¿äE
+		m_CurRot.x += -D3DX_PI * 2;
+	}
+
+	if (m_CurRot.y < -D3DX_PI)
+	{// xç¿ïWäpìxå¿äE
+		m_CurRot.y += D3DX_PI * 2;
+	}
+	else if (m_CurRot.y > D3DX_PI)
+	{// xç¿ïWäpìxå¿äE
+		m_CurRot.y += -D3DX_PI * 2;
+	}
 }
 
 //==========================================================

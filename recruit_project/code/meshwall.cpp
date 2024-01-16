@@ -1,6 +1,6 @@
 //==========================================================
 //
-// メッシュフィールドの処理 [meshfield.cpp]
+// メッシュウォールの処理 [meshwall.cpp]
 // Author : Ibuki Okusada
 //
 //==========================================================
@@ -201,7 +201,7 @@ void CMeshWall::SetSize(float fWidth, float fHeight)
 //==========================================================
 // 当たり判定
 //==========================================================
-D3DXVECTOR3 CMeshWall::Collision(D3DXVECTOR3 &pos, D3DXVECTOR3 &posOld)
+D3DXVECTOR3 CMeshWall::Collision(D3DXVECTOR3 &pos, D3DXVECTOR3 &posOld, D3DXVECTOR3& move, const D3DXVECTOR3& vtxMax, const D3DXVECTOR3& vtxMin, CObjectX::COLLISION_AXIS& axis)
 {
 	CMeshWall *pObj = m_pTop;
 	D3DXVECTOR3 nor = { 0.0f, 0.0f, 0.0f };
@@ -216,62 +216,70 @@ D3DXVECTOR3 CMeshWall::Collision(D3DXVECTOR3 &pos, D3DXVECTOR3 &posOld)
 			continue;
 		}
 
+		if (pos.y - vtxMin.y > pObj->GetPosition().y + pObj->GetHeight() * 2 * pObj->GetNumHeight() && pos.y + vtxMax.y < pObj->GetPosition().y) {	// 高さ範囲外
+			pObj = pObjNext;
+			continue;
+		}
+
 		if (pObj->GetRotation().y == 0.0f * D3DX_PI || pObj->GetRotation().y == 0.0f * -D3DX_PI)
 		{//壁が正面を向いている場合(Z軸がマイナスの方を見ている)
 			if (
-				pos.y <= pObj->GetPosition().y + pObj->GetHeight() * 2 * pObj->GetNumHeight() &&
-				pos.x >= pObj->GetPosition().x - pObj->GetWidth() * pObj->GetNumWidth() &&
-				pos.x <= pObj->GetPosition().x + pObj->GetWidth() * pObj->GetNumWidth() &&
-				posOld.z <= pObj->GetPosition().z &&
-				pos.z > pObj->GetPosition().z)
+				pos.x + vtxMax.x >= pObj->GetPosition().x - pObj->GetWidth() * pObj->GetNumWidth() &&
+				pos.x + vtxMin.x <= pObj->GetPosition().x + pObj->GetWidth() * pObj->GetNumWidth() &&
+				posOld.z + vtxMax.z <= pObj->GetPosition().z &&
+				pos.z + vtxMax.z > pObj->GetPosition().z)
 			{//当たっている場合
-				pos.z = pObj->GetPosition().z;
+				pos.z = pObj->GetPosition().z - vtxMax.z;
 				nor.z = pos.z - pObj->GetPosition().z;
+				move.z = 0.0f;
 			}
 		}
 		if (pObj->GetRotation().y == 0.5f * D3DX_PI)
 		{//壁が右を向いている場合(X軸がプラスの方を見ている)
 
 			if (
-				pos.y < pObj->GetPosition().y + pObj->GetHeight() * 2 * pObj->GetNumHeight() &&
-				pos.z >= pObj->GetPosition().z - pObj->GetWidth() * pObj->GetNumWidth() &&
-				pos.z <= pObj->GetPosition().z + pObj->GetWidth() * pObj->GetNumWidth() &&
-				posOld.x <= pObj->GetPosition().x &&
-				pos.x > pObj->GetPosition().x)
+				pos.z + vtxMax.z >= pObj->GetPosition().z - pObj->GetWidth() * pObj->GetNumWidth() &&
+				pos.z + vtxMin.z <= pObj->GetPosition().z + pObj->GetWidth() * pObj->GetNumWidth() &&
+				posOld.x + vtxMax.x <= pObj->GetPosition().x &&
+				pos.x + vtxMax.x > pObj->GetPosition().x)
 			{//当たっている場合
-				pos.x = pObj->GetPosition().x;
+				pos.x = pObj->GetPosition().x - vtxMax.x;
 				nor.x = pos.x - pObj->GetPosition().x;
+				move.x = 0.0f;
 			}
 		}
 		if (pObj->GetRotation().y == -0.5f * D3DX_PI)
 		{//壁が左を向いている場合(X軸がマイナスの方を見ている)
 			if (
-				pos.y < pObj->GetPosition().y + pObj->GetHeight() * 2 * pObj->GetNumHeight() &&
-				pos.z >= pObj->GetPosition().z - pObj->GetWidth() * pObj->GetNumWidth() &&
-				pos.z <= pObj->GetPosition().z + pObj->GetWidth() * pObj->GetNumWidth() &&
-				posOld.x >= pObj->GetPosition().x &&
-				pos.x < pObj->GetPosition().x)
+				pos.z + vtxMax.z >= pObj->GetPosition().z - pObj->GetWidth() * pObj->GetNumWidth() &&
+				pos.z + vtxMin.z <= pObj->GetPosition().z + pObj->GetWidth() * pObj->GetNumWidth() &&
+				posOld.x + vtxMin.x >= pObj->GetPosition().x &&
+				pos.x + vtxMin.x < pObj->GetPosition().x)
 			{//当たっている場合
-				pos.x = pObj->GetPosition().x;
+				pos.x = pObj->GetPosition().x - vtxMin.x;
 				nor.x = pos.x - pObj->GetPosition().x;
+				move.x = 0.0f;
 			}
 
 		}
 		if (pObj->GetRotation().y == 1.0f * D3DX_PI || pObj->GetRotation().y == 1.0f * -D3DX_PI)
 		{//壁が奥を向いている場合(Z軸がプラスの方を見ている)
 			if (
-				pos.y < pObj->GetPosition().y + pObj->GetHeight() * 2 * pObj->GetNumHeight()  &&
-				pos.x >= pObj->GetPosition().x - pObj->GetWidth() * pObj->GetNumWidth() &&
-				pos.x <= pObj->GetPosition().x + pObj->GetWidth() * pObj->GetNumWidth() &&
-				posOld.z >= pObj->GetPosition().z &&
-				pos.z < pObj->GetPosition().z)
+				pos.x + vtxMax.x >= pObj->GetPosition().x - pObj->GetWidth() * pObj->GetNumWidth() &&
+				pos.x + vtxMin.x <= pObj->GetPosition().x + pObj->GetWidth() * pObj->GetNumWidth() &&
+				posOld.z + vtxMin.z >= pObj->GetPosition().z &&
+				pos.z + vtxMin.z < pObj->GetPosition().z)
 			{//当たっている場合
+				pos.z = pObj->GetPosition().z - vtxMin.z;
 				nor.z = pos.z - pObj->GetPosition().z;
+				move.z = 0.0f;
 			}
 		}
 
 		pObj = pObjNext;
 	}
+
+	D3DXVec3Normalize(&nor, &nor);
 
 	return nor;
 }

@@ -44,7 +44,9 @@ public:
 		ACTION_WALK,			// 歩行
 		ACTION_JUMP,			// ジャンプ
 		ACTION_SLIDING,			// スライディング
-		ACTION_WALLKICK,		// 壁キック状態
+		ACTION_WALLSTAND,		// 壁ずり
+		ACTION_WALLKICK,		// 壁キック
+		ACTION_SLIDEJUMP,		// しゃがみジャンプ
 		ACTION_MAX
 	};
 
@@ -58,8 +60,6 @@ private:	// 自分だけがアクセス可能な定義
 		STATE_DAMAGE,		// ダメージ状態
 		STATE_DEATH,		// 死亡状態
 		STATE_SPAWN,		// 復活中状態
-		STATE_CATCH,		// 掴まれている状態
-		STATE_BLOW,			// 吹き飛ばされ状態
 		STATE_MAX
 	};
 
@@ -124,6 +124,7 @@ private:	// 自分だけがアクセス可能
 	void StateSet(void);
 	void Controller(void);
 	void Move(void);
+	void Gravity(void);
 	void Slide(void);
 	void Rotation(void);
 	void Adjust(void);
@@ -132,6 +133,8 @@ private:	// 自分だけがアクセス可能
 	void Jump(void);
 	void BodySet(void);
 	void MotionSet(void);
+	void WallSlide(void);
+	bool BodyCheck(CCharacter* pBody);
 
 	// メンバ変数
 	static CPlayer *m_pTop;	// 先頭のオブジェクトへのポインタ
@@ -149,7 +152,6 @@ private:	// 自分だけがアクセス可能
 	float m_fRotMove;		// 現在の角度
 	float m_fRotDiff;		// 目的の角度
 	float m_fRotDest;		// 角度計算
-	float m_fGage;	// 忍術ゲージ
 	int m_nId;
 	int m_action;
 	int m_nLife;

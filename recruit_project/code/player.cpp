@@ -34,6 +34,8 @@
 #include "effect.h"
 #include <math.h>
 #include "meshwall.h"
+#include "enemy_manager.h"
+#include "player_manager.h"
 
 //===============================================
 // マクロ定義
@@ -70,9 +72,6 @@ namespace {
 }
 
 // 前方宣言
-CPlayer *CPlayer::m_pTop = nullptr;	// 先頭のオブジェクトへのポインタ
-CPlayer *CPlayer::m_pCur = nullptr;	// 最後尾のオブジェクトへのポインタ
-int CPlayer::m_nNumCount = 0;
 
 //===============================================
 // コンストラクタ
@@ -105,23 +104,10 @@ CPlayer::CPlayer()
 	m_bJump = false;
 	m_nId = -1;
 	m_bMove = false;
-	m_nLife = 0;
+	m_nLife = 5;
 	m_Info.fSlideMove = 0.0f;
-	
-	// 自分自身をリストに追加
-	if (m_pTop != nullptr)
-	{// 先頭が存在している場合
-		m_pCur->m_pNext = this;	// 現在最後尾のオブジェクトのポインタにつなげる
-		m_pPrev = m_pCur;
-		m_pCur = this;	// 自分自身が最後尾になる
-	}
-	else
-	{// 存在しない場合
-		m_pTop = this;	// 自分自身が先頭になる
-		m_pCur = this;	// 自分自身が最後尾になる
-	}
 
-	m_nNumCount++;
+	CPlayerManager::GetInstance()->ListIn(this);
 }
 
 //===============================================
@@ -268,42 +254,6 @@ HRESULT CPlayer::Init(const char *pBodyName, const char *pLegName)
 //===============================================
 void CPlayer::Uninit(void)
 {
-	// リストから自分自身を削除する
-	if (m_pTop == this) {	// 自身が先頭
-		if (m_pNext != nullptr)
-		{// 次が存在している
-			m_pTop = m_pNext;	// 次を先頭にする
-			m_pNext->m_pPrev = nullptr;	// 次の前のポインタを覚えていないようにする
-		}
-		else
-		{// 存在していない
-			m_pTop = nullptr;	// 先頭がない状態にする
-			m_pCur = nullptr;	// 最後尾がない状態にする
-		}
-	}
-	else if (m_pCur == this) {	// 自身が最後尾
-		if (m_pPrev != nullptr)
-		{	// 次が存在している
-			m_pCur = m_pPrev;			// 前を最後尾にする
-			m_pPrev->m_pNext = nullptr;	// 前の次のポインタを覚えていないようにする
-		}
-		else
-		{	// 存在していない
-			m_pTop = nullptr;	// 先頭がない状態にする
-			m_pCur = nullptr;	// 最後尾がない状態にする
-		}
-	}
-	else { // それ以外
-		if (m_pNext != nullptr)
-		{
-			m_pNext->m_pPrev = m_pPrev;	// 自身の次に前のポインタを覚えさせる
-		}
-		if (m_pPrev != nullptr)
-		{
-			m_pPrev->m_pNext = m_pNext;	// 自身の前に次のポインタを覚えさせる
-		}
-	}
-
 	// 胴体の終了
 	if (m_pBody != nullptr) {
 		m_pBody->Uninit();
@@ -324,8 +274,7 @@ void CPlayer::Uninit(void)
 		m_pWaist = nullptr;
 	}
 
-	// 人数を減らす
-	m_nNumCount--;
+	CPlayerManager::GetInstance()->ListOut(this);
 
 	// 廃棄
 	Release();
@@ -376,6 +325,8 @@ void CPlayer::Update(void)
 	SetMatrix();
 
 	BodySet();
+
+	CManager::GetInstance()->GetDebugProc()->Print("体力 [ %d ]\n", m_nLife);
 }
 
 //===============================================
@@ -425,11 +376,13 @@ void CPlayer::Controller(void)
 	// 操作処理
 		if (m_Info.state != STATE_DEATH) {	// 死亡していない
 			
-			Move();		// 移動
-			Rotation();	// 回転
+			Move();			// 移動
+			Rotation();		// 回転
 			WallSlide();	// 壁ずり確認
-			Jump();		// ジャンプ
-			Slide();	// スライディング
+			Jump();			// ジャンプ
+			Slide();		// スライディング
+			Attack();		// 攻撃
+			Hit();			// 攻撃チェック
 		}
 
 	MotionSet();	// モーション設定
@@ -1219,8 +1172,25 @@ void CPlayer::MotionSet(void)
 
 		case ACTION_WALLKICK:
 		{
+			if (m_pBody->GetMotion()->GetEnd())
+			{// モーション終了
+				m_action = ACTION_JUMP;
+			}
+
 			m_pBody->GetMotion()->BlendSet(m_action);
 			m_pLeg->GetMotion()->BlendSet(m_action);
+		}
+			break;
+
+		case ACTION_NORMALATK:
+
+			if (m_pBody->GetMotion()->GetEnd())
+			{// モーション終了
+				m_action = ACTION_NEUTRAL;
+			}
+		{
+			m_pBody->GetMotion()->BlendSet(m_action -1);
+			m_pLeg->GetMotion()->BlendSet(m_action - 1);
 		}
 			break;
 
@@ -1273,6 +1243,19 @@ void CPlayer::MotionSet(void)
 }
 
 //===============================================
+// 攻撃
+//===============================================
+void CPlayer::Attack(void)
+{
+	CInputKeyboard* pInputKey = CManager::GetInstance()->GetInputKeyboard();	// キーボードのポインタ
+	CInputPad* pInputPad = CManager::GetInstance()->GetInputPad();				// パッドのポインタ
+
+	if (pInputKey->GetTrigger(DIK_RETURN) || pInputPad->GetTrigger(CInputPad::BUTTON_Y, m_nId)) {
+		m_action = ACTION_NORMALATK;
+	}
+}
+
+//===============================================
 // マトリックス設定
 //===============================================
 void CPlayer::SetMatrix(void)
@@ -1309,21 +1292,23 @@ bool CPlayer::HitCheck(D3DXVECTOR3 pos, float fRange, int nDamage)
 		return m_bValue;
 	}
 
-	CXFile *pFile = CManager::GetInstance()->GetModelFile();
-	D3DXVECTOR3 ObjPos = GetPosition();
-	D3DXVECTOR3 vtxMax = D3DXVECTOR3(0.0f,
-		m_pBody->GetParts(1)->GetMtx()->_42 - ObjPos.y + pFile->GetMax(m_pBody->GetParts(1)->GetId()).y,
-		0.0f);
-	D3DXVECTOR3 vtxMin = D3DXVECTOR3(0.0f, -10.0f, 0.0f);
-
-	if (pos.y >= ObjPos.y + vtxMax.y || pos.y <= ObjPos.y - vtxMin.y) {	// 高さ範囲外
+	if (pos.x + fRange < m_Info.pos.x + COLLIMIN.x ||
+		pos.x - fRange > m_Info.pos.x + COLLIMAX.x)
+	{// X範囲外
 		return m_bValue;
 	}
 
-	// 範囲内チェック
-	float fLength =
-		sqrtf((pos.x - ObjPos.x) * (pos.x - ObjPos.x)
-			+ (pos.z - ObjPos.z) * (pos.z - ObjPos.z));
+	if (pos.z + fRange < m_Info.pos.z + COLLIMIN.z ||
+		pos.z - fRange > m_Info.pos.z + COLLIMAX.z)
+	{// Z範囲外
+		return m_bValue;
+	}
+
+	if (pos.y + fRange < m_Info.pos.y + COLLIMIN.y ||
+		pos.y - fRange > m_Info.pos.y + COLLIMAX.y)
+	{// Y範囲外
+		return m_bValue;
+	}
 
 	m_bValue = true;
 	Damage(nDamage);
@@ -1470,4 +1455,20 @@ bool CPlayer::BodyCheck(CCharacter* pBody)
 	}
 
 	return true;
+}
+
+//===============================================
+// 攻撃チェック
+//===============================================
+void CPlayer::Hit(void)
+{
+	if (!BodyCheck(m_pBody) || !BodyCheck(m_pLeg)) {
+		return;
+	}
+
+	CModel* pModel = m_pLeg->GetParts(3);
+	float fRange = 50.0f;
+	int nDamage = 1;
+	D3DXVECTOR3 pos = { pModel->GetMtx()->_41, pModel->GetMtx()->_42, pModel->GetMtx()->_43 };
+	CEnemyManager::GetInstance()->Hit(pos, fRange, nDamage);
 }

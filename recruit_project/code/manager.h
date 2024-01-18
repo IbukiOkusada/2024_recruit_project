@@ -111,6 +111,7 @@ public:	// 誰でもアクセス可能
 	CScene *GetScene(void) { return m_pScene; }
 	static CManager *GetInstance(void);
 	static void Release(void);
+	void ManagerRelease(void);
 
 private:	// 自分だけがアクセス可能
 

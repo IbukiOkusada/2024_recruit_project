@@ -47,6 +47,7 @@ public:
 		ACTION_WALLSTAND,		// 壁ずり
 		ACTION_WALLKICK,		// 壁キック
 		ACTION_SLIDEJUMP,		// しゃがみジャンプ
+		ACTION_NORMALATK,		// 攻撃
 		ACTION_MAX
 	};
 
@@ -89,7 +90,7 @@ public:	// 誰でもアクセス可能
 	void Update(void);
 	static CPlayer *Create(const D3DXVECTOR3 pos, const D3DXVECTOR3 rot, const D3DXVECTOR3 move,
 		const char *pBodyName, const char *pLegName);
-	bool HitCheck(D3DXVECTOR3 pos, float fRange, int nDamage = 1);
+	bool HitCheck(D3DXVECTOR3 pos, float fRange, int nDamage);
 
 	// メンバ関数(設定)
 	void SetMove(const D3DXVECTOR3 move) { m_Info.move = move; }
@@ -101,14 +102,15 @@ public:	// 誰でもアクセス可能
 	void BindId(int nId) { m_nId = nId; }
 	void SetMotion(int nMotion);
 	void SetDraw(bool bDraw);
+	void SetNext(CPlayer* pNext) { m_pNext = pNext; }
+	void SetPrev(CPlayer* pPrev) { m_pPrev = pPrev; }
 
 	// メンバ関数(取得)
 	D3DXVECTOR3 GetMove(void) { return m_Info.move; }
 	D3DXVECTOR3 GetPosition(void) { return m_Info.pos; }
 	D3DXVECTOR3 GetRotation(void) { return m_Info.rot; }
-	static CPlayer *GetTop(void) { return m_pTop; }
-	static int GetNum(void) { return m_nNumCount; }
-	CPlayer *GetNext(void) { return m_pNext; }
+	CPlayer* GetNext(void) { return m_pNext; }
+	CPlayer* GetPrev(void) { return m_pPrev; }
 	void Damage(int nDamage);
 	void SetLife(int nLife);
 	STATE GetState(void) { return m_Info.state; }
@@ -128,6 +130,8 @@ private:	// 自分だけがアクセス可能
 	void Slide(void);
 	void Rotation(void);
 	void Adjust(void);
+	void Attack(void);
+	void Hit(void);
 	void KeyBoardRotation(void);
 	void MoveController(void);
 	void Jump(void);
@@ -137,8 +141,6 @@ private:	// 自分だけがアクセス可能
 	bool BodyCheck(CCharacter* pBody);
 
 	// メンバ変数
-	static CPlayer *m_pTop;	// 先頭のオブジェクトへのポインタ
-	static CPlayer *m_pCur;	// 最後尾のオブジェクトへのポインタ
 	CPlayer *m_pPrev;		// 前のオブジェクトへのポインタ
 	CPlayer *m_pNext;		// 次のオブジェクトへのポインタ
 	SInfo m_Info;			// 自分自身の情報
@@ -157,7 +159,6 @@ private:	// 自分だけがアクセス可能
 	int m_nLife;
 	bool m_bJump;
 	bool m_bMove;
-	static int m_nNumCount;
 };
 
 #endif

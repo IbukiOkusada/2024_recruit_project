@@ -31,6 +31,8 @@
 #include <assert.h>
 #include "particle.h"
 #include "meshdome.h"
+#include "enemy_melee.h"
+#include "player_manager.h"
 
 // 無名名前空間を定義
 namespace {
@@ -208,6 +210,12 @@ HRESULT CGame::Init(void)
         }
     }
 
+    // カメラの初期位置設定
+    CManager::GetInstance()->GetCamera()->SetPositionV(D3DXVECTOR3(-874.3f, 1124.15f, 1717.2f));
+    CManager::GetInstance()->GetCamera()->SetPositionR(D3DXVECTOR3(-320.3f, 1.0f, -91.6f));
+    CManager::GetInstance()->GetCamera()->SetLength(350.0f);
+    CManager::GetInstance()->GetCamera()->SetRotation(D3DXVECTOR3(0.0f, D3DX_PI * 1.0f, D3DX_PI * 0.41f));
+
     switch (m_state)
     {
     case STATE_LOCAL:
@@ -255,6 +263,8 @@ HRESULT CGame::Init(void)
 
         break;
     }
+
+    CEnemyMelee::Create();
 
     return S_OK;
 }
@@ -445,7 +455,7 @@ void CGame::ByteCheck(char *pRecvData, int nRecvByte)
         return;
     }
 
-    pPlayer = CPlayer::GetTop();	// 先頭を取得
+    pPlayer = CPlayerManager::GetInstance()->GetTop();	// 先頭を取得
 
     // 終端文字まで確認する
     while (nByte < nRecvByte)
@@ -513,7 +523,7 @@ void CGame::ByteCheck(char *pRecvData, int nRecvByte)
         if (nId != -1 && (*m_ppPlayer)->GetId() != -1)
         {// IDを受信できた
 
-            pPlayer = CPlayer::GetTop();	// 先頭を取得
+            pPlayer = CPlayerManager::GetInstance()->GetTop();	// 先頭を取得
 
             while (pPlayer != NULL)
             {// 使用されている間繰り返し

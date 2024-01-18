@@ -25,6 +25,7 @@
 #include "ranking.h"
 #include "object_manager.h"
 #include "particle.h"
+#include "player_manager.h"
 
 // マクロ定義
 #define RANKING_FILE	"data\\FILE\\ranking.bin"	// ランキングファイル
@@ -538,7 +539,7 @@ void CResult::SetScore(CPlayer **ppPlayer)
 		return;
 	}
 
-	CPlayer *pPlayer = CPlayer::GetTop();
+	CPlayer *pPlayer = CPlayerManager::GetInstance()->GetTop();
 	int nNumGoal = 0;
 
 	m_pScore = new int [m_nNumPlayer];

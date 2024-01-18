@@ -160,6 +160,9 @@
     <ClCompile Include="code\character.cpp" />
     <ClCompile Include="code\debugproc.cpp" />
     <ClCompile Include="code\effect.cpp" />
+    <ClCompile Include="code\enemy.cpp" />
+    <ClCompile Include="code\enemy_manager.cpp" />
+    <ClCompile Include="code\enemy_melee.cpp" />
     <ClCompile Include="code\fade.cpp" />
     <ClCompile Include="code\fileload.cpp" />
     <ClCompile Include="code\game.cpp" />
@@ -185,6 +188,7 @@
     <ClCompile Include="code\particle.cpp" />
     <ClCompile Include="code\pause.cpp" />
     <ClCompile Include="code\player.cpp" />
+    <ClCompile Include="code\player_manager.cpp" />
     <ClCompile Include="code\precompile.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
@@ -214,6 +218,9 @@
     <ClInclude Include="code\character.h" />
     <ClInclude Include="code\debugproc.h" />
     <ClInclude Include="code\effect.h" />
+    <ClInclude Include="code\enemy.h" />
+    <ClInclude Include="code\enemy_manager.h" />
+    <ClInclude Include="code\enemy_melee.h" />
     <ClInclude Include="code\fade.h" />
     <ClInclude Include="code\fileload.h" />
     <ClInclude Include="code\game.h" />
@@ -239,6 +246,7 @@
     <ClInclude Include="code\particle.h" />
     <ClInclude Include="code\pause.h" />
     <ClInclude Include="code\player.h" />
+    <ClInclude Include="code\player_manager.h" />
     <ClInclude Include="code\precompile.h" />
     <ClInclude Include="code\protocol_online.h" />
     <ClInclude Include="code\ranking.h" />

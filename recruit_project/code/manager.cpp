@@ -24,6 +24,8 @@
 #include "task_manager.h"
 #include "object_manager.h"
 #include "camera_manager.h"
+#include "enemy_manager.h"
+#include "player_manager.h"
 
 //===============================================
 // 静的メンバ変数
@@ -346,10 +348,9 @@ void CManager::Uninit(void)
 
 		m_pModelFile = NULL;	// 使用していない状態にする
 	}
-	//各種マネージャの破棄
-	CTaskManager::Release();
-	CObjectManager::Release();
-	CCameraManager::Release();
+
+	// 各種マネージャーの廃棄
+	ManagerRelease();
 }
 
 //===================================================
@@ -400,6 +401,19 @@ void CManager::Draw(void)
 	{
 		m_pScene->Draw();
 	}
+}
+
+//===================================================
+// 描画処理
+//===================================================
+void CManager::ManagerRelease(void)
+{
+	//各種マネージャの破棄
+	CTaskManager::Release();
+	CObjectManager::Release();
+	CCameraManager::Release();
+	CEnemyManager::Release();
+	CPlayerManager::Release();
 }
 
 //===================================================
@@ -511,6 +525,9 @@ CManager *CManager::GetInstance(void)
 	return m_pManager;
 }
 
+//===================================================
+// 開放
+//===================================================
 void CManager::Release(void)
 {
 	if (m_pManager != NULL)
@@ -738,3 +755,4 @@ void CScene::Draw(void)
 		CManager::GetInstance()->GetRenderer()->Draw();
 	}
 }
+

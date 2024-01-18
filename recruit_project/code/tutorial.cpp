@@ -24,6 +24,7 @@
 #include "object3D.h"
 #include "particle.h"
 #include "sound.h"
+#include "player_manager.h"
 
 // 無名名前空間
 namespace
@@ -163,7 +164,7 @@ void CTutorial::Uninit(void)
 
 	if (m_ppPlayer != NULL)
 	{// 使用していた場合
-		int nNum = CPlayer::GetNum();
+		int nNum = CPlayerManager::GetInstance()->GetNum();
 		for (int nCnt = 0; nCnt < nNum; nCnt++)
 		{
 			// 終了処理
@@ -186,41 +187,11 @@ void CTutorial::Update(void)
 	if (CManager::GetInstance()->GetInputPad()->GetTrigger(CInputPad::BUTTON_START, 0) || CManager::GetInstance()->GetInputKeyboard()->GetTrigger(DIK_RETURN))
 	{
 		CManager::GetInstance()->GetFade()->Set(CScene::MODE_GAME);
-		CGame::SetNumPlayer(CPlayer::GetNum());
+		CGame::SetNumPlayer(CPlayerManager::GetInstance()->GetNum());
 
 	}
 
 	bool bCreate = false;
-
-	if (CPlayer::GetNum() < PLAYER_MAX){ // 人数が最大ではない場合
-		if (CManager::GetInstance()->GetInputPad()->GetTrigger(CInputPad::BUTTON_START, CPlayer::GetNum())) {
-			int nId = CPlayer::GetNum();
-			char aBodyPass[FILEPASS_SIZE] = "";		// 胴体パス
-			char aLegPass[FILEPASS_SIZE] = "";		// 下半身パス
-
-			sprintf(&aBodyPass[0], "%s%d\\motion_ninjabody%s",FILEPASS, nId, FILEEXT);
-			sprintf(&aLegPass[0], "%s%d\\motion_ninjaleg%s", FILEPASS, nId, FILEEXT);
-
-			m_ppPlayer[nId] = CPlayer::Create(D3DXVECTOR3(0.0f, 10.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f),
-				D3DXVECTOR3(0.0f, 0.0f, 0.0f), &aBodyPass[0], &aLegPass[0]);
-			m_ppPlayer[nId]->BindId(nId);
-			m_ppPlayer[nId]->SetType(CPlayer::TYPE_ACTIVE);
-			// 煙のパーティクル生成
-			CParticle::Create(D3DXVECTOR3(0.0f, 10.0f, 0.0f), CEffect::TYPE_SMAKE);
-			bCreate = true;
-
-			CManager::GetInstance()->GetSound()->Play(CSound::LABEL_SE_ENTRY);
-		}
-	}
-
-	if (CPlayer::GetNum() - 1 > 0 && !bCreate) { // 人数が最大ではない場合
-		if (CManager::GetInstance()->GetInputPad()->GetTrigger(CInputPad::BUTTON_START, CPlayer::GetNum() - 1)) {
-			int nId = CPlayer::GetNum() - 1;
-			m_ppPlayer[nId]->Uninit();
-			m_ppPlayer[nId] = 0;
-			CManager::GetInstance()->GetSound()->Play(CSound::LABEL_SE_ENTRY);
-		}
-	}
 
 	// 更新処理
 	CScene::Update();

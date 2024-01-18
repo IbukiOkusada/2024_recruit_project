@@ -70,7 +70,7 @@ namespace {
 	const float WALLDUSH_MOVE = (5.0f);
 	const float CAMROT_INER = (0.2f);
 	const float SLIDINNG_ROTZ = (D3DX_PI * 0.51f);
-	const float SLIDING_LENGTH = (150.0f);
+	const float SLIDING_LENGTH = (200.0f);
 	const D3DXVECTOR3 COLLIMAX = { 20.0f, 120.0f, 20.0f };
 	const D3DXVECTOR3 COLLIMIN = { -20.0f, 0.0f, -20.0f };
 }
@@ -774,9 +774,16 @@ void CPlayer::MoveController(void)
 			break;
 
 		case ACTION_WALLKICK:
-			if (static_cast<float>(fabs(fRotDest)) >= D3DX_PI * 0.25f) {
+			if (!BodyCheck(m_pBody)) {
 				m_fRotDest = fRotDestOld;
 				return;
+			}
+
+			if (m_pBody->GetMotion()->GetNowKey() <= 2) {
+				if (static_cast<float>(fabs(fRotDest)) >= D3DX_PI * 0.25f) {
+					m_fRotDest = fRotDestOld;
+					return;
+				}
 			}
 			break;
 		}
@@ -865,6 +872,12 @@ void CPlayer::Slide(void)
 				m_action = ACTION_SLIDING;
 				bSlide = true;
 			}
+		}
+	}
+	else {
+		if (m_action == ACTION_SLIDEJUMP) {	// 現在スライディングジャンプ中
+			m_action = ACTION_NEUTRAL;
+			m_Info.fSlideMove = 0.0f;
 		}
 	}
 

@@ -38,7 +38,7 @@ public:	// 誰でもアクセス可能
 	virtual void Uninit(void);
 	virtual void Update(void);
 	virtual void SetCamera(void);
-	void Pursue(const D3DXVECTOR3 pos, const D3DXVECTOR3 rot);
+	void Pursue(const D3DXVECTOR3 pos, const D3DXVECTOR3 rot, const float fLength);
 	void Setting(const D3DXVECTOR3 pos, const D3DXVECTOR3 rot);
 	void SetRot(const D3DXVECTOR3 rot);
 	void SetMode(MODE mode) { m_mode = mode; }
@@ -68,6 +68,7 @@ public:	// 誰でもアクセス可能
 	D3DXVECTOR3 GetOldPositionR(void) { return m_OldposR; }
 	D3DXVECTOR3 GetVectorU(void) { return m_vecU; }
 	void SetRotation(D3DXVECTOR3 rot);
+	void InerRot(const D3DXVECTOR3& rot, const float fMul);
 	void SetLength(float fLength) { m_fLength = fLength; }
 	CCamera *GetNext(void) { return m_pNext; }
 	CCamera *GetPrev(void) { return m_pPrev; }

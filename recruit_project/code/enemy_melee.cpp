@@ -11,6 +11,8 @@
 #include "model.h"
 #include "motion.h"
 #include "player_manager.h"
+#include "meshwall.h"
+#include "objectX.h"
 
 // 無名名前空間
 namespace
@@ -140,11 +142,16 @@ void CEnemyMelee::Uninit(void)
 void CEnemyMelee::Update(void)
 {
 	// 前回の座標を取得
-	GetInfo()->posOld = GetInfo()->pos;
+	SInfo* pInfo = GetInfo();
+	pInfo->posOld = pInfo->pos;
 	m_nInterVal--;
 
 	// 攻撃確認
 	AttackCheck();
+
+	// 当たり判定確認
+	CObjectX::COLLISION_AXIS axis = CObjectX::TYPE_MAX;
+	CMeshWall::Collision(pInfo->pos, pInfo->posOld, pInfo->move, COLLIMAX, COLLIMIN, axis);
 
 	//マトリックス設定
 	CEnemy::Update();
@@ -154,7 +161,7 @@ void CEnemyMelee::Update(void)
 //==========================================================
 // 生成
 //==========================================================
-CEnemyMelee *CEnemyMelee::Create(void)
+CEnemyMelee *CEnemyMelee::Create(D3DXVECTOR3& pos, D3DXVECTOR3& rot)
 {
 	CEnemyMelee *pEnemyMelee = nullptr;
 
@@ -164,6 +171,13 @@ CEnemyMelee *CEnemyMelee::Create(void)
 	{
 		// 初期化処理
 		pEnemyMelee->Init();
+
+		// データリセット
+		pEnemyMelee->InfoReset();
+
+		// データ設定
+		pEnemyMelee->SetPosition(pos);
+		pEnemyMelee->SetRotation(rot);
 	}
 
 	return pEnemyMelee;

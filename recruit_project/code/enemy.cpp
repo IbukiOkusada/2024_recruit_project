@@ -88,3 +88,15 @@ void CEnemy::Hit(D3DXVECTOR3& pos, const float fRange, const int nDamage)
 {
 
 }
+
+//===============================================
+// 基本情報リセット
+//===============================================
+void CEnemy::InfoReset(void)
+{
+	// 値のクリア
+	m_Info.pos = { 0.0f, 0.0f, 0.0f };
+	m_Info.rot = { 0.0f, 0.0f, 0.0f };
+	m_Info.move = { 0.0f, 0.0f, 0.0f };
+	m_Info.posOld = { 0.0f, 0.0f, 0.0f };
+}

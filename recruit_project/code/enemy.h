@@ -50,10 +50,16 @@ public:	// 誰でもアクセス可能
 	// メンバ関数(取得)
 	CEnemy* GetNext(void) { return m_pNext; }
 	CEnemy* GetPrev(void) { return m_pPrev; }
+	D3DXVECTOR3 GetPosition(void) const { return m_Info.pos; }
+	D3DXVECTOR3 GetRotation(void) const { return m_Info.rot; }
+	D3DXVECTOR3 GetMove(void) const { return m_Info.move; }
 
 	// メンバ関数(設定)
 	void SetNext(CEnemy* pNext) { m_pNext = pNext; }
 	void SetPrev(CEnemy* pPrev) { m_pPrev = pPrev; }
+	void SetPosition(const D3DXVECTOR3& pos) { m_Info.pos = pos; }
+	void SetRotation(const D3DXVECTOR3& rot) { m_Info.rot = rot; }
+	void SetMove(const D3DXVECTOR3& move) { m_Info.move = move; }
 
 	// メンバ関数
 	virtual void Hit(D3DXVECTOR3& pos, const float fRange, const int nDamage);
@@ -68,6 +74,7 @@ protected:
 	void SetMatrix(void);
 	int GetLife(void) { return m_nLife; }
 	void SetLife(const int nLife) { m_nLife = nLife; }
+	void InfoReset(void);
 
 private:	// 自分だけがアクセス可能
 

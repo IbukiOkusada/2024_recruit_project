@@ -210,13 +210,7 @@ D3DXVECTOR3 CMeshWall::Collision(D3DXVECTOR3 &pos, D3DXVECTOR3 &posOld, D3DXVECT
 	{
 		CMeshWall *pObjNext = pObj->m_pNext;
 
-		if (pObj->GetHeight() <= 30.0f && pObj->GetNumHeight() == 1)
-		{
-			pObj = pObjNext;
-			continue;
-		}
-
-		if (pos.y - vtxMin.y > pObj->GetPosition().y + pObj->GetHeight() * 2 * pObj->GetNumHeight() && pos.y + vtxMax.y < pObj->GetPosition().y) {	// ‚‚³”ÍˆÍŠO
+		if (pos.y - vtxMin.y > pObj->GetPosition().y + pObj->GetHeight() * 2 * pObj->GetNumHeight() || pos.y + vtxMax.y < pObj->GetPosition().y) {	// ‚‚³”ÍˆÍŠO
 			pObj = pObjNext;
 			continue;
 		}

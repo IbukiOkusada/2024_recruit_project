@@ -41,12 +41,12 @@
 // マクロ定義
 //===============================================
 #define MOVE	(4.5f)		// 移動量
-#define GRAVITY	(-1.0f)		//プレイヤー重力
+#define GRAVITY	(-0.9f)		//プレイヤー重力
 #define ROT_MULTI	(0.1f)	// 向き補正倍率
 #define WIDTH	(20.0f)		// 幅
 #define HEIGHT	(80.0f)	// 高さ
 #define INER	(0.3f)		// 慣性
-#define JUMP	(20.0f)
+#define JUMP	(18.0f)
 
 namespace {
 	const int HEADPARTS_IDX = (1);	// 頭のパーツインデックス
@@ -67,6 +67,10 @@ namespace {
 	const float SLIDEJUMP = (7.0f);
 	const float SLIDEJUMP_SPEED = (1.75f);
 	const float WALLSLIDE_MOVE = (0.05f);
+	const float WALLDUSH_MOVE = (5.0f);
+	const float CAMROT_INER = (0.2f);
+	const float SLIDINNG_ROTZ = (D3DX_PI * 0.51f);
+	const float SLIDING_LENGTH = (150.0f);
 	const D3DXVECTOR3 COLLIMAX = { 20.0f, 120.0f, 20.0f };
 	const D3DXVECTOR3 COLLIMIN = { -20.0f, 0.0f, -20.0f };
 }
@@ -318,7 +322,21 @@ void CPlayer::Update(void)
 
 		if (m_pMyCamera->GetMode() == CCamera::MODE_NORMAL)
 		{
-			m_pMyCamera->Pursue(GetPosition(), GetRotation());
+			// 角度調整
+			float fRot = m_fCamRotZ;
+			D3DXVECTOR3 CamRot = m_pMyCamera->GetRotation();
+			if (m_action == ACTION_SLIDING) {	// スライディングの時
+				fRot = SLIDINNG_ROTZ;
+			}
+			CamRot.z = fRot;
+			m_pMyCamera->InerRot(CamRot, CAMROT_INER);
+
+			// 追従
+			float fLength = m_fCamLength;
+			if (m_action == ACTION_SLIDING) {	// スライディングの時
+				fLength = SLIDING_LENGTH;
+			}
+			m_pMyCamera->Pursue(GetPosition(), GetRotation(), fLength);
 		}
 	}
 	
@@ -380,6 +398,7 @@ void CPlayer::Controller(void)
 			Rotation();		// 回転
 			WallSlide();	// 壁ずり確認
 			Jump();			// ジャンプ
+			WallDush();		// 壁走り
 			Slide();		// スライディング
 			Attack();		// 攻撃
 			Hit();			// 攻撃チェック
@@ -452,6 +471,11 @@ void CPlayer::Controller(void)
 	D3DXVECTOR3 vtxMin = COLLIMIN;
 	D3DXVECTOR3 vtxMaxOld = vtxMax;
 	D3DXVECTOR3 vtxMinOld = vtxMin;
+
+	if (m_action == ACTION_SLIDING) {
+		vtxMax.y *= 0.3f;
+	}
+
 	CObjectX::COLLISION_AXIS ColiAxis = CObjectX::TYPE_MAX;	// 当たっている方向をリセット
 
 	m_ColiNor = CObjectX::Collision(m_Info.pos, m_Info.posOld, m_Info.move, vtxMin, vtxMax, vtxMinOld, vtxMaxOld, ColiAxis);
@@ -639,6 +663,10 @@ void CPlayer::MoveController(void)
 
 	case ACTION_WALLSTAND:
 		fSpeed = WALLSLIDE_MOVE;
+		break;
+
+	case ACTION_WALLDUSH:
+		fSpeed = WALLDUSH_MOVE;
 		break;
 	}
 
@@ -860,11 +888,13 @@ void CPlayer::WallSlide(void)
 			m_action = ACTION_NEUTRAL;
 		}
 		return;
-	}
+	}	
 
 	// 壁ずり判定
 	if (m_ColiNor.x != 0.0f || m_ColiNor.z != 0.0f) {	// オブジェクトに触れている
-		m_action = ACTION_WALLSTAND;
+		if (m_action < ACTION_WALLDUSH) {
+			m_action = ACTION_WALLSTAND;
+		}
 	}
 	else { // 触れていない
 		if (m_action == ACTION_WALLSTAND) { // 壁ずり状態の場合
@@ -879,19 +909,71 @@ void CPlayer::WallSlide(void)
 }
 
 //===============================================
+// 壁走り
+//===============================================
+void CPlayer::WallDush(void)
+{
+	if (m_action != ACTION_WALLSTAND) {	// 壁ずり中じゃない
+		if (m_action != ACTION_WALLDUSH) {	// 壁走りもしてない
+			return;
+		}
+	}
+
+	// 壁ずり判定
+	if (m_ColiNor.x == 0.0f && m_ColiNor.z == 0.0f) {	// オブジェクトに触れていない
+		if (m_action == ACTION_WALLDUSH) {
+			m_action = ACTION_NEUTRAL;
+		}
+		return;
+	}
+
+	// 壁dash確認
+	CInputPad* pInputPad = CManager::GetInstance()->GetInputPad();
+
+	// 入力中
+	if (pInputPad->GetPress(CInputPad::BUTTON_B, m_nId)) {
+		m_action = ACTION_WALLDUSH;
+	}
+	else {	// 離した
+
+		if (m_action == ACTION_WALLDUSH) {	// 壁ずり中
+			m_Info.move += m_ColiNor * WALLKICK_MOVE * 1.0f;
+			m_fRotDest = atan2f(-m_Info.move.x, -m_Info.move.z);
+			m_Info.move.y = JUMP;
+			m_action = ACTION_WALLKICK;
+		}
+	}
+}
+
+//===============================================
 // 重力設定
 //===============================================
 void CPlayer::Gravity(void)
 {
 	float fGravity = GRAVITY;
-	if (m_action == ACTION_WALLSTAND) {	// 壁ずり中
+	// 慣性を変更
+	switch (m_action) {
+	case ACTION_WALLSTAND:
 		if (m_Info.move.y <= 0.0f) {
 			fGravity = 0.0f;
 			m_Info.move.y = WALLSLIDE_GRAVITY;
 		}
-	}
-	else if (m_action == ACTION_SLIDEJUMP) {
+		break;
+
+	case ACTION_SLIDEJUMP:
 		fGravity = SLIDEJUMP_GRAVITY;
+		break;
+
+	case ACTION_WALLDUSH:
+		if (m_Info.move.y <= 0.0f) {
+			fGravity = 0.0f;
+			m_Info.move.y = WALLSLIDE_GRAVITY;
+		}
+		break;
+
+	default:
+
+		break;
 	}
 
 	// 重力にスロー倍率を掛け合わせる
@@ -1471,4 +1553,18 @@ void CPlayer::Hit(void)
 	int nDamage = 1;
 	D3DXVECTOR3 pos = { pModel->GetMtx()->_41, pModel->GetMtx()->_42, pModel->GetMtx()->_43 };
 	CEnemyManager::GetInstance()->Hit(pos, fRange, nDamage);
+}
+
+//===============================================
+// カメラ設定
+//===============================================
+void CPlayer::SetCamera(CCamera* pCamera) 
+{ 
+	m_pMyCamera = pCamera; 
+	if (m_pMyCamera == nullptr) {
+		return;
+	}
+
+	m_fCamRotZ = m_pMyCamera->GetRotation().z; 
+	m_fCamLength = m_pMyCamera->GetLength();
 }

@@ -45,6 +45,7 @@ namespace
 #define SLOW_CAMERAROT		(0.7f)
 #define TITLE_ROTATESPD		(0.0025f)	// タイトル回転量
 #define CAMERA_PADMAX	(D3DX_PI * 0.5f)
+#define CAMERA_LENGTHINER	(0.25f)
 
 //==========================================================
 // コンストラクタ
@@ -561,12 +562,14 @@ void CCamera::MouseCamera(void)
 //==========================================================
 // 追従処理
 //==========================================================
-void CCamera::Pursue(const D3DXVECTOR3 pos, const D3DXVECTOR3 rot)
+void CCamera::Pursue(const D3DXVECTOR3 pos, const D3DXVECTOR3 rot, const float fLength)
 {
 	D3DXVECTOR3 posRDest = D3DXVECTOR3(0.0f, 0.0f, 0.0f);	// 目標の注視点
 	D3DXVECTOR3 posVDest = D3DXVECTOR3(0.0f, 0.0f, 0.0f);	// 目標の視点
 	D3DXVECTOR3 RDiff = D3DXVECTOR3(0.0f, 0.0f, 0.0f);		// 注視点の差分
 	D3DXVECTOR3 VDiff = D3DXVECTOR3(0.0f, 0.0f, 0.0f);		// 視点の差分
+	float fDiff = fLength - m_fLength;
+	m_fLength += fDiff * CAMERA_LENGTHINER;
 
 	//目的の注視点の座標を取得
 	posRDest = D3DXVECTOR3(pos.x - sinf(rot.y) * 30.0f, pos.y + 50.0f + (40.0f * (1.0f - m_fZoom)), pos.z - cosf(rot.y) * 30.0f);
@@ -588,6 +591,59 @@ void CCamera::Pursue(const D3DXVECTOR3 pos, const D3DXVECTOR3 rot)
 	m_posV.x += VDiff.x * 0.2f;
 	m_posV.y += VDiff.y * 0.1f;
 	m_posV.z += VDiff.z * 0.2f;
+}
+
+//==========================================================
+// カメラ角度慣性変更
+//==========================================================
+void CCamera::InerRot(const D3DXVECTOR3& rot, const float fMul)
+{
+	D3DXVECTOR3 RotDiff = D3DXVECTOR3(0.0f, 0.0f, 0.0f);		// 注視点の差分
+
+	// 向きの補正
+	RotDiff = rot - m_rot;
+
+	if (RotDiff.y > D3DX_PI)
+	{//角度がΠを超えた場合
+		RotDiff.y = D3DX_PI;
+		RotDiff.y *= -1.0f;
+	}
+	else if (RotDiff.y < -D3DX_PI)
+	{//角度がΠを超えた場合
+		RotDiff.y = -D3DX_PI;
+		RotDiff.y *= -1.0f;
+	}
+	if (RotDiff.z > D3DX_PI)
+	{//角度がΠを超えた場合
+		RotDiff.z = D3DX_PI;
+		RotDiff.z *= -1.0f;
+	}
+	else if (RotDiff.z < -D3DX_PI)
+	{//角度がΠを超えた場合
+		RotDiff.z = -D3DX_PI;
+		RotDiff.z *= -1.0f;
+	}
+
+	m_rot += RotDiff * fMul;
+
+	if (m_rot.y > D3DX_PI)
+	{//角度がΠを超えた場合
+		m_rot.y = D3DX_PI;
+		m_rot.y *= -1.0f;
+	}
+	else if (m_rot.y < -D3DX_PI)
+	{//角度がΠを超えた場合
+		m_rot.y = -D3DX_PI;
+		m_rot.y *= -1.0f;
+	}
+	if (m_rot.z < MIN_CAMERA_ROTZ)
+	{//角度が限界を超えた場合
+		m_rot.z = MIN_CAMERA_ROTZ;
+	}
+	else if (m_rot.z > MAX_CAMERA_ROTZ)
+	{//角度が限界を超えた場合
+		m_rot.z = MAX_CAMERA_ROTZ;
+	}
 }
 
 //==========================================================

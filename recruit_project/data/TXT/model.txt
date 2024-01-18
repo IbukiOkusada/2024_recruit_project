@@ -9,85 +9,23 @@ SCRIPT			# この行は絶対消さないこと！
 #------------------------------------------------------------------------------
 # テクスチャ数
 #------------------------------------------------------------------------------
-NUM_TEXTURE = 24
+NUM_TEXTURE = 2
 
 #------------------------------------------------------------------------------
 # テクスチャファイル名
 #------------------------------------------------------------------------------
-TEXTURE_FILENAME = data/TEXTURE/river000.jpg		# [0]川水(下)
-TEXTURE_FILENAME = data/TEXTURE/field001.jpg		# [1]川水(上)
-TEXTURE_FILENAME = data/TEXTURE/field000.jpg		# [2]監視カメラ
-TEXTURE_FILENAME = data/TEXTURE/WoodDesign.jpg		# [3]ちゃぶ台
-TEXTURE_FILENAME = data/TEXTURE/WoodDesign001.jpg	# [4]ちゃぶ台(脚)
-TEXTURE_FILENAME = data/TEXTURE/zabuton000.jpg		# [5]座布団
-TEXTURE_FILENAME = data/TEXTURE/sumdorr.jpg			# [6]ドア左(和)
-TEXTURE_FILENAME = data/TEXTURE/gold00.jpg			# [7]金の掛け軸
-TEXTURE_FILENAME = data/TEXTURE/af18.jpg            # [8]木のテクスチャ
-TEXTURE_FILENAME = data/TEXTURE/tanuki_paint.png    # [9]たぬきテクスチャ
-TEXTURE_FILENAME = data/TEXTURE/ash000.jpg          # [10]いろり
-TEXTURE_FILENAME = data/TEXTURE/floor001.jpg        # [11]囲炉裏の木
-TEXTURE_FILENAME = data/TEXTURE/yakifish.jpg        # [12]焼き魚
-TEXTURE_FILENAME = data/TEXTURE/onabe.jpg           # [13]お鍋
-TEXTURE_FILENAME = data/TEXTURE/darkwood00.jpg      # [14]木材(暗い)
-TEXTURE_FILENAME = data/TEXTURE/tance00.jpg         # [15]たんす
-TEXTURE_FILENAME = data/TEXTURE/book00.jpg          # [16]本棚
-TEXTURE_FILENAME = data/TEXTURE/wood00.jpg          # [17]木材
-TEXTURE_FILENAME = data/TEXTURE/Cupboard.png        # [18]食器棚
-TEXTURE_FILENAME = data/TEXTURE/stone00.jpg         # [19]石材
-TEXTURE_FILENAME = data/TEXTURE/stonesand.jpg       # [20]砂利
-TEXTURE_FILENAME = data/TEXTURE/wood01.jpg          # [21]木材
-TEXTURE_FILENAME = data/TEXTURE/grass.png           # [22]芝生
-TEXTURE_FILENAME = data/TEXTURE/soil.png            # [23]土
+TEXTURE_FILENAME = data/TEXTURE/field000.jpg		# [0]川水(下)
+TEXTURE_FILENAME = data/TEXTURE/kickwall.jpg		# [0]川水(下)
 
 #------------------------------------------------------------------------------
 # モデル数
 #------------------------------------------------------------------------------
-NUM_MODEL = 41
+NUM_MODEL = 1
 
 #------------------------------------------------------------------------------
 # モデルファイル名
 #------------------------------------------------------------------------------
 MODEL_FILENAME = data/MODEL/5mcube.x	   # [0]5mキューブ
-MODEL_FILENAME = data/MODEL/botan.x        # [1]ボタン
-MODEL_FILENAME = data/MODEL/camera000.x    # [2]監視カメラ
-MODEL_FILENAME = data/MODEL/desk.x         # [3]机
-MODEL_FILENAME = data/MODEL/roundchair.x   # [4]丸椅子
-MODEL_FILENAME = data/MODEL/gate.x         # [5]ドア
-MODEL_FILENAME = data/MODEL/gate001.x      # [6]ドア
-MODEL_FILENAME = data/MODEL/wall000.x      # [7]壁
-MODEL_FILENAME = data/MODEL/Aisle.x        # [8]通路
-MODEL_FILENAME = data\MODEL\Cyabudai.x     # [9]ちゃぶ台
-MODEL_FILENAME = data/MODEL/sumdorr000.x   # [10]ドア左(和)
-MODEL_FILENAME = data/MODEL/sumdorr001.x   # [11]ドア右(和)
-MODEL_FILENAME = data\MODEL\zabuton.x      # [12]座布団
-MODEL_FILENAME = data/MODEL/Irori.x        # [13]いろり
-MODEL_FILENAME = data/MODEL/kakeziku000.x  # [14]掛け軸
-MODEL_FILENAME = data/MODEL/5x15x5mCube.x  # [15]高いキューブ
-MODEL_FILENAME = data\MODEL\15x15x5mCube.x # [16]高いキューブ
-MODEL_FILENAME = data\MODEL\25x15x5mCube.x # [17]高いキューブ
-MODEL_FILENAME = data\MODEL\50x15x5mCube.x # [18]高いキューブ
-MODEL_FILENAME = data\MODEL\stonelight01.x # [19]石灯篭
-MODEL_FILENAME = data\MODEL\shrub.x        # [20]低木
-MODEL_FILENAME = data\MODEL\sicletyoutin.x # [21]丸提灯
-MODEL_FILENAME = data\MODEL\tyoutin.x      # [22]提灯
-MODEL_FILENAME = data\MODEL\tanuki.x       # [23]たぬき
-MODEL_FILENAME = data\MODEL\tance00.x      # [24]たんす
-MODEL_FILENAME = data\MODEL\MInitance.x    # [25]ミニたんす
-MODEL_FILENAME = data\MODEL\bookcace00.x   # [26]本棚
-MODEL_FILENAME = data\MODEL\yakan.x        # [27]やかん
-MODEL_FILENAME = data\MODEL\mortar01.x     # [28]
-MODEL_FILENAME = data\MODEL\mortar00.x     # [29]臼
-MODEL_FILENAME = data\MODEL\table00.x      # [30]四角テーブル
-MODEL_FILENAME = data\MODEL\Cupboard00.x   # [31]食器棚
-MODEL_FILENAME = data\MODEL\longbrazier.x  # [32]長火鉢
-MODEL_FILENAME = data\MODEL\ido.x          # [33]井戸
-MODEL_FILENAME = data\MODEL\tree_01.x      # [34]木
-MODEL_FILENAME = data\MODEL\fence.x        # [35]フェンス
-MODEL_FILENAME = data\MODEL\fence_corner.x # [36]角フェンス
-MODEL_FILENAME = data\MODEL\soil.x         # [37]土
-MODEL_FILENAME = data\MODEL\fence00.x      # [38]塀0
-MODEL_FILENAME = data\MODEL\fence01.x      # [39]塀1
-MODEL_FILENAME = data\MODEL\kakeziku001.x  # [40]掛け軸
 
 #------------------------------------------------------------------------------
 # カメラ情報
@@ -135,24 +73,181 @@ END_MOUNTAINSET
 #------------------------------------------------------------------------------
 
 FIELDSET
-	TEXTYPE = 2
-	POS = -2500.0 1.0 950.0
+	TEXTYPE = 0
+	POS = 0.0 0.0 -2000.0
 	ROT = 0 0 0
-	BLOCK = 30 30
-	SIZE = 70 110
-	MOVE = -0.0005 0.0
+	BLOCK = 5 2
+	SIZE = 150 150
+	MOVE = 0.0 0.0
+END_FIELDSET
+
+FIELDSET
+	TEXTYPE = 0
+	POS = 0.0 0.0 600.0
+	ROT = 0 0 0
+	BLOCK = 6 2
+	SIZE = 150 150
+	MOVE = 0.0 0.0
+END_FIELDSET
+
+FIELDSET
+	TEXTYPE = 0
+	POS = 0.0 600.0 2250.0
+	ROT = 0 0 0
+	BLOCK = 5 4
+	SIZE = 150 150
+	MOVE = 0.0 0.0
+END_FIELDSET
+
+FIELDSET
+	TEXTYPE = 0
+	POS = 450.0 600.0 1350.0
+	ROT = 0 0 0
+	BLOCK = 1 1
+	SIZE = 150 150
+	MOVE = 0.0 0.0
+END_FIELDSET
+
+FIELDSET
+	TEXTYPE = 0
+	POS = -450.0 600.0 1350.0
+	ROT = 0 0 0
+	BLOCK = 1 1
+	SIZE = 150 150
+	MOVE = 0.0 0.0
 END_FIELDSET
 
 WALLSET
 	TEXTYPE = 1
-	POS = -10000 0 0
+	POS = -300 0 1350
 	ROT = 0 -90 0
-	BLOCK = 20 20
-	SIZE = 50 50
+	BLOCK = 3 1
+	SIZE = 100 150
+END_WALLSET
+
+WALLSET
+	TEXTYPE = 0
+	POS = -300 0 -500
+	ROT = 0 -90 0
+	BLOCK = 2 5
+	SIZE = 100 150
+END_WALLSET
+
+WALLSET
+	TEXTYPE = 0
+	POS = 0 0 1500
+	ROT = 0 0 0
+	BLOCK = 2 2
+	SIZE = 150 150
+END_WALLSET
+
+WALLSET
+	TEXTYPE = 1
+	POS = 300 0 1350
+	ROT = 0 90 0
+	BLOCK = 3 1
+	SIZE = 100 150
 END_WALLSET
 
 #==============================================================================
 # モデル配置
 #==============================================================================
+MODELSET
+	TYPE = 0
+	POS = 0.0 50.0 500.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 1		#使用しない場合は0
+END_MODELSET
+
+MODELSET
+	TYPE = 0
+	POS = 100.0 50.0 500.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 1		#使用しない場合は0
+END_MODELSET
+
+MODELSET
+	TYPE = 0
+	POS = 200.0 50.0 500.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 1		#使用しない場合は0
+END_MODELSET
+
+MODELSET
+	TYPE = 0
+	POS = 300.0 50.0 500.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 1		#使用しない場合は0
+END_MODELSET
+
+MODELSET
+	TYPE = 0
+	POS = -100.0 50.0 500.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 1		#使用しない場合は0
+END_MODELSET
+
+MODELSET
+	TYPE = 0
+	POS = -200.0 50.0 500.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 1		#使用しない場合は0
+END_MODELSET
+
+MODELSET
+	TYPE = 0
+	POS = -300.0 50.0 500.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 1		#使用しない場合は0
+END_MODELSET
+
+MODELSET
+	TYPE = 0
+	POS = 0.0 150.0 500.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 1		#使用しない場合は0
+END_MODELSET
+
+MODELSET
+	TYPE = 0
+	POS = 100.0 150.0 500.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 1		#使用しない場合は0
+END_MODELSET
+
+MODELSET
+	TYPE = 0
+	POS = 200.0 150.0 500.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 1		#使用しない場合は0
+END_MODELSET
+
+MODELSET
+	TYPE = 0
+	POS = 300.0 150.0 500.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 1		#使用しない場合は0
+END_MODELSET
+
+MODELSET
+	TYPE = 0
+	POS = -100.0 150.0 500.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 1		#使用しない場合は0
+END_MODELSET
+
+MODELSET
+	TYPE = 0
+	POS = -200.0 150.0 500.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 1		#使用しない場合は0
+END_MODELSET
+
+MODELSET
+	TYPE = 0
+	POS = -300.0 150.0 500.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 1		#使用しない場合は0
+END_MODELSET
 
 END_SCRIPT

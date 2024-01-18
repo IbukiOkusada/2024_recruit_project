@@ -48,6 +48,7 @@ public:
 		ACTION_WALLKICK,		// 壁キック
 		ACTION_SLIDEJUMP,		// しゃがみジャンプ
 		ACTION_NORMALATK,		// 攻撃
+		ACTION_WALLDUSH,		// 壁走り
 		ACTION_MAX
 	};
 
@@ -98,7 +99,7 @@ public:	// 誰でもアクセス可能
 	void SetDiffPosition(const D3DXVECTOR3 pos) { m_Info.posDiff = pos; }
 	void SetRotation(const D3DXVECTOR3 rot) { m_Info.rot = rot; }
 	void SetType(TYPE type);
-	void SetCamera(CCamera *pCamera){ m_pMyCamera = pCamera; }
+	void SetCamera(CCamera* pCamera);
 	void BindId(int nId) { m_nId = nId; }
 	void SetMotion(int nMotion);
 	void SetDraw(bool bDraw);
@@ -138,6 +139,7 @@ private:	// 自分だけがアクセス可能
 	void BodySet(void);
 	void MotionSet(void);
 	void WallSlide(void);
+	void WallDush(void);
 	bool BodyCheck(CCharacter* pBody);
 
 	// メンバ変数
@@ -154,6 +156,8 @@ private:	// 自分だけがアクセス可能
 	float m_fRotMove;		// 現在の角度
 	float m_fRotDiff;		// 目的の角度
 	float m_fRotDest;		// 角度計算
+	float m_fCamRotZ;
+	float m_fCamLength;
 	int m_nId;
 	int m_action;
 	int m_nLife;

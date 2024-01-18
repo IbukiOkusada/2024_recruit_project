@@ -27,7 +27,7 @@ public:	// 誰でもアクセス可能
 	HRESULT Init(void);
 	void Uninit(void);
 	void Update(void);
-	static CEnemyMelee *Create(void);
+	static CEnemyMelee *Create(D3DXVECTOR3 &pos, D3DXVECTOR3 &rot);
 
 	// メンバ関数
 	void Hit(D3DXVECTOR3& pos, const float fRange, const int nDamage) override;

@@ -37,7 +37,7 @@
 // 無名名前空間を定義
 namespace {
     const D3DXVECTOR3 STARTDOORPOS = { -1160.0f, 0.0f, 950.0f };	// スタート地点ドア基本座標
-	const D3DXVECTOR3 PLAYERSTARTPOS = { -2500.0f, 0.0f, 990.0f };  // プレイヤーのスタート位置
+	const D3DXVECTOR3 PLAYERSTARTPOS = { 0.0f, 0.0f, -2000.0f };  // プレイヤーのスタート位置
     const D3DXVECTOR3 LEVERPOS[4] =
     {
         D3DXVECTOR3(130.0f, 100.0f, -5130.0f),
@@ -214,7 +214,7 @@ HRESULT CGame::Init(void)
     CManager::GetInstance()->GetCamera()->SetPositionV(D3DXVECTOR3(-874.3f, 1124.15f, 1717.2f));
     CManager::GetInstance()->GetCamera()->SetPositionR(D3DXVECTOR3(-320.3f, 1.0f, -91.6f));
     CManager::GetInstance()->GetCamera()->SetLength(350.0f);
-    CManager::GetInstance()->GetCamera()->SetRotation(D3DXVECTOR3(0.0f, D3DX_PI * 1.0f, D3DX_PI * 0.41f));
+    CManager::GetInstance()->GetCamera()->SetRotation(D3DXVECTOR3(0.0f, -D3DX_PI * 0.5f, D3DX_PI * 0.41f));
 
     switch (m_state)
     {
@@ -264,7 +264,7 @@ HRESULT CGame::Init(void)
         break;
     }
 
-    CEnemyMelee::Create();
+    CEnemyMelee::Create(D3DXVECTOR3(0.0f, 600.0f, 2250.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 
     return S_OK;
 }

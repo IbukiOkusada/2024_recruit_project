@@ -1285,9 +1285,17 @@ void CPlayer::MotionSet(void)
 				m_action = ACTION_NEUTRAL;
 			}
 		{
-			m_pBody->GetMotion()->BlendSet(m_action -1);
-			m_pLeg->GetMotion()->BlendSet(m_action - 1);
+			m_pBody->GetMotion()->BlendSet(m_action);
+			m_pLeg->GetMotion()->BlendSet(m_action);
 		}
+			break;
+
+		case ACTION_CEILINGDUSH:
+
+			{
+				m_pBody->GetMotion()->BlendSet(m_action);
+				m_pLeg->GetMotion()->BlendSet(m_action);
+			}
 			break;
 
 		default:

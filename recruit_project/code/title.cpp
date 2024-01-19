@@ -81,6 +81,10 @@ void CTitle::Update(void)
 	CInputPad *pInputPad = CManager::GetInstance()->GetInputPad();
 	CInputKeyboard *pInputKey = CManager::GetInstance()->GetInputKeyboard();
 
+	if (pInputKey->GetTrigger(DIK_RETURN) || pInputPad->GetTrigger(CInputPad::BUTTON_START, 0)) {
+		CManager::GetInstance()->GetFade()->Set(CScene::MODE_GAME);
+	}
+
 	CScene::Update();
 }
 

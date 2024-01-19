@@ -125,132 +125,132 @@ HRESULT CResult::Init(void)
 		}
 	}
 
-	m_apScore = new CScore*[m_nNumPlayer];
+	//m_apScore = new CScore*[m_nNumPlayer];
 
-	for (int nCount = 0; nCount < m_nNumPlayer; nCount++)
-	{
-		m_apScore[nCount] = CScore::Create(D3DXVECTOR3(SCORE_POS.x + (-((m_nNumPlayer - 1) * SCORE_MOVESIZE) + nCount * SCORE_SPACE), SCORE_POS.y, 0.0f), 6, SCORE_NUMSPACE, 15.0f, 20.0f);
-		m_apScore[nCount]->SetScore(m_pScore[nCount]);
-	}
+	//for (int nCount = 0; nCount < m_nNumPlayer; nCount++)
+	//{
+	//	m_apScore[nCount] = CScore::Create(D3DXVECTOR3(SCORE_POS.x + (-((m_nNumPlayer - 1) * SCORE_MOVESIZE) + nCount * SCORE_SPACE), SCORE_POS.y, 0.0f), 6, SCORE_NUMSPACE, 15.0f, 20.0f);
+	//	m_apScore[nCount]->SetScore(m_pScore[nCount]);
+	//}
 
-	SetTopScore(m_pScore);
+	//SetTopScore(m_pScore);
 
-	if (m_pRank == nullptr && m_nNumPlayer > 0) {
-		m_pRank = new int[m_nNumPlayer];
-	}
+	//if (m_pRank == nullptr && m_nNumPlayer > 0) {
+	//	m_pRank = new int[m_nNumPlayer];
+	//}
 
-	// それぞれのランク付け
-	SetRank(m_nNumPlayer);
+	//// それぞれのランク付け
+	//SetRank(m_nNumPlayer);
 
-	// 人数分ポインタ生成
-	m_ppRank = new CObject2D*[m_nNumPlayer];
+	//// 人数分ポインタ生成
+	//m_ppRank = new CObject2D*[m_nNumPlayer];
 
-	// ランクのポリゴン生成
-	for (int nCnt = 0; nCnt < m_nNumPlayer; nCnt++) {
-		m_ppRank[nCnt] = CObject2D::Create(NUM_PRIORITY);
-		m_ppRank[nCnt]->BindTexture(CTexture::TYPE_RESULTRANK);
-		m_ppRank[nCnt]->SetPosition(D3DXVECTOR3(RANK_POS.x + (-((m_nNumPlayer - 1) * RANK_MOVESIZE) + nCnt * RANK_SPACE), RANK_POS.y, 0.0f));
-		m_ppRank[nCnt]->SetSize(RANK_SIZE.x, RANK_SIZE.y);
-		m_ppRank[nCnt]->SetVtx(m_pRank[nCnt], PLAYER_MAX, 1);
+	//// ランクのポリゴン生成
+	//for (int nCnt = 0; nCnt < m_nNumPlayer; nCnt++) {
+	//	m_ppRank[nCnt] = CObject2D::Create(NUM_PRIORITY);
+	//	m_ppRank[nCnt]->BindTexture(CTexture::TYPE_RESULTRANK);
+	//	m_ppRank[nCnt]->SetPosition(D3DXVECTOR3(RANK_POS.x + (-((m_nNumPlayer - 1) * RANK_MOVESIZE) + nCnt * RANK_SPACE), RANK_POS.y, 0.0f));
+	//	m_ppRank[nCnt]->SetSize(RANK_SIZE.x, RANK_SIZE.y);
+	//	m_ppRank[nCnt]->SetVtx(m_pRank[nCnt], PLAYER_MAX, 1);
 
-		if (m_pRank[nCnt] > m_nWorst)
-		{
-			m_nWorst = m_pRank[nCnt];
-		}
-	}
+	//	if (m_pRank[nCnt] > m_nWorst)
+	//	{
+	//		m_nWorst = m_pRank[nCnt];
+	//	}
+	//}
 
-	//カメラ初期化
-	{
-		CManager::GetInstance()->GetCamera()->SetLength(300.0f);
-		CManager::GetInstance()->GetCamera()->SetRotation(D3DXVECTOR3(1.0f, -D3DX_PI * 0.5f, 2.63f));
-		CManager::GetInstance()->GetCamera()->SetPositionR(D3DXVECTOR3(0.0f, 137.77f, -301.94f));
+	////カメラ初期化
+	//{
+	//	CManager::GetInstance()->GetCamera()->SetLength(300.0f);
+	//	CManager::GetInstance()->GetCamera()->SetRotation(D3DXVECTOR3(1.0f, -D3DX_PI * 0.5f, 2.63f));
+	//	CManager::GetInstance()->GetCamera()->SetPositionR(D3DXVECTOR3(0.0f, 137.77f, -301.94f));
 
-		D3DVIEWPORT9 viewport;
-		//プレイヤー追従カメラの画面位置設定
-		viewport.X = 0;
-		viewport.Y = 0;
-		viewport.Width = (DWORD)(SCREEN_WIDTH * 1.0f);
-		viewport.Height = (DWORD)(SCREEN_HEIGHT * 1.0f);
-		viewport.MinZ = 0.0f;
-		viewport.MaxZ = 1.0f;
-		CManager::GetInstance()->GetCamera()->SetViewPort(viewport);
-	}
+	//	D3DVIEWPORT9 viewport;
+	//	//プレイヤー追従カメラの画面位置設定
+	//	viewport.X = 0;
+	//	viewport.Y = 0;
+	//	viewport.Width = (DWORD)(SCREEN_WIDTH * 1.0f);
+	//	viewport.Height = (DWORD)(SCREEN_HEIGHT * 1.0f);
+	//	viewport.MinZ = 0.0f;
+	//	viewport.MaxZ = 1.0f;
+	//	CManager::GetInstance()->GetCamera()->SetViewPort(viewport);
+	//}
 
-	// 人数分ポインタ生成
-	m_ppPlayer = new CPlayer*[m_nNumPlayer];
+	//// 人数分ポインタ生成
+	//m_ppPlayer = new CPlayer*[m_nNumPlayer];
 
-	for (int nCnt = 0; nCnt < m_nNumPlayer; nCnt++)
-	{
-		char aBodyPass[200] = "";		// 胴体パス
-		char aLegPass[200] = "";		// 下半身パス
+	//for (int nCnt = 0; nCnt < m_nNumPlayer; nCnt++)
+	//{
+	//	char aBodyPass[200] = "";		// 胴体パス
+	//	char aLegPass[200] = "";		// 下半身パス
 
-		sprintf(&aBodyPass[0], "data\\TXT\\Player%d\\motion_ninjabody.txt", nCnt);
-		sprintf(&aLegPass[0], "data\\TXT\\Player%d\\motion_ninjaleg.txt", nCnt);
+	//	sprintf(&aBodyPass[0], "data\\TXT\\Player%d\\motion_ninjabody.txt", nCnt);
+	//	sprintf(&aLegPass[0], "data\\TXT\\Player%d\\motion_ninjaleg.txt", nCnt);
 
-		m_ppPlayer[nCnt] = CPlayer::Create(D3DXVECTOR3(-((m_nNumPlayer - 1) * PLAYER_MOVESIZE) + nCnt * PLAYER_SPACE, PLAYER_POSY + m_pRank[nCnt] * PLAYER_RANK_POSY + PLAYER_UPPOSY * m_nNumPlayer, 60.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), &aBodyPass[0], &aLegPass[0]);
-		m_ppPlayer[nCnt]->BindId(nCnt);
-		m_ppPlayer[nCnt]->SetType(CPlayer::TYPE_NONE);
-	}
+	//	m_ppPlayer[nCnt] = CPlayer::Create(D3DXVECTOR3(-((m_nNumPlayer - 1) * PLAYER_MOVESIZE) + nCnt * PLAYER_SPACE, PLAYER_POSY + m_pRank[nCnt] * PLAYER_RANK_POSY + PLAYER_UPPOSY * m_nNumPlayer, 60.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), &aBodyPass[0], &aLegPass[0]);
+	//	m_ppPlayer[nCnt]->BindId(nCnt);
+	//	m_ppPlayer[nCnt]->SetType(CPlayer::TYPE_NONE);
+	//}
 
 
-	// 合計スコアの取得
-	m_nTotalScore = SumScore();
+	//// 合計スコアの取得
+	//m_nTotalScore = SumScore();
 
-	m_pTotalScore = CScore::Create(TOTALSCORE_POS, 8, TOTALSCORE_SPACE, 25.0f, 45.0f);
-	m_pTotalScore->SetScore(m_nNowScore);
-	CRanking::SetTotalScore(m_nTotalScore);
+	//m_pTotalScore = CScore::Create(TOTALSCORE_POS, 8, TOTALSCORE_SPACE, 25.0f, 45.0f);
+	//m_pTotalScore->SetScore(m_nNowScore);
+	//CRanking::SetTotalScore(m_nTotalScore);
 
-	// 
-	CManager::GetInstance()->GetCamera()->Update();
-	CManager::GetInstance()->GetCamera()->SetActive(false);
-	//CManager::GetInstance()->GetSound()->Play(CSound::LABEL_BGM_RANKING);
+	//// 
+	//CManager::GetInstance()->GetCamera()->Update();
+	//CManager::GetInstance()->GetCamera()->SetActive(false);
+	////CManager::GetInstance()->GetSound()->Play(CSound::LABEL_BGM_RANKING);
 
-	if (m_ppPlayer == nullptr) {
-		return S_OK;
-	}
+	//if (m_ppPlayer == nullptr) {
+	//	return S_OK;
+	//}
 
-	for (int nCnt = 0; nCnt < m_nNumPlayer; nCnt++)
-	{
-		if (m_ppPlayer[nCnt] == nullptr) {
-			continue;
-		}
+	//for (int nCnt = 0; nCnt < m_nNumPlayer; nCnt++)
+	//{
+	//	if (m_ppPlayer[nCnt] == nullptr) {
+	//		continue;
+	//	}
 
-		if (m_nTotalScore < m_nQuota || m_pScore[nCnt] <= 0) {	// ノルマを達成していない
-			m_ppPlayer[nCnt]->SetMotion(PLAYER_MAXMOTION);
-		}
-		else {
-			m_ppPlayer[nCnt]->SetMotion(PLAYER_MAXMOTION - 1);
-		}
-	}
+	//	if (m_nTotalScore < m_nQuota || m_pScore[nCnt] <= 0) {	// ノルマを達成していない
+	//		m_ppPlayer[nCnt]->SetMotion(PLAYER_MAXMOTION);
+	//	}
+	//	else {
+	//		m_ppPlayer[nCnt]->SetMotion(PLAYER_MAXMOTION - 1);
+	//	}
+	//}
 
-	// 達成したか確認する
-	if (m_nTotalScore >= m_nQuota) {	// ノルマ達成
-		m_bClear = true;
-	}
+	//// 達成したか確認する
+	//if (m_nTotalScore >= m_nQuota) {	// ノルマ達成
+	//	m_bClear = true;
+	//}
 
-	// ノルマ達成のポリゴン設定
-	m_pObjClear = CObject2D::Create(NUM_PRIORITY - 1);
+	//// ノルマ達成のポリゴン設定
+	//m_pObjClear = CObject2D::Create(NUM_PRIORITY - 1);
 
-	// clearごとにテクスチャ変更
-	if (m_pObjClear != nullptr) {
-		switch (m_bClear) {
-		case false:
-			CManager::GetInstance()->GetSound()->Play(CSound::LABEL_BGM_RESULT_FAILED);
-			m_pObjClear->BindTexture(CTexture::TYPE_RESULTFAILED);
+	//// clearごとにテクスチャ変更
+	//if (m_pObjClear != nullptr) {
+	//	switch (m_bClear) {
+	//	case false:
+	//		CManager::GetInstance()->GetSound()->Play(CSound::LABEL_BGM_RESULT_FAILED);
+	//		m_pObjClear->BindTexture(CTexture::TYPE_RESULTFAILED);
 
-			break;
-		case true:
-			CManager::GetInstance()->GetSound()->Play(CSound::LABEL_BGM_RESULT_CLEAR);
-			m_pObjClear->BindTexture(CTexture::TYPE_RESULTCLEAR);
-			break;
-		}
-	}
+	//		break;
+	//	case true:
+	//		CManager::GetInstance()->GetSound()->Play(CSound::LABEL_BGM_RESULT_CLEAR);
+	//		m_pObjClear->BindTexture(CTexture::TYPE_RESULTCLEAR);
+	//		break;
+	//	}
+	//}
 
-	// 座標とサイズ設定
-	if (m_pObjClear != nullptr) {
-		m_pObjClear->SetPosition(CLEAR_SETPOS);
-		m_pObjClear->SetLength(CLEAR_SIZE.x, CLEAR_SIZE.y);
-	}
+	//// 座標とサイズ設定
+	//if (m_pObjClear != nullptr) {
+	//	m_pObjClear->SetPosition(CLEAR_SETPOS);
+	//	m_pObjClear->SetLength(CLEAR_SIZE.x, CLEAR_SIZE.y);
+	//}
 
 	return S_OK;
 }
@@ -338,176 +338,176 @@ void CResult::Uninit(void)
 //===============================================
 void CResult::Update(void)
 {
-	int nLandPlayer = 0;	// 着地プレイヤー数
-	bool bCamera = false;
+	//int nLandPlayer = 0;	// 着地プレイヤー数
+	//bool bCamera = false;
 
-	if (m_nNowScore < m_nTotalScore) {	// 総合スコアに表示スコアが到達していない
+	//if (m_nNowScore < m_nTotalScore) {	// 総合スコアに表示スコアが到達していない
 
-		if (m_nTotalScore - m_nNowScore > SCORE_MINTORURURURU) {	// 補正するために必要な差分がある
-			m_nNowScore += static_cast <int>(static_cast <float>(m_nTotalScore - m_nNowScore) * 0.015f) + SCORE_TORURURUSPEED;
-		}
-		else {	// 無い
-			m_nNowScore += SCORE_TORURURUSPEED;
-		}
+	//	if (m_nTotalScore - m_nNowScore > SCORE_MINTORURURURU) {	// 補正するために必要な差分がある
+	//		m_nNowScore += static_cast <int>(static_cast <float>(m_nTotalScore - m_nNowScore) * 0.015f) + SCORE_TORURURUSPEED;
+	//	}
+	//	else {	// 無い
+	//		m_nNowScore += SCORE_TORURURUSPEED;
+	//	}
 
-		// 表示の数値を変更
-		if (m_nNowScore >= m_nTotalScore) {	// 到達した
-			m_nNowScore = m_nTotalScore;
+	//	// 表示の数値を変更
+	//	if (m_nNowScore >= m_nTotalScore) {	// 到達した
+	//		m_nNowScore = m_nTotalScore;
 
-			if (m_pTotalScore != nullptr) {
-				if (m_bClear) {
-					m_pTotalScore->SetClo(CLEAR_COL);
-				}
-				else {
-					m_pTotalScore->SetClo(FAILED_COL);
-				}
-			}
-		}
-		if (m_pTotalScore != nullptr) {	// 使用している
-			m_pTotalScore->SetScore(m_nNowScore);
-		}
+	//		if (m_pTotalScore != nullptr) {
+	//			if (m_bClear) {
+	//				m_pTotalScore->SetClo(CLEAR_COL);
+	//			}
+	//			else {
+	//				m_pTotalScore->SetClo(FAILED_COL);
+	//			}
+	//		}
+	//	}
+	//	if (m_pTotalScore != nullptr) {	// 使用している
+	//		m_pTotalScore->SetScore(m_nNowScore);
+	//	}
 
-		CScene::Update();
-		if (m_nNumPlayer > 0) {
-			return;
-		}
-	}
+	//	CScene::Update();
+	//	if (m_nNumPlayer > 0) {
+	//		return;
+	//	}
+	//}
 
-	// ノルマ成功失敗更新
-	if (m_pObjClear != nullptr) {	// クリアUiが存在
-		D3DXVECTOR3 pos = m_pObjClear->GetPosition();
-		D3DXVECTOR2 size = CLEAR_SIZE;
-		D3DXVECTOR3 rot = m_pObjClear->GetRotation();
+	//// ノルマ成功失敗更新
+	//if (m_pObjClear != nullptr) {	// クリアUiが存在
+	//	D3DXVECTOR3 pos = m_pObjClear->GetPosition();
+	//	D3DXVECTOR2 size = CLEAR_SIZE;
+	//	D3DXVECTOR3 rot = m_pObjClear->GetRotation();
 
-		// まだ座標が規定値に達していない
-		if (pos.x < CLEAR_POS.x) {
-			pos.x += CLEAR_MOVE;
+	//	// まだ座標が規定値に達していない
+	//	if (pos.x < CLEAR_POS.x) {
+	//		pos.x += CLEAR_MOVE;
 
-			if (m_pTotalScore != nullptr) {	// 合計スコアが使用されている
-				if (pos.x >= SCORE_MOVEX) {	// スコアも移動し始める
-					// 移動
-					D3DXVECTOR3 ScorePos = m_pTotalScore->GetPosition();
-					ScorePos.x += CLEAR_MOVE;
-					m_pTotalScore->SetPosition(ScorePos);
-				}
-			}
+	//		if (m_pTotalScore != nullptr) {	// 合計スコアが使用されている
+	//			if (pos.x >= SCORE_MOVEX) {	// スコアも移動し始める
+	//				// 移動
+	//				D3DXVECTOR3 ScorePos = m_pTotalScore->GetPosition();
+	//				ScorePos.x += CLEAR_MOVE;
+	//				m_pTotalScore->SetPosition(ScorePos);
+	//			}
+	//		}
 
-			if (pos.x > CLEAR_POS.x) {	// 到着した
-				pos.x = CLEAR_POS.x;	// 補正
-			}
-		}
-		else {
+	//		if (pos.x > CLEAR_POS.x) {	// 到着した
+	//			pos.x = CLEAR_POS.x;	// 補正
+	//		}
+	//	}
+	//	else {
 
-			// 回転
-			if (!m_bClear) {	// 失敗した場合
-				if (rot.z < FAILED_ROTATE) {	// 角度まで到達していない
-					rot.z += CLEAR_ROTMOVEZ;
-					pos.y += FAILED_UPY;
-				}
-				else {	// 到達した
+	//		// 回転
+	//		if (!m_bClear) {	// 失敗した場合
+	//			if (rot.z < FAILED_ROTATE) {	// 角度まで到達していない
+	//				rot.z += CLEAR_ROTMOVEZ;
+	//				pos.y += FAILED_UPY;
+	//			}
+	//			else {	// 到達した
 
-					// ふわふわゆがんでいるように動かす
-					m_ClearHeight += FAILED_NOBINOBISPEED;
-					float fSin = sinf(m_ClearHeight);
-					size.x = CLEAR_SIZE.x - fSin * FAILED_NOBINOBISIZE;
-					size.y = CLEAR_SIZE.y + fSin * FAILED_NOBINOBISIZE;
-				}
-			}
-			else {	// 成功
+	//				// ふわふわゆがんでいるように動かす
+	//				m_ClearHeight += FAILED_NOBINOBISPEED;
+	//				float fSin = sinf(m_ClearHeight);
+	//				size.x = CLEAR_SIZE.x - fSin * FAILED_NOBINOBISIZE;
+	//				size.y = CLEAR_SIZE.y + fSin * FAILED_NOBINOBISIZE;
+	//			}
+	//		}
+	//		else {	// 成功
 
-				// 跳んでいるように動かす
-				m_ClearHeight += CLEAR_NOBINOBISPEED;
-				float fSin = sinf(m_ClearHeight);
-				if (fSin < 0.0f) {
-					fSin = 0.0f;
-				}
-				pos.y = CLEAR_POS.y - fSin * CLEAR_NOBINOBISIZE;
-				size.y = CLEAR_SIZE.y + fSin * CLEAR_NOBINOBISIZE;
-			}
-		}
+	//			// 跳んでいるように動かす
+	//			m_ClearHeight += CLEAR_NOBINOBISPEED;
+	//			float fSin = sinf(m_ClearHeight);
+	//			if (fSin < 0.0f) {
+	//				fSin = 0.0f;
+	//			}
+	//			pos.y = CLEAR_POS.y - fSin * CLEAR_NOBINOBISIZE;
+	//			size.y = CLEAR_SIZE.y + fSin * CLEAR_NOBINOBISIZE;
+	//		}
+	//	}
 
-		m_pObjClear->SetRotation(rot);
-		m_pObjClear->SetPosition(pos);
-		m_pObjClear->SetLength(size.x, size.y);
-	}
+	//	m_pObjClear->SetRotation(rot);
+	//	m_pObjClear->SetPosition(pos);
+	//	m_pObjClear->SetLength(size.x, size.y);
+	//}
 
-	// プレイヤーの更新
-	for (int nCnt = 0; nCnt < m_nNumPlayer; nCnt++)
-	{
-		if (m_ppPlayer == nullptr) {
-			break;
-		}
+	//// プレイヤーの更新
+	//for (int nCnt = 0; nCnt < m_nNumPlayer; nCnt++)
+	//{
+	//	if (m_ppPlayer == nullptr) {
+	//		break;
+	//	}
 
-		if (m_ppPlayer[nCnt] == nullptr) {
-			continue;
-		}
+	//	if (m_ppPlayer[nCnt] == nullptr) {
+	//		continue;
+	//	}
 
-		D3DXVECTOR3 pos = m_ppPlayer[nCnt]->GetPosition();
+	//	D3DXVECTOR3 pos = m_ppPlayer[nCnt]->GetPosition();
 
-		if (pos.y <= CAMERA_MOVESTARTPOSY && pos.y > PLAYER_RANKMOVEPOS_Y) {	// 座標を設定
+	//	if (pos.y <= CAMERA_MOVESTARTPOSY && pos.y > PLAYER_RANKMOVEPOS_Y) {	// 座標を設定
 
-			if (m_pRank == nullptr) {
-				continue;
-			}
+	//		if (m_pRank == nullptr) {
+	//			continue;
+	//		}
 
-			if (m_pRank[nCnt] == m_nWorst) {
+	//		if (m_pRank[nCnt] == m_nWorst) {
 
-				if (!bCamera) {
-					CCamera *pCamera = CManager::GetInstance()->GetCamera();
-					D3DXVECTOR3 rot = pCamera->GetRotation();
-					rot.z -= 0.03f;
-					pCamera->SetRotation(rot);
-					bCamera = true;
-				}
-			}
-		}
-		else if (pos.y <= PLAYER_RANKMOVEPOS_Y && pos.y > 0.0f) {	// 座標を設定
-			if (m_ppRank != nullptr) {
-				if (m_ppRank[nCnt] != nullptr) {
-					D3DXVECTOR3 RankPos = m_ppRank[nCnt]->GetPosition();
-					RankPos.y += RANK_DOWNSPEED;
-					m_ppRank[nCnt]->SetPosition(RankPos);
-					m_ppRank[nCnt]->SetSize(RANK_SIZE.x, RANK_SIZE.y);
-				}
-			}
+	//			if (!bCamera) {
+	//				CCamera *pCamera = CManager::GetInstance()->GetCamera();
+	//				D3DXVECTOR3 rot = pCamera->GetRotation();
+	//				rot.z -= 0.03f;
+	//				pCamera->SetRotation(rot);
+	//				bCamera = true;
+	//			}
+	//		}
+	//	}
+	//	else if (pos.y <= PLAYER_RANKMOVEPOS_Y && pos.y > 0.0f) {	// 座標を設定
+	//		if (m_ppRank != nullptr) {
+	//			if (m_ppRank[nCnt] != nullptr) {
+	//				D3DXVECTOR3 RankPos = m_ppRank[nCnt]->GetPosition();
+	//				RankPos.y += RANK_DOWNSPEED;
+	//				m_ppRank[nCnt]->SetPosition(RankPos);
+	//				m_ppRank[nCnt]->SetSize(RANK_SIZE.x, RANK_SIZE.y);
+	//			}
+	//		}
 
-			if (m_apScore != nullptr) {
-				if (m_apScore[nCnt] != nullptr) {
-					D3DXVECTOR3 RankPos = m_apScore[nCnt]->GetPosition();
-					RankPos.y += RANK_DOWNSPEED;
-					m_apScore[nCnt]->SetPosition(RankPos);
-				}
-			}
-		}
-		else if (pos.y == 0.0f) {	// 着地済み
-			nLandPlayer++;
+	//		if (m_apScore != nullptr) {
+	//			if (m_apScore[nCnt] != nullptr) {
+	//				D3DXVECTOR3 RankPos = m_apScore[nCnt]->GetPosition();
+	//				RankPos.y += RANK_DOWNSPEED;
+	//				m_apScore[nCnt]->SetPosition(RankPos);
+	//			}
+	//		}
+	//	}
+	//	else if (pos.y == 0.0f) {	// 着地済み
+	//		nLandPlayer++;
 
-			if (m_ppPlayer[nCnt]->GetMotion() == PLAYER_MAXMOTION - 2) {
-				m_ppPlayer[nCnt]->SetFailedParticle();
-			}
+	//		if (m_ppPlayer[nCnt]->GetMotion() == PLAYER_MAXMOTION - 2) {
+	//			m_ppPlayer[nCnt]->SetFailedParticle();
+	//		}
 
-			continue;
-		}
+	//		continue;
+	//	}
 
-		// 重力を反映
-		pos.y += PLAYER_GRAVITY;
+	//	// 重力を反映
+	//	pos.y += PLAYER_GRAVITY;
 
-		if (pos.y <= 0.0f) {	// 地面に埋まった
-			pos.y = 0.0f;
-			if (m_ppPlayer[nCnt]->GetMotion() == PLAYER_MAXMOTION) {
-				CParticle::Create(pos, CEffect::TYPE_LANDFAILED);
-			}
-			else {
-				CParticle::Create(pos, CEffect::TYPE_LANDCLEAR);
-			}
+	//	if (pos.y <= 0.0f) {	// 地面に埋まった
+	//		pos.y = 0.0f;
+	//		if (m_ppPlayer[nCnt]->GetMotion() == PLAYER_MAXMOTION) {
+	//			CParticle::Create(pos, CEffect::TYPE_LANDFAILED);
+	//		}
+	//		else {
+	//			CParticle::Create(pos, CEffect::TYPE_LANDCLEAR);
+	//		}
 
-			m_ppPlayer[nCnt]->SetMotion(m_ppPlayer[nCnt]->GetMotion() - 2);
-		}
+	//		m_ppPlayer[nCnt]->SetMotion(m_ppPlayer[nCnt]->GetMotion() - 2);
+	//	}
 
-		m_ppPlayer[nCnt]->SetPosition(pos);
-	}
+	//	m_ppPlayer[nCnt]->SetPosition(pos);
+	//}
 
-	if (nLandPlayer >= m_nNumPlayer) {	// 全員着地した
+	//if (nLandPlayer >= m_nNumPlayer) {	// 全員着地した
 		m_nTimer++;
 
 		if (m_nTimer >= MOVE_TIMER ||
@@ -517,7 +517,7 @@ void CResult::Update(void)
 			CManager::GetInstance()->GetFade()->Set(CScene::MODE_RANKING);
 			m_nTimer = 0;
 		}
-	}
+	//}
 
 	CScene::Update();
 }

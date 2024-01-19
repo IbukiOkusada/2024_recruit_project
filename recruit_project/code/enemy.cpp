@@ -19,7 +19,7 @@ CEnemy::CEnemy()
 	m_Info.rot = { 0.0f, 0.0f, 0.0f };
 	m_Info.move = { 0.0f, 0.0f, 0.0f };
 	m_Info.posOld = { 0.0f, 0.0f, 0.0f };
-	m_nLife = 10;
+	m_nLife = 3;
 
 	// ƒŠƒXƒg‚É‘}“ü
 	CEnemyManager::GetInstance()->ListIn(this);

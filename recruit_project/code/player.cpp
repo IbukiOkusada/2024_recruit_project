@@ -49,6 +49,7 @@
 #define JUMP	(18.0f)
 
 namespace {
+	const D3DXVECTOR3 PLAYERSTARTPOS = { 0.0f, 0.0f, -2300.0f };  // プレイヤーのスタート位置
 	const int HEADPARTS_IDX = (1);	// 頭のパーツインデックス
 	const float DAMAGE_INTERVAL = (10.0f);	// ダメージインターバル
 	const float DAMAGE_APPEAR = (110.0f);	// 無敵時間インターバル
@@ -71,7 +72,7 @@ namespace {
 	const float CAMROT_INER = (0.2f);
 	const float SLIDINNG_ROTZ = (D3DX_PI * 0.51f);
 	const float SLIDING_LENGTH = (200.0f);
-	const D3DXVECTOR3 COLLIMAX = { 20.0f, 120.0f, 20.0f };
+	const D3DXVECTOR3 COLLIMAX = { 20.0f, 70.0f, 20.0f };
 	const D3DXVECTOR3 COLLIMIN = { -20.0f, 0.0f, -20.0f };
 }
 
@@ -325,7 +326,7 @@ void CPlayer::Update(void)
 			// 角度調整
 			float fRot = m_fCamRotZ;
 			D3DXVECTOR3 CamRot = m_pMyCamera->GetRotation();
-			if (m_action == ACTION_SLIDING) {	// スライディングの時
+			if (m_action == ACTION_SLIDING || m_action == ACTION_CEILINGDUSH) {	// スライディングの時
 				fRot = SLIDINNG_ROTZ;
 			}
 			CamRot.z = fRot;
@@ -333,7 +334,7 @@ void CPlayer::Update(void)
 
 			// 追従
 			float fLength = m_fCamLength;
-			if (m_action == ACTION_SLIDING) {	// スライディングの時
+			if (m_action == ACTION_SLIDING || m_action == ACTION_CEILINGDUSH) {	// スライディングの時
 				fLength = SLIDING_LENGTH;
 			}
 			m_pMyCamera->Pursue(GetPosition(), GetRotation(), fLength);
@@ -399,6 +400,7 @@ void CPlayer::Controller(void)
 			WallSlide();	// 壁ずり確認
 			Jump();			// ジャンプ
 			WallDush();		// 壁走り
+			CeilingDush();	// 天井走り
 			Slide();		// スライディング
 			Attack();		// 攻撃
 			Hit();			// 攻撃チェック
@@ -447,7 +449,7 @@ void CPlayer::Controller(void)
 	// メッシュフィールドとの判定
 	{
 		float fHeight = CMeshField::GetHeight(m_Info.pos);
-		if (m_Info.pos.y < fHeight)
+		if (m_Info.pos.y < fHeight && m_Info.posOld.y >= fHeight)
 		{
 			m_Info.pos.y = fHeight;
 			m_Info.move.y = 0.0f;
@@ -472,15 +474,19 @@ void CPlayer::Controller(void)
 	D3DXVECTOR3 vtxMaxOld = vtxMax;
 	D3DXVECTOR3 vtxMinOld = vtxMin;
 
-	if (m_action == ACTION_SLIDING) {
+	if (m_action == ACTION_SLIDING) {	// スライディング
 		vtxMax.y *= 0.3f;
+	}
+	else if (m_action == ACTION_CEILINGDUSH) { // 天井走り
+		vtxMin.y = vtxMax.y * 0.5f;
+		vtxMinOld.y = vtxMin.y;
 	}
 
 	CObjectX::COLLISION_AXIS ColiAxis = CObjectX::TYPE_MAX;	// 当たっている方向をリセット
 
 	m_ColiNor = CObjectX::Collision(m_Info.pos, m_Info.posOld, m_Info.move, vtxMin, vtxMax, vtxMinOld, vtxMaxOld, ColiAxis);
 
-	if (ColiAxis == CObjectX::TYPE_Y) {
+	if (ColiAxis == CObjectX::TYPE_Y && m_ColiNor.y > 0.0f) {	// 上から乗っている
 		m_bJump = false;
 
 		if (m_action == ACTION_WALLKICK) {	// 壁蹴りの場合
@@ -514,6 +520,10 @@ void CPlayer::Controller(void)
 	{
 		m_bJump = false;
 	}
+
+	if (m_Info.pos.y <= -100.0f) {
+		m_Info.pos = PLAYERSTARTPOS;
+	}
 }
 
 //===============================================
@@ -526,11 +536,6 @@ void CPlayer::Move(void)
 
 	// 入力装置確認
 	if (nullptr == pInputKey){
-		return;
-	}
-
-	// 入力装置確認
-	if (nullptr == pInputPad){
 		return;
 	}
 
@@ -586,45 +591,6 @@ void CPlayer::KeyBoardRotation(void)
 	if (nullptr == pInputKey){
 		return;
 	}
-
-	if (pInputKey->GetPress(DIK_W))
-	{
-		if (pInputKey->GetPress(DIK_A))
-		{
-			m_fRotDest = -D3DX_PI * 0.25f;
-		}
-		else if (pInputKey->GetPress(DIK_D))
-		{
-			m_fRotDest = D3DX_PI * 0.25f;
-		}
-		else
-		{
-			m_fRotDest = D3DX_PI * 0.0f;
-		}
-	}
-	else if (pInputKey->GetPress(DIK_S))
-	{
-		if (pInputKey->GetPress(DIK_A))
-		{
-			m_fRotDest = -D3DX_PI * 0.75f;
-		}
-		else if (pInputKey->GetPress(DIK_D))
-		{
-			m_fRotDest = D3DX_PI * 0.75f;
-		}
-		else
-		{
-			m_fRotDest = D3DX_PI * 1.0f;
-		}
-	}
-	else if (pInputKey->GetPress(DIK_A))
-	{
-		m_fRotDest = -D3DX_PI * 0.5f;
-	}
-	else if (pInputKey->GetPress(DIK_D))
-	{
-		m_fRotDest = D3DX_PI * 0.5f;
-	}
 }
 
 //===============================================
@@ -646,6 +612,7 @@ void CPlayer::MoveController(void)
 	}
 
 	D3DXVECTOR3 CamRot = pCamera->GetRotation();	// カメラの角度
+	CInputKeyboard* pInputKey = CManager::GetInstance()->GetInputKeyboard();	// キーボードのポインタ
 	CInputPad *pInputPad = CManager::GetInstance()->GetInputPad();
 	float fSpeed = MOVE;	// 移動量
 	D3DXVECTOR3 move = {0.0f, 0.0f, 0.0f};
@@ -671,15 +638,15 @@ void CPlayer::MoveController(void)
 	}
 
 	// 入力確認
-	if (pInputPad->GetStickPress(m_nId, CInputPad::BUTTON_LEFT_X, 0.8f, CInputPad::STICK_MINUS) == true)
+	if (pInputPad->GetStickPress(m_nId, CInputPad::BUTTON_LEFT_X, 0.8f, CInputPad::STICK_MINUS) || pInputKey->GetPress(DIK_A))
 	{
-		if (pInputPad->GetStickPress(m_nId, CInputPad::BUTTON_LEFT_Y, 0.8f, CInputPad::STICK_PLUS))
+		if (pInputPad->GetStickPress(m_nId, CInputPad::BUTTON_LEFT_Y, 0.8f, CInputPad::STICK_PLUS) || pInputKey->GetPress(DIK_W))
 		{
 			move.x += cosf(CamRot.y + (-D3DX_PI * 0.75f)) * fSpeed;
 			move.z += sinf(CamRot.y + (-D3DX_PI * 0.75f)) * fSpeed;
 			m_fRotDest = (-CamRot.y + D3DX_PI * 0.25f);
 		}
-		else if (pInputPad->GetStickPress(m_nId, CInputPad::BUTTON_LEFT_Y, 0.8f, CInputPad::STICK_MINUS))
+		else if (pInputPad->GetStickPress(m_nId, CInputPad::BUTTON_LEFT_Y, 0.8f, CInputPad::STICK_MINUS) || pInputKey->GetPress(DIK_S))
 		{
 			move.x += cosf(CamRot.y + (-D3DX_PI * 0.25f)) * fSpeed;
 			move.z += sinf(CamRot.y + (-D3DX_PI * 0.25f)) * fSpeed;
@@ -695,16 +662,16 @@ void CPlayer::MoveController(void)
 		// 移動した状態にする
 		m_bMove = true;
 	}
-	else if (pInputPad->GetStickPress(m_nId, CInputPad::BUTTON_LEFT_X, 0.8f, CInputPad::STICK_PLUS) == true)
+	else if (pInputPad->GetStickPress(m_nId, CInputPad::BUTTON_LEFT_X, 0.8f, CInputPad::STICK_PLUS) || pInputKey->GetPress(DIK_D))
 	{
-		if (pInputPad->GetStickPress(m_nId, CInputPad::BUTTON_LEFT_Y, 0.8f, CInputPad::STICK_PLUS))
+		if (pInputPad->GetStickPress(m_nId, CInputPad::BUTTON_LEFT_Y, 0.8f, CInputPad::STICK_PLUS) || pInputKey->GetPress(DIK_W))
 		{
 			move.x += cosf(CamRot.y + (D3DX_PI * 0.75f)) * fSpeed;
 			move.z += sinf(CamRot.y + (D3DX_PI * 0.75f)) * fSpeed;
 
 			m_fRotDest = (-CamRot.y + D3DX_PI * 0.75f);
 		}
-		else if (pInputPad->GetStickPress(m_nId, CInputPad::BUTTON_LEFT_Y, 0.8f, CInputPad::STICK_MINUS))
+		else if (pInputPad->GetStickPress(m_nId, CInputPad::BUTTON_LEFT_Y, 0.8f, CInputPad::STICK_MINUS) || pInputKey->GetPress(DIK_S))
 		{
 			move.x += cosf(CamRot.y + (D3DX_PI * 0.25f)) * fSpeed;
 			move.z += sinf(CamRot.y + (D3DX_PI * 0.25f)) * fSpeed;
@@ -721,7 +688,7 @@ void CPlayer::MoveController(void)
 		// 移動した状態にする
 		m_bMove = true;
 	}
-	else if (pInputPad->GetStickPress(m_nId, CInputPad::BUTTON_LEFT_Y, 0.8f, CInputPad::STICK_PLUS))
+	else if (pInputPad->GetStickPress(m_nId, CInputPad::BUTTON_LEFT_Y, 0.8f, CInputPad::STICK_PLUS) || pInputKey->GetPress(DIK_W))
 	{
 		move.x += -cosf(CamRot.y) * fSpeed;
 		move.z += -sinf(CamRot.y) * fSpeed;
@@ -731,7 +698,7 @@ void CPlayer::MoveController(void)
 		m_bMove = true;
 
 	}
-	else if (pInputPad->GetStickPress(m_nId, CInputPad::BUTTON_LEFT_Y, 0.8f, CInputPad::STICK_MINUS))
+	else if (pInputPad->GetStickPress(m_nId, CInputPad::BUTTON_LEFT_Y, 0.8f, CInputPad::STICK_MINUS) || pInputKey->GetPress(DIK_S))
 	{
 		move.x += cosf(CamRot.y) * fSpeed;
 		move.z += sinf(CamRot.y) * fSpeed;
@@ -805,10 +772,11 @@ void CPlayer::Jump(void)
 		return;
 	}
 
+	CInputKeyboard* pInputKey = CManager::GetInstance()->GetInputKeyboard();	// キーボードのポインタ
 	CInputPad *pInputPad = CManager::GetInstance()->GetInputPad();
 
 	// 入力
-	if (pInputPad->GetTrigger(CInputPad::BUTTON_B, m_nId))
+	if (pInputPad->GetTrigger(CInputPad::BUTTON_B, m_nId) || pInputKey->GetTrigger(DIK_SPACE))
 	{
 		if (m_bJump == false)
 		{// ジャンプしていない場合
@@ -853,19 +821,20 @@ void CPlayer::Slide(void)
 		return;
 	}
 
+	CInputKeyboard* pInputKey = CManager::GetInstance()->GetInputKeyboard();	// キーボードのポインタ
 	CInputPad* pInputPad = CManager::GetInstance()->GetInputPad();
 
 	// 現在の移動量を取得
 	float fMove = static_cast<float>((fabs(m_Info.move.x) + fabs(m_Info.move.z)));
 
 	// 入力開始時の移動量を取得
-	if (pInputPad->GetTrigger(CInputPad::BUTTON_A, m_nId)) {
+	if (pInputPad->GetTrigger(CInputPad::BUTTON_A, m_nId) || pInputKey->GetTrigger(DIK_RETURN)) {
 		m_Info.fSlideMove = fMove;
 	}
 
 	// 入力
 	if (fMove > SLIDING_MINMOVE && m_Info.fSlideMove >= SLIDING_STARTMOVE) {	// スライディングできる移動量かつ開始時にも移動量がある
-		if (pInputPad->GetPress(CInputPad::BUTTON_A, m_nId))
+		if (pInputPad->GetPress(CInputPad::BUTTON_A, m_nId) || pInputKey->GetPress(DIK_RETURN))
 		{
 			if (m_bJump == false)
 			{// ジャンプしていない場合
@@ -942,9 +911,10 @@ void CPlayer::WallDush(void)
 
 	// 壁dash確認
 	CInputPad* pInputPad = CManager::GetInstance()->GetInputPad();
+	CInputKeyboard* pInputKey = CManager::GetInstance()->GetInputKeyboard();	// キーボードのポインタ
 
 	// 入力中
-	if (pInputPad->GetPress(CInputPad::BUTTON_B, m_nId)) {
+	if (pInputPad->GetPress(CInputPad::BUTTON_B, m_nId) || pInputKey->GetPress(DIK_SPACE)) {
 		m_action = ACTION_WALLDUSH;
 	}
 	else {	// 離した
@@ -954,6 +924,37 @@ void CPlayer::WallDush(void)
 			m_fRotDest = atan2f(-m_Info.move.x, -m_Info.move.z);
 			m_Info.move.y = JUMP;
 			m_action = ACTION_WALLKICK;
+		}
+	}
+}
+
+//===============================================
+// 天井走り
+//===============================================
+void CPlayer::CeilingDush(void)
+{
+	// 入力確認
+	CInputPad* pInputPad = CManager::GetInstance()->GetInputPad();
+	CInputKeyboard* pInputKey = CManager::GetInstance()->GetInputKeyboard();	// キーボードのポインタ
+
+	// ぶつかり判定
+	if (m_ColiNor.y >= 0.0f) {	// 天井に触れていない
+		if (m_action == ACTION_CEILINGDUSH) {
+			m_action = ACTION_NEUTRAL;
+			m_Info.move.y =0.0f;
+		}
+		return;
+	}
+
+	// 入力中
+	if (pInputPad->GetPress(CInputPad::BUTTON_B, m_nId) || pInputKey->GetPress(DIK_SPACE)) {
+		m_action = ACTION_CEILINGDUSH;
+		m_Info.move.y = JUMP;
+	}
+	else {
+		if (m_action == ACTION_CEILINGDUSH) {
+			m_action = ACTION_NEUTRAL;
+			m_Info.move.y = 0.0f;
 		}
 	}
 }
@@ -1345,7 +1346,7 @@ void CPlayer::Attack(void)
 	CInputKeyboard* pInputKey = CManager::GetInstance()->GetInputKeyboard();	// キーボードのポインタ
 	CInputPad* pInputPad = CManager::GetInstance()->GetInputPad();				// パッドのポインタ
 
-	if (pInputKey->GetTrigger(DIK_RETURN) || pInputPad->GetTrigger(CInputPad::BUTTON_Y, m_nId)) {
+	if (pInputKey->GetTrigger(DIK_I) || pInputPad->GetTrigger(CInputPad::BUTTON_Y, m_nId)) {
 		m_action = ACTION_NORMALATK;
 	}
 }

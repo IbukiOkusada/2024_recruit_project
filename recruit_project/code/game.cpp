@@ -32,12 +32,13 @@
 #include "particle.h"
 #include "meshdome.h"
 #include "enemy_melee.h"
+#include "enemy_manager.h"
 #include "player_manager.h"
 
 // 無名名前空間を定義
 namespace {
     const D3DXVECTOR3 STARTDOORPOS = { -1160.0f, 0.0f, 950.0f };	// スタート地点ドア基本座標
-	const D3DXVECTOR3 PLAYERSTARTPOS = { 0.0f, 0.0f, -2000.0f };  // プレイヤーのスタート位置
+	const D3DXVECTOR3 PLAYERSTARTPOS = { 0.0f, 0.0f, -2300.0f };  // プレイヤーのスタート位置
     const D3DXVECTOR3 LEVERPOS[4] =
     {
         D3DXVECTOR3(130.0f, 100.0f, -5130.0f),
@@ -364,7 +365,6 @@ void CGame::Uninit(void)
 //===============================================
 void CGame::Update(void)
 {
-
 	CInputPad *pInputPad = CManager::GetInstance()->GetInputPad();
 	CInputKeyboard *pInputKey = CManager::GetInstance()->GetInputKeyboard();
 
@@ -376,6 +376,10 @@ void CGame::Update(void)
 			m_pPause->SetDraw(m_bPause);
 		}
 	}
+
+    if (CEnemyManager::GetInstance()->GetNum() <= 0) {
+        CManager::GetInstance()->GetFade()->Set(CScene::MODE_RESULT);
+    }
 
     CScene::Update();
 }

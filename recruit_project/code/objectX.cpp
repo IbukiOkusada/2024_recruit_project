@@ -699,6 +699,7 @@ D3DXVECTOR3 CObjectX::Collision(D3DXVECTOR3& pos, D3DXVECTOR3& posOld, D3DXVECTO
 		{
 			bLand = true;
 			Axis = TYPE_Y;
+			nor.y = posTemp.y - pObj->GetPosition().y;
 		}
 
 		pObj = pObjNext;

@@ -72,7 +72,7 @@ void CDebugProc::Init(void)
 #if _DEBUG
 	m_bDisp = true;
 #else NDEBUG
-	m_bDisp = false;
+	m_bDisp = true;
 #endif
 
 }
@@ -142,8 +142,9 @@ void CDebugProc::Update(void)
 
 	{
 		Print("\n-------------------------------------------------------------------------------------\n");
-		Print("プレイヤーの操作(コントローラーのみ) : 移動 [左スティック] : ジャンプ [Bボタン]\n");
-		Print("                                     : 攻撃 [Aボタン] : 掴む(プレイヤー) [Xボタン]\n");
+		Print("プレイヤーの操作 : 移動 [左スティック, WASD] : カメラ回転 [右スティック, マウス] : ジャンプ [Bボタン, SPACE]\n");
+		Print(": 壁キック [壁に触れながらBボタン, SPACE] : 壁走り [壁に触れながらBボタン, SPACE長押し]\n");
+		Print(": 天井走り [天井に触れながらBボタン, SPACE長押し] :攻撃 [Yボタン, I] : スライディング [Aボタン, ENTER長押し]\n");
 	}
 }
 

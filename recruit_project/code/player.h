@@ -49,6 +49,7 @@ public:
 		ACTION_SLIDEJUMP,		// しゃがみジャンプ
 		ACTION_NORMALATK,		// 攻撃
 		ACTION_WALLDUSH,		// 壁走り
+		ACTION_CEILINGDUSH,		// 天井走り
 		ACTION_MAX
 	};
 
@@ -141,6 +142,7 @@ private:	// 自分だけがアクセス可能
 	void WallSlide(void);
 	void WallDush(void);
 	bool BodyCheck(CCharacter* pBody);
+	void CeilingDush(void);
 
 	// メンバ変数
 	CPlayer *m_pPrev;		// 前のオブジェクトへのポインタ

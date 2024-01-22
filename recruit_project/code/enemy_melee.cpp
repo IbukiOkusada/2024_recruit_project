@@ -30,7 +30,7 @@ namespace
 CEnemyMelee::CEnemyMelee()
 {
 	// ’l‚ÌƒNƒŠƒA
-	m_nAction = 6;
+	m_nAction = 7;
 	m_pBody = nullptr;
 	m_pLeg = nullptr;
 	m_pWaist = nullptr;

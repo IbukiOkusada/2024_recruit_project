@@ -11,12 +11,40 @@
 
 class CWaist;
 class CCharacter;
+class CPlayer;
 
 //==========================================================
 // サンプルのクラス定義
 //==========================================================
 class CEnemyMelee : public CEnemy
 {
+private:
+
+	// 状態列挙型
+	enum STATE
+	{
+		STATE_APPEAR = 0,	// 出現状態
+		STATE_NORMAL,		// 通常状態
+		STATE_CHASE,		// 追跡状態
+		STATE_ATTACK,		// 攻撃状態
+		STATE_DAMAGE,		// ダメージ状態
+		STATE_DEATH,		// 死亡状態
+		STATE_MAX
+	};
+
+	// 追跡対象情報構造体
+	struct SChase
+	{
+		CPlayer* pTarget;	// 標的
+		float fLength;		// 標的との距離
+	};
+
+	// 状態管理用構造体
+	struct SStateInfo
+	{
+		STATE state;	// 状態
+		float fCounter;	// 管理カウンター
+	};
 
 public:	// 誰でもアクセス可能
 
@@ -43,11 +71,17 @@ private:	// 自分だけがアクセス可能
 	bool BodyCheck(CCharacter* pBody);
 	void AttackCheck(void);
 	void Damage(const int nDamage);
+	CPlayer *Search(float &fChaseLength);
+	void Chase(void);
+	void MethodLine(void);
+	void SetState(void);
 
 	// メンバ変数
 	CWaist* m_pWaist;		// 腰
 	CCharacter* m_pBody;	// 上半身
 	CCharacter* m_pLeg;		// 下半身
+	SChase m_Chase;
+	SStateInfo m_StateInfo;	// 状態管理
 	int m_nAction;			// アクション番号
 	int m_nInterVal;
 };

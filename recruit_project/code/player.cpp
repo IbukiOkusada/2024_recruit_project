@@ -44,7 +44,7 @@
 #define GRAVITY	(-0.9f)		//プレイヤー重力
 #define ROT_MULTI	(0.1f)	// 向き補正倍率
 #define WIDTH	(20.0f)		// 幅
-#define HEIGHT	(80.0f)	// 高さ
+#define HEIGHT	(80.0f)		// 高さ
 #define INER	(0.3f)		// 慣性
 #define JUMP	(18.0f)
 

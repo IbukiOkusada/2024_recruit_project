@@ -13,15 +13,32 @@
 #include "player_manager.h"
 #include "meshwall.h"
 #include "objectX.h"
+#include "player.h"
+#include "debugproc.h"
+#include "manager.h"
+#include "slow.h"
 
 // 無名名前空間
 namespace
 {
 	const char* BODYFILEPASS = "data\\TXT\\player\\motion_body.txt";	// ファイルのパス
 	const char* LEGFILEPASS = "data\\TXT\\player\\motion_leg.txt";	// ファイルのパス
-	const D3DXVECTOR3 COLLIMAX = { 20.0f, 120.0f, 20.0f };
-	const D3DXVECTOR3 COLLIMIN = { -20.0f, 0.0f, -20.0f };
-	const int DAMAGEINTERVAL = (60);
+	const D3DXVECTOR3 COLLIMAX = { 20.0f, 120.0f, 20.0f };	// 当たり判定最大
+	const D3DXVECTOR3 COLLIMIN = { -20.0f, 0.0f, -20.0f };	// 当たり判定最小
+	const int DAMAGEINTERVAL = (60);	// ダメージインターバル
+	const float CHASE_MAXLENGTH = (1000.0f);	// 追跡最長距離
+	const float CHASE_NEARLENGTH = (400.0f);
+	const float CHASE_MINLENGTH = (200.0f);
+	const float SEARCH_HEIGHT = (180.0f);	// 探索高さ制限
+	const float MOVE_INER = (0.3f);			// 移動慣性
+}
+
+// 移動速度名前空間
+namespace SPEED
+{
+	const float MOVE_FAR = (2.0f);	// 遠距離移動
+	const float MOVE_NEAR = (1.0f);	// 近距離移動
+	const float MOVE_MIN = (0.25f);
 }
 
 //==========================================================
@@ -34,7 +51,11 @@ CEnemyMelee::CEnemyMelee()
 	m_pBody = nullptr;
 	m_pLeg = nullptr;
 	m_pWaist = nullptr;
+	m_Chase.pTarget = nullptr;
+	m_Chase.fLength = 0.0f;
 	m_nInterVal = 0;
+	m_StateInfo.state = STATE_APPEAR;
+	m_StateInfo.fCounter = 0.0f;
 }
 
 //==========================================================
@@ -142,20 +163,45 @@ void CEnemyMelee::Uninit(void)
 void CEnemyMelee::Update(void)
 {
 	// 前回の座標を取得
-	SInfo* pInfo = GetInfo();
-	pInfo->posOld = pInfo->pos;
+	{
+		SInfo* pInfo = GetInfo();
+		pInfo->posOld = pInfo->pos;
+	}
 	m_nInterVal--;
 
-	// 攻撃確認
-	AttackCheck();
-
-	// 当たり判定確認
-	CObjectX::COLLISION_AXIS axis = CObjectX::TYPE_MAX;
-	CMeshWall::Collision(pInfo->pos, pInfo->posOld, pInfo->move, COLLIMAX, COLLIMIN, axis);
+	// 処理
+	MethodLine();
 
 	//マトリックス設定
 	CEnemy::Update();
 	BodySet();
+}
+
+//===============================================
+// 処理の順番
+//===============================================
+void CEnemyMelee::MethodLine(void)
+{
+	SInfo* pInfo = GetInfo();
+
+	// 攻撃確認
+	AttackCheck();
+
+	if (m_StateInfo.state != STATE_DEATH || m_StateInfo.state != STATE_DAMAGE) {
+
+		// 捜索
+		m_Chase.pTarget = Search(m_Chase.fLength);
+
+		// 追跡
+		Chase();
+
+		// 移動
+		AddMove();
+	}
+
+	// 当たり判定確認
+	CObjectX::COLLISION_AXIS axis = CObjectX::TYPE_MAX;
+	CMeshWall::Collision(pInfo->pos, pInfo->posOld, pInfo->move, COLLIMAX, COLLIMIN, axis);
 }
 
 //==========================================================
@@ -178,6 +224,8 @@ CEnemyMelee *CEnemyMelee::Create(D3DXVECTOR3& pos, D3DXVECTOR3& rot)
 		// データ設定
 		pEnemyMelee->SetPosition(pos);
 		pEnemyMelee->SetRotation(rot);
+		pEnemyMelee->SetRotDiff(rot.y);
+		pEnemyMelee->SetIner(MOVE_INER);
 	}
 
 	return pEnemyMelee;
@@ -297,9 +345,156 @@ void CEnemyMelee::AttackCheck(void)
 		return;
 	}
 
+	if (m_StateInfo.state != STATE_ATTACK) {
+		return;
+	}
+
 	CModel* pModel = m_pLeg->GetParts(3);
 	float fRange = 50.0f;
 	int nDamage = 1;
 	D3DXVECTOR3 pos = { pModel->GetMtx()->_41, pModel->GetMtx()->_42, pModel->GetMtx()->_43 };
 	CPlayerManager::GetInstance()->Hit(pos, fRange, nDamage);
+}
+
+//===============================================
+// プレイヤーを探索
+//===============================================
+CPlayer* CEnemyMelee::Search(float& fChaseLength)
+{
+	CPlayer* pPlayer = CPlayerManager::GetInstance()->GetTop();
+	CPlayer* pChasePlayer = nullptr;
+	D3DXVECTOR3 MyPos = GetInfo()->pos;	// 自分の座標
+	float fMinLength = CHASE_MAXLENGTH;	// 追跡するプレイヤーとの距離
+	fChaseLength = fMinLength;
+
+	// プレイヤー全員分繰り返す
+	while (pPlayer != nullptr) {
+		CPlayer* pPlayerNext = pPlayer->GetNext();
+
+		D3DXVECTOR3 pos = pPlayer->GetPosition();
+
+		if (pos.y < MyPos.y - SEARCH_HEIGHT || pos.y > MyPos.y + SEARCH_HEIGHT) {	// 高さ感知範囲外
+			pPlayer = pPlayerNext;
+			continue;
+		}
+
+		// 距離を取得
+		float fLength = sqrtf((pos.x - MyPos.x) * (pos.x - MyPos.x)
+			+ (pos.z - MyPos.z) * (pos.z - MyPos.z));
+
+		// 追跡確認
+		if (fLength < fMinLength) {	// 現在見ているプレイヤーの方が近い場合
+			fMinLength = fLength;	// 一番近い長さを上書き
+			fChaseLength = fLength;
+			pChasePlayer = pPlayer;	// 追跡するプレイヤーを設定
+		}
+
+		pPlayer = pPlayerNext;
+	}
+
+	return pChasePlayer;
+}
+
+//===============================================
+// チェイス中処理
+//===============================================
+void CEnemyMelee::Chase(void)
+{
+	if (m_Chase.pTarget == nullptr) {
+		return;
+	}
+
+	CManager::GetInstance()->GetDebugProc()->Print("プレイヤーとの距離 [%f]\n", m_Chase.fLength);
+
+	// 目標向き設定
+	D3DXVECTOR3 MyPos = GetInfo()->pos;	// 自分の座標
+	D3DXVECTOR3 pos = m_Chase.pTarget->GetPosition();
+	{
+		float fDiff = GetRotDiff();
+		fDiff = atan2f(pos.x - MyPos.x, pos.z - MyPos.z) + D3DX_PI;
+		if (fDiff < -D3DX_PI) {
+			fDiff += D3DX_PI * 2;
+		}
+		else if (fDiff > D3DX_PI) {
+			fDiff += -D3DX_PI * 2;
+		}
+		SetRotDiff(fDiff);
+	}
+
+	// 移動量を設定
+	{
+		float fSpeed = SPEED::MOVE_FAR;
+		if (m_Chase.fLength <= CHASE_NEARLENGTH && 
+			m_Chase.fLength > CHASE_MINLENGTH) {	// 近距離判定の距離
+			fSpeed = SPEED::MOVE_NEAR + (rand() % 2) * SPEED::MOVE_MIN;
+		}
+		else if (m_Chase.fLength <= CHASE_MINLENGTH){	// 最も近い距離判定
+			fSpeed = SPEED::MOVE_MIN + (rand() % 3) * SPEED::MOVE_MIN;	// 移動量に少しランダムを持たせる
+		}
+		D3DXVECTOR3 move = GetMove();
+		D3DXVECTOR3 nor = pos - MyPos;
+		nor.y = 0.0f;
+		D3DXVec3Normalize(&nor, &nor);
+		move += nor * fSpeed;
+
+		SetMove(move);
+	}
+}
+
+//===============================================
+// 状態設定
+//===============================================
+void CEnemyMelee::SetState(void)
+{
+	m_StateInfo.fCounter -= CManager::GetInstance()->GetSlow()->Get();
+
+	switch (m_StateInfo.state) {
+	case STATE_APPEAR:
+	{
+		if (m_StateInfo.fCounter <= 0.0f) {	// カウンター終了
+			m_StateInfo.state = STATE_NORMAL;
+		}
+	}
+		break;
+
+	case STATE_NORMAL:
+	{
+
+	}
+		break;
+
+	case STATE_CHASE:
+	{
+
+	}
+		break;
+
+	case STATE_ATTACK:
+	{
+		
+	}
+		break;
+
+	case STATE_DAMAGE:
+	{
+		if (m_StateInfo.fCounter <= 0.0f) {	// カウンター終了
+			m_StateInfo.state = STATE_APPEAR;
+		}
+	}
+		break;
+
+	case STATE_DEATH:
+	{
+		if (m_StateInfo.fCounter <= 0.0f) {	// カウンター終了
+			Uninit();
+		}
+	}
+		break;
+
+	default:
+	{
+
+	}
+		break;
+	}
 }

@@ -53,6 +53,8 @@ public:	// 誰でもアクセス可能
 	D3DXVECTOR3 GetPosition(void) const { return m_Info.pos; }
 	D3DXVECTOR3 GetRotation(void) const { return m_Info.rot; }
 	D3DXVECTOR3 GetMove(void) const { return m_Info.move; }
+	float GetRotDiff(void) { return m_fRotDiff; }
+	float GetRotMove(void) { return m_fRotMove; }
 
 	// メンバ関数(設定)
 	void SetNext(CEnemy* pNext) { m_pNext = pNext; }
@@ -60,6 +62,7 @@ public:	// 誰でもアクセス可能
 	void SetPosition(const D3DXVECTOR3& pos) { m_Info.pos = pos; }
 	void SetRotation(const D3DXVECTOR3& rot) { m_Info.rot = rot; }
 	void SetMove(const D3DXVECTOR3& move) { m_Info.move = move; }
+	void SetRotDiff(const float fRotDiff) { m_fRotDiff = fRotDiff; }
 
 	// メンバ関数
 	virtual void Hit(D3DXVECTOR3& pos, const float fRange, const int nDamage);
@@ -75,8 +78,13 @@ protected:
 	int GetLife(void) { return m_nLife; }
 	void SetLife(const int nLife) { m_nLife = nLife; }
 	void InfoReset(void);
+	void AddMove(void);
+	void SetIner(const float fIner) { m_fMoveIner = fIner; }
 
 private:	// 自分だけがアクセス可能
+
+	// メンバ関数
+	void Adjust(void);
 
 	// メンバ変数
 	CEnemy* m_pPrev;	// 前のオブジェクトへのポインタ
@@ -84,6 +92,9 @@ private:	// 自分だけがアクセス可能
 	int m_nLife;		// 体力
 	TYPE m_type;		// 種類
 	SInfo m_Info;		// 情報
+	float m_fRotMove;	// 現在の角度
+	float m_fRotDiff;	// 目的の角度
+	float m_fMoveIner;	// 移動量の慣性設定
 };
 
 #endif

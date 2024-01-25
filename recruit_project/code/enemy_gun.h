@@ -87,6 +87,7 @@ private:	// 自分だけがアクセス可能
 	void SetState(void);
 	void SetMotion(void);
 	void Gravity(void);
+	void Attack(const int nRandRange = 1);
 
 	// メンバ変数
 	CWaist* m_pWaist;		// 腰
@@ -95,7 +96,8 @@ private:	// 自分だけがアクセス可能
 	SChase m_Chase;			// 追跡管理
 	SStateInfo m_StateInfo;	// 状態管理
 	int m_nAction;			// アクション番号
-	int m_nInterVal;
+	float m_fInterVal;		// ダメージインターバル
+	float m_fAtkCnter;		// 攻撃カウンター
 };
 
 #endif

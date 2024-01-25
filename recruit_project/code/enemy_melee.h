@@ -99,7 +99,7 @@ private:	// 自分だけがアクセス可能
 	SChase m_Chase;			// 追跡管理
 	SStateInfo m_StateInfo;	// 状態管理
 	int m_nAction;			// アクション番号
-	int m_nInterVal;
+	float m_fInterVal;
 };
 
 #endif

@@ -107,8 +107,7 @@ void CObjectBillboard::Draw(void)
 	//ワールドマトリックスの初期化
 	D3DXMatrixIdentity(&m_mtxWorld);
 
-	if (m_pCurrent == nullptr)
-	{
+	
 		//ビューマトリックスを取得
 		pDevice->GetTransform(D3DTS_VIEW, &mtxView);
 
@@ -117,7 +116,6 @@ void CObjectBillboard::Draw(void)
 		m_mtxWorld._41 = 0.0f;
 		m_mtxWorld._42 = 0.0f;
 		m_mtxWorld._43 = 0.0f;
-	}
 	
 	//位置を反映
 	D3DXMatrixTranslation(&mtxTrans, m_pos.x, m_pos.y, m_pos.z);

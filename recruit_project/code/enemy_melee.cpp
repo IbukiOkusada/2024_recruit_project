@@ -47,7 +47,7 @@ namespace SPEED
 // インターバル
 namespace INTERVAL
 {
-	const float DAMAGE = (30.0f);	// ダメージ
+	const float DAMAGE = (20.0f);	// ダメージ
 	const float ATTACK = (30.0f);	// 攻撃
 }
 
@@ -63,7 +63,7 @@ CEnemyMelee::CEnemyMelee()
 	m_pWaist = nullptr;
 	m_Chase.pTarget = nullptr;
 	m_Chase.fLength = 0.0f;
-	m_nInterVal = 0;
+	m_fInterVal = 0;
 	m_StateInfo.state = STATE_APPEAR;
 	m_StateInfo.fCounter = 0.0f;
 }
@@ -136,7 +136,7 @@ HRESULT CEnemyMelee::Init(void)
 	}
 
 	// 初回ヒット判定対策
-	m_nInterVal = 1;
+	m_fInterVal = 1;
 
 	return S_OK;
 }
@@ -177,7 +177,7 @@ void CEnemyMelee::Update(void)
 		SInfo* pInfo = GetInfo();
 		pInfo->posOld = pInfo->pos;
 	}
-	m_nInterVal--;
+	m_fInterVal -= CManager::GetInstance()->GetSlow()->Get();
 
 	// 処理
 	MethodLine();
@@ -310,7 +310,7 @@ bool CEnemyMelee::Hit(D3DXVECTOR3& pos, const float fRange, const int nDamage)
 {
 	SInfo* pInfo = GetInfo();
 
-	if (m_nInterVal > 0) {
+	if (m_fInterVal > 0) {
 		return false;
 	}
 
@@ -342,7 +342,7 @@ bool CEnemyMelee::Hit(D3DXVECTOR3& pos, const float fRange, const int nDamage)
 //===============================================
 void CEnemyMelee::Damage(const int nDamage)
 {
-	if (m_nInterVal > 0) {	// インターバルが戻ってきていない
+	if (m_fInterVal > 0) {	// インターバルが戻ってきていない
 		return;
 	}
 
@@ -352,7 +352,7 @@ void CEnemyMelee::Damage(const int nDamage)
 	}
 
 	// インターバルを変更
-	m_nInterVal = DAMAGEINTERVAL;
+	m_fInterVal = DAMAGEINTERVAL;
 
 	// 体力を減らす
 	int nLife = GetLife();

@@ -266,7 +266,8 @@ HRESULT CGame::Init(void)
         break;
     }
 
-    CEnemyGun::Create(D3DXVECTOR3(0.0f, 600.0f, 2250.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+    CEnemyGun::Create(D3DXVECTOR3(0.0f, 600.0f, 2350.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+    CEnemyMelee::Create(D3DXVECTOR3(0.0f, 600.0f, 2250.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 
     //ÉhÅ[ÉÄí«â¡
     CMeshDome::Create(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), 4000.0f, 3000.0f, 3, 8, 8);

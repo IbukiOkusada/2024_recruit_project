@@ -18,6 +18,7 @@
 #include "manager.h"
 #include "slow.h"
 #include "meshfield.h"
+#include "bullet.h"
 
 // 無名名前空間
 namespace
@@ -32,6 +33,9 @@ namespace
 	const float CHASE_MINLENGTH = (400.0f);		// 追跡0距離
 	const float SEARCH_HEIGHT = (180.0f);		// 探索高さ制限
 	const float MOVE_INER = (0.3f);			// 移動慣性
+	const int ATK_RANDRANGE = (6);			// 攻撃中ランダム範囲
+	const int BACK_RANDRANGE = (2);
+	const int FRONT_RANDRANGE = (3);
 }
 
 // 移動速度名前空間
@@ -42,13 +46,14 @@ namespace SPEED
 	const float MOVE_MIN = (0.15f);	// 移動量移動
 	const float GRAVITY = (-0.9f);	// 重力
 	const float DAMAGE_MOVE = (2.0f);	// 移動量
+	const float BULLET = (-6.0f);	// 弾速
 }
 
 // インターバル
 namespace INTERVAL
 {
-	const float DAMAGE = (30.0f);	// ダメージ
-	const float ATTACK = (30.0f);	// 攻撃
+	const float DAMAGE = (20.0f);	// ダメージ
+	const float ATTACK = (140.0f);	// 攻撃
 }
 
 //==========================================================
@@ -63,9 +68,10 @@ CEnemyGun::CEnemyGun()
 	m_pWaist = nullptr;
 	m_Chase.pTarget = nullptr;
 	m_Chase.fLength = 0.0f;
-	m_nInterVal = 0;
+	m_fInterVal = 0;
 	m_StateInfo.state = STATE_APPEAR;
 	m_StateInfo.fCounter = 0.0f;
+	m_fAtkCnter = 0.0f;
 }
 
 //==========================================================
@@ -136,7 +142,7 @@ HRESULT CEnemyGun::Init(void)
 	}
 
 	// 初回ヒット判定対策
-	m_nInterVal = 1;
+	m_fInterVal = 1;
 
 	return S_OK;
 }
@@ -177,7 +183,7 @@ void CEnemyGun::Update(void)
 		SInfo* pInfo = GetInfo();
 		pInfo->posOld = pInfo->pos;
 	}
-	m_nInterVal--;
+	m_fInterVal--;
 
 	// 処理
 	MethodLine();
@@ -307,7 +313,7 @@ bool CEnemyGun::Hit(D3DXVECTOR3& pos, const float fRange, const int nDamage)
 {
 	SInfo* pInfo = GetInfo();
 
-	if (m_nInterVal > 0) {
+	if (m_fInterVal > 0) {
 		return false;
 	}
 
@@ -339,7 +345,7 @@ bool CEnemyGun::Hit(D3DXVECTOR3& pos, const float fRange, const int nDamage)
 //===============================================
 void CEnemyGun::Damage(const int nDamage)
 {
-	if (m_nInterVal > 0) {	// インターバルが戻ってきていない
+	if (m_fInterVal > 0) {	// インターバルが戻ってきていない
 		return;
 	}
 
@@ -349,7 +355,7 @@ void CEnemyGun::Damage(const int nDamage)
 	}
 
 	// インターバルを変更
-	m_nInterVal = DAMAGEINTERVAL;
+	m_fInterVal = DAMAGEINTERVAL;
 
 	// 体力を減らす
 	int nLife = GetLife();
@@ -449,13 +455,16 @@ void CEnemyGun::LockOn(void)
 		if (m_Chase.fLength >= CHASE_NEARLENGTH) {	// 適性距離より遠い
 			fSpeed = SPEED::MOVE_FAR;
 			m_nAction = ACTION_WALK;
+			Attack(FRONT_RANDRANGE);
 		}
 		else if (m_Chase.fLength <= CHASE_MINLENGTH) {	// 適性距離より近い
 			fSpeed = SPEED::MOVE_NEAR;
 			m_nAction = ACTION_WALK;
+			Attack(BACK_RANDRANGE);
 		}
 		else {
 			m_nAction = ACTION_ATK;
+			Attack(ATK_RANDRANGE);
 		}
 
 		D3DXVECTOR3 move = GetMove();
@@ -630,4 +639,22 @@ void CEnemyGun::Gravity(void)
 
 	pInfo->move.y += fGravity;
 	pInfo->pos.y += pInfo->move.y * CManager::GetInstance()->GetSlow()->Get();
+}
+
+//===============================================
+// 攻撃
+//===============================================
+void CEnemyGun::Attack(const int nRandRange)
+{
+	SInfo* pInfo = GetInfo();
+	float CMinusCnter = static_cast<float>(rand() % nRandRange);
+	m_fAtkCnter -= CMinusCnter * CManager::GetInstance()->GetSlow()->Get();
+
+	if (m_fAtkCnter <= 0.0f) {	// 攻撃できる
+		m_fAtkCnter = INTERVAL::ATTACK;
+		CBullet::Create(GetInfo()->pos, 
+			D3DXVECTOR3(0.0f, 0.0f, 0.0f), 
+			D3DXVECTOR3(sinf(pInfo->rot.y) * SPEED::BULLET, 0.0f, cosf(pInfo->rot.y) * SPEED::BULLET),
+			CBullet::TYPE_ENEMY);
+	}
 }

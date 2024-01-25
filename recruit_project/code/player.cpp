@@ -72,6 +72,8 @@ namespace {
 	const float CAMROT_INER = (0.2f);
 	const float SLIDINNG_ROTZ = (D3DX_PI * 0.51f);
 	const float SLIDING_LENGTH = (200.0f);
+	const float KICKUP_SPEED = (1.5f);
+	const float KICKUP_JUMP = (21.0f);
 	const D3DXVECTOR3 COLLIMAX = { 20.0f, 70.0f, 20.0f };
 	const D3DXVECTOR3 COLLIMIN = { -20.0f, 0.0f, -20.0f };
 }
@@ -142,7 +144,7 @@ HRESULT CPlayer::Init(void)
 	if (m_pBody->GetMotion() != nullptr)
 	{
 		// 初期モーションの設定
-		m_pBody->GetMotion()->InitSet(m_action);
+		m_pBody->GetMotion()->InitSet(m_nAction);
 	}
 
 	// 下半身の設定
@@ -152,7 +154,7 @@ HRESULT CPlayer::Init(void)
 	if (m_pLeg->GetMotion() != nullptr)
 	{
 		// 初期モーションの設定
-		m_pLeg->GetMotion()->InitSet(m_action);
+		m_pLeg->GetMotion()->InitSet(m_nAction);
 	}
 
 	// 腰の高さを合わせる
@@ -173,7 +175,7 @@ HRESULT CPlayer::Init(void)
 	}
 
 	m_Info.state = STATE_APPEAR;
-	m_action = ACTION_NEUTRAL;
+	m_nAction = ACTION_NEUTRAL;
 	m_type = TYPE_NONE;
 
 	return S_OK;
@@ -205,7 +207,7 @@ HRESULT CPlayer::Init(const char *pBodyName, const char *pLegName)
 		if (m_pBody->GetMotion() != nullptr)
 		{
 			// 初期モーションの設定
-			m_pBody->GetMotion()->InitSet(m_action);
+			m_pBody->GetMotion()->InitSet(m_nAction);
 		}
 	}
 
@@ -220,7 +222,7 @@ HRESULT CPlayer::Init(const char *pBodyName, const char *pLegName)
 		if (m_pLeg->GetMotion() != nullptr)
 		{
 			// 初期モーションの設定
-			m_pLeg->GetMotion()->InitSet(m_action);
+			m_pLeg->GetMotion()->InitSet(m_nAction);
 		}
 	}
 
@@ -247,7 +249,7 @@ HRESULT CPlayer::Init(const char *pBodyName, const char *pLegName)
 	}*/
 
 	m_type = TYPE_NONE;
-	m_action = ACTION_NEUTRAL;
+	SetAction(ACTION_NEUTRAL);
 
 	//m_pScore->AddScore(500 * m_nItemCnt);
 
@@ -326,7 +328,7 @@ void CPlayer::Update(void)
 			// 角度調整
 			float fRot = m_fCamRotZ;
 			D3DXVECTOR3 CamRot = m_pMyCamera->GetRotation();
-			if (m_action == ACTION_SLIDING || m_action == ACTION_CEILINGDUSH) {	// スライディングの時
+			if (m_nAction == ACTION_SLIDING || m_nAction == ACTION_CEILINGDUSH) {	// スライディングの時
 				fRot = SLIDINNG_ROTZ;
 			}
 			CamRot.z = fRot;
@@ -334,7 +336,7 @@ void CPlayer::Update(void)
 
 			// 追従
 			float fLength = m_fCamLength;
-			if (m_action == ACTION_SLIDING || m_action == ACTION_CEILINGDUSH) {	// スライディングの時
+			if (m_nAction == ACTION_SLIDING || m_nAction == ACTION_CEILINGDUSH) {	// スライディングの時
 				fLength = SLIDING_LENGTH;
 			}
 			m_pMyCamera->Pursue(GetPosition(), GetRotation(), fLength);
@@ -345,6 +347,7 @@ void CPlayer::Update(void)
 
 	BodySet();
 
+	CManager::GetInstance()->GetDebugProc()->Print("アクション[ %d ], 前回のアクション [ %d ]\n", m_nAction, m_nActionOld);
 	CManager::GetInstance()->GetDebugProc()->Print("体力 [ %d ]\n", m_nLife);
 }
 
@@ -407,14 +410,13 @@ void CPlayer::Controller(void)
 		}
 
 	MotionSet();	// モーション設定
-	CManager::GetInstance()->GetDebugProc()->Print("アクション[ %d ]\n", m_action);
 
 	// 重力設定
 	Gravity();
 	pos = GetPosition();	// 座標を取得
 
 	// 慣性を変更
-	switch (m_action) {
+	switch (m_nAction) {
 	case ACTION_SLIDING:
 		fIner = SLIDING_INER;
 		break;
@@ -455,15 +457,15 @@ void CPlayer::Controller(void)
 			m_Info.move.y = 0.0f;
 			m_bJump = false;
 
-			if (m_action == ACTION_WALLKICK) {	// 壁蹴りの場合
-				m_action = ACTION_NEUTRAL;
+			if (m_nAction == ACTION_WALLKICK) {	// 壁蹴りの場合
+				SetAction(ACTION_NEUTRAL);
 				if (BodyCheck(m_pBody) && BodyCheck(m_pLeg)) {	// 上下どちらも使用中
-					m_pBody->GetMotion()->Set(m_action);
-					m_pLeg->GetMotion()->Set(m_action);
+					m_pBody->GetMotion()->Set(m_nAction);
+					m_pLeg->GetMotion()->Set(m_nAction);
 				}
 			}
-			else if (m_action == ACTION_SLIDEJUMP) {
-				m_action = ACTION_NEUTRAL;
+			else if (m_nAction == ACTION_SLIDEJUMP) {
+				SetAction(ACTION_NEUTRAL);
 			}
 		}
 	}
@@ -474,10 +476,10 @@ void CPlayer::Controller(void)
 	D3DXVECTOR3 vtxMaxOld = vtxMax;
 	D3DXVECTOR3 vtxMinOld = vtxMin;
 
-	if (m_action == ACTION_SLIDING) {	// スライディング
+	if (m_nAction == ACTION_SLIDING) {	// スライディング
 		vtxMax.y *= 0.3f;
 	}
-	else if (m_action == ACTION_CEILINGDUSH) { // 天井走り
+	else if (m_nAction == ACTION_CEILINGDUSH) { // 天井走り
 		vtxMin.y = vtxMax.y * 0.5f;
 		vtxMinOld.y = vtxMin.y;
 	}
@@ -489,15 +491,15 @@ void CPlayer::Controller(void)
 	if (ColiAxis == CObjectX::TYPE_Y && m_ColiNor.y > 0.0f) {	// 上から乗っている
 		m_bJump = false;
 
-		if (m_action == ACTION_WALLKICK) {	// 壁蹴りの場合
-			m_action = ACTION_NEUTRAL;
+		if (m_nAction == ACTION_WALLKICK) {	// 壁蹴りの場合
+			SetAction(ACTION_NEUTRAL);
 			if (BodyCheck(m_pBody) && BodyCheck(m_pLeg)) {	// 上下どちらも使用中
-				m_pBody->GetMotion()->Set(m_action);
-				m_pLeg->GetMotion()->Set(m_action);
+				m_pBody->GetMotion()->Set(m_nAction);
+				m_pLeg->GetMotion()->Set(m_nAction);
 			}
 		}
-		else if (m_action == ACTION_SLIDEJUMP) {
-			m_action = ACTION_NEUTRAL;
+		else if (m_nAction == ACTION_SLIDEJUMP) {
+			SetAction(ACTION_NEUTRAL);
 		}
 	}
 
@@ -539,7 +541,7 @@ void CPlayer::Move(void)
 		return;
 	}
 
-	if (m_action == ACTION_SLIDEJUMP) {
+	if (m_nAction == ACTION_SLIDEJUMP) {
 		return;
 	}
 
@@ -619,7 +621,7 @@ void CPlayer::MoveController(void)
 	float fRotDestOld = m_fRotDest;
 
 	// 移動量を変更
-	switch (m_action) {
+	switch (m_nAction) {
 	case ACTION_SLIDING:
 		fSpeed = SLIDING_SPEED;
 		break;
@@ -634,6 +636,10 @@ void CPlayer::MoveController(void)
 
 	case ACTION_WALLDUSH:
 		fSpeed = WALLDUSH_MOVE;
+		break;
+
+	case ACTION_KICKUP:
+		fSpeed = KICKUP_SPEED;
 		break;
 	}
 
@@ -709,7 +715,7 @@ void CPlayer::MoveController(void)
 	}
 
 	// 移動量を加算するか確認
-	if (m_action == ACTION_SLIDING || m_action == ACTION_WALLKICK) {
+	if (m_nAction == ACTION_SLIDING || m_nAction == ACTION_WALLKICK) {
 		
 		float fRot = atan2f(-move.x, -move.z);
 		float fRotDest = fRotDestOld - fRot;
@@ -729,7 +735,7 @@ void CPlayer::MoveController(void)
 			}
 		}
 
-		switch (m_action) {
+		switch (m_nAction) {
 		case ACTION_SLIDING:
 		{
 			float fData = static_cast<float>(fabs(fRotDest));
@@ -755,7 +761,7 @@ void CPlayer::MoveController(void)
 			break;
 		}
 	}
-	else if (m_action == ACTION_WALLSTAND) {
+	else if (m_nAction == ACTION_WALLSTAND) {
 		m_fRotDest = atan2f(m_ColiNor.x, m_ColiNor.z);
 	}
 
@@ -786,22 +792,22 @@ void CPlayer::Jump(void)
 			CParticle::Create(m_Info.pos, CEffect::TYPE_JUMP);
 			CManager::GetInstance()->GetSound()->Play(CSound::LABEL_SE_JUMP);
 
-			if (m_action == ACTION_SLIDING) {
+			if (m_nAction == ACTION_SLIDING) {
 				m_Info.move.y = SLIDEJUMP;
 				m_Info.move.x *= SLIDEJUMP_SPEED;
 				m_Info.move.z *= SLIDEJUMP_SPEED;
-				m_action = ACTION_SLIDEJUMP;
+				SetAction(ACTION_SLIDEJUMP);
 			}
 			else {
 				m_Info.move.y = JUMP;
 			}
 		}
 		else {	// ジャンプしている
-			if (m_action == ACTION_WALLSTAND) {	// 壁ずり中
+			if (m_nAction == ACTION_WALLSTAND) {	// 壁ずり中
 				m_Info.move += m_ColiNor * WALLKICK_MOVE;
 				m_Info.move.y = JUMP;
 				m_fRotDest = atan2f(-m_Info.move.x, -m_Info.move.z);
-				m_action = ACTION_WALLKICK;
+				SetAction(ACTION_WALLKICK);
 			}
 		}
 
@@ -838,22 +844,22 @@ void CPlayer::Slide(void)
 		{
 			if (m_bJump == false)
 			{// ジャンプしていない場合
-				m_action = ACTION_SLIDING;
+				SetAction(ACTION_SLIDING);
 				bSlide = true;
 			}
 		}
 	}
 	else {
-		if (m_action == ACTION_SLIDEJUMP) {	// 現在スライディングジャンプ中
-			m_action = ACTION_NEUTRAL;
+		if (m_nAction == ACTION_SLIDEJUMP) {	// 現在スライディングジャンプ中
+			SetAction(ACTION_NEUTRAL);
 			m_Info.fSlideMove = 0.0f;
 		}
 	}
 
 	// 終了確認
 	if(!bSlide){	// スライディングしていない
-		if (m_action == ACTION_SLIDING) {	// していた
-			m_action = ACTION_NEUTRAL;
+		if (m_nAction == ACTION_SLIDING) {	// していた
+			SetAction(ACTION_NEUTRAL);
 			m_Info.fSlideMove = 0.0f;
 		}
 	}
@@ -866,25 +872,25 @@ void CPlayer::WallSlide(void)
 {
 	if (!m_bJump) {	// ジャンプしていない
 
-		if (m_action == ACTION_WALLSTAND) {	// 壁ずり状態の場合
-			m_action = ACTION_NEUTRAL;
+		if (m_nAction == ACTION_WALLSTAND) {	// 壁ずり状態の場合
+			SetAction(ACTION_NEUTRAL);
 		}
 		return;
 	}	
 
 	// 壁ずり判定
 	if (m_ColiNor.x != 0.0f || m_ColiNor.z != 0.0f) {	// オブジェクトに触れている
-		if (m_action < ACTION_WALLDUSH) {
-			m_action = ACTION_WALLSTAND;
+		if (m_nAction < ACTION_WALLDUSH) {
+			SetAction(ACTION_WALLSTAND);
 		}
 	}
 	else { // 触れていない
-		if (m_action == ACTION_WALLSTAND) { // 壁ずり状態の場合
-			m_action = ACTION_NEUTRAL;
+		if (m_nAction == ACTION_WALLSTAND) { // 壁ずり状態の場合
+			SetAction(ACTION_NEUTRAL);
 
 			if (BodyCheck(m_pBody) && BodyCheck(m_pLeg)) {	// 上下どちらも使用中
-				m_pBody->GetMotion()->Set(m_action);
-				m_pLeg->GetMotion()->Set(m_action);
+				m_pBody->GetMotion()->Set(m_nAction);
+				m_pLeg->GetMotion()->Set(m_nAction);
 			}
 		}
 	}
@@ -895,16 +901,16 @@ void CPlayer::WallSlide(void)
 //===============================================
 void CPlayer::WallDush(void)
 {
-	if (m_action != ACTION_WALLSTAND) {	// 壁ずり中じゃない
-		if (m_action != ACTION_WALLDUSH) {	// 壁走りもしてない
+	if (m_nAction != ACTION_WALLSTAND) {	// 壁ずり中じゃない
+		if (m_nAction != ACTION_WALLDUSH) {	// 壁走りもしてない
 			return;
 		}
 	}
 
 	// 壁ずり判定
 	if (m_ColiNor.x == 0.0f && m_ColiNor.z == 0.0f) {	// オブジェクトに触れていない
-		if (m_action == ACTION_WALLDUSH) {
-			m_action = ACTION_NEUTRAL;
+		if (m_nAction == ACTION_WALLDUSH) {
+			SetAction(ACTION_NEUTRAL);
 		}
 		return;
 	}
@@ -915,15 +921,15 @@ void CPlayer::WallDush(void)
 
 	// 入力中
 	if (pInputPad->GetPress(CInputPad::BUTTON_B, m_nId) || pInputKey->GetPress(DIK_SPACE)) {
-		m_action = ACTION_WALLDUSH;
+		SetAction(ACTION_WALLDUSH);
 	}
 	else {	// 離した
 
-		if (m_action == ACTION_WALLDUSH) {	// 壁ずり中
+		if (m_nAction == ACTION_WALLDUSH) {	// 壁ずり中
 			m_Info.move += m_ColiNor * WALLKICK_MOVE * 1.0f;
 			m_fRotDest = atan2f(-m_Info.move.x, -m_Info.move.z);
 			m_Info.move.y = JUMP;
-			m_action = ACTION_WALLKICK;
+			SetAction(ACTION_WALLKICK);
 		}
 	}
 }
@@ -939,8 +945,8 @@ void CPlayer::CeilingDush(void)
 
 	// ぶつかり判定
 	if (m_ColiNor.y >= 0.0f) {	// 天井に触れていない
-		if (m_action == ACTION_CEILINGDUSH) {
-			m_action = ACTION_NEUTRAL;
+		if (m_nAction == ACTION_CEILINGDUSH) {
+			SetAction(ACTION_NEUTRAL);
 			m_Info.move.y =0.0f;
 		}
 		return;
@@ -948,12 +954,12 @@ void CPlayer::CeilingDush(void)
 
 	// 入力中
 	if (pInputPad->GetPress(CInputPad::BUTTON_B, m_nId) || pInputKey->GetPress(DIK_SPACE)) {
-		m_action = ACTION_CEILINGDUSH;
+		SetAction(ACTION_CEILINGDUSH);
 		m_Info.move.y = JUMP;
 	}
 	else {
-		if (m_action == ACTION_CEILINGDUSH) {
-			m_action = ACTION_NEUTRAL;
+		if (m_nAction == ACTION_CEILINGDUSH) {
+			SetAction(ACTION_NEUTRAL);
 			m_Info.move.y = 0.0f;
 		}
 	}
@@ -966,7 +972,7 @@ void CPlayer::Gravity(void)
 {
 	float fGravity = GRAVITY;
 	// 慣性を変更
-	switch (m_action) {
+	switch (m_nAction) {
 	case ACTION_WALLSTAND:
 		if (m_Info.move.y <= 0.0f) {
 			fGravity = 0.0f;
@@ -1235,12 +1241,12 @@ void CPlayer::MotionSet(void)
 
 	if (m_Info.state == STATE_DAMAGE)
 	{// ダメージ状態
-		m_pBody->GetMotion()->Set(m_action);
-		m_pLeg->GetMotion()->Set(m_action);
+		m_pBody->GetMotion()->Set(m_nAction);
+		m_pLeg->GetMotion()->Set(m_nAction);
 
 		if (m_pBody->GetMotion()->GetEnd())
 		{// モーション終了
-			m_action = ACTION_NEUTRAL;	// 保持状態に変更
+			SetAction(ACTION_NEUTRAL);	// 保持状態に変更
 		}
 		else
 		{
@@ -1248,21 +1254,21 @@ void CPlayer::MotionSet(void)
 		}
 	}
 
-	if (m_action > ACTION_JUMP) {	// 派生アクションの場合
+	if (m_nAction > ACTION_JUMP) {	// 派生アクションの場合
 		// 派生モーション設定
 		
-		switch (m_action) {
+		switch (m_nAction) {
 		case ACTION_SLIDING:
 		{
-			m_pBody->GetMotion()->BlendSet(m_action);
-			m_pLeg->GetMotion()->BlendSet(m_action);
+			m_pBody->GetMotion()->BlendSet(m_nAction);
+			m_pLeg->GetMotion()->BlendSet(m_nAction);
 		}
 			break;
 
 		case ACTION_WALLSTAND:
 		{
-			m_pBody->GetMotion()->BlendSet(m_action);
-			m_pLeg->GetMotion()->BlendSet(m_action);
+			m_pBody->GetMotion()->BlendSet(m_nAction);
+			m_pLeg->GetMotion()->BlendSet(m_nAction);
 		}
 			break;
 
@@ -1270,11 +1276,11 @@ void CPlayer::MotionSet(void)
 		{
 			if (m_pBody->GetMotion()->GetEnd())
 			{// モーション終了
-				m_action = ACTION_JUMP;
+				SetAction(ACTION_JUMP);
 			}
 
-			m_pBody->GetMotion()->BlendSet(m_action);
-			m_pLeg->GetMotion()->BlendSet(m_action);
+			m_pBody->GetMotion()->BlendSet(m_nAction);
+			m_pLeg->GetMotion()->BlendSet(m_nAction);
 		}
 			break;
 
@@ -1282,21 +1288,46 @@ void CPlayer::MotionSet(void)
 
 			if (m_pBody->GetMotion()->GetEnd())
 			{// モーション終了
-				m_action = ACTION_NEUTRAL;
+				SetAction(ACTION_NEUTRAL);
 			}
 		{
-			m_pBody->GetMotion()->BlendSet(m_action);
-			m_pLeg->GetMotion()->BlendSet(m_action);
+			m_pBody->GetMotion()->BlendSet(m_nAction);
+			m_pLeg->GetMotion()->BlendSet(m_nAction);
 		}
 			break;
+
+		case ACTION_WALLDUSH:
+		{
+			m_pBody->GetMotion()->BlendSet(ACTION_JUMP);
+			m_pLeg->GetMotion()->BlendSet(ACTION_JUMP);
+		}
+		break;
 
 		case ACTION_CEILINGDUSH:
 
 			{
-				m_pBody->GetMotion()->BlendSet(m_action);
-				m_pLeg->GetMotion()->BlendSet(m_action);
+				m_pBody->GetMotion()->BlendSet(m_nAction);
+				m_pLeg->GetMotion()->BlendSet(m_nAction);
 			}
 			break;
+
+		case ACTION_KICKUP:
+		{
+			m_pBody->GetMotion()->Set(m_nAction);
+			m_pLeg->GetMotion()->Set(m_nAction);
+		}
+
+		case ACTION_AXEKICK:
+		{
+			if (m_pBody->GetMotion()->GetEnd())
+			{// モーション終了
+				SetAction(ACTION_NEUTRAL);
+			}
+
+			m_pBody->GetMotion()->BlendSet(m_nAction);
+			m_pLeg->GetMotion()->BlendSet(m_nAction);
+		}
+		break;
 
 		default:
 
@@ -1306,26 +1337,26 @@ void CPlayer::MotionSet(void)
 		return;
 	}
 	else if (!m_bJump && !m_bMove && 
-		m_action >= ACTION_NEUTRAL && m_action <= ACTION_JUMP)
+		m_nAction >= ACTION_NEUTRAL && m_nAction <= ACTION_JUMP)
 	{// 何もしていない
-		m_action = ACTION_NEUTRAL;
-		m_pBody->GetMotion()->BlendSet(m_action);
+		SetAction(ACTION_NEUTRAL);
+		m_pBody->GetMotion()->BlendSet(m_nAction);
 	}
 	else if(m_bJump && 
-		m_action >= ACTION_NEUTRAL && m_action <= ACTION_JUMP)
+		m_nAction >= ACTION_NEUTRAL && m_nAction <= ACTION_JUMP)
 	{// ジャンプした
-		m_action = ACTION_JUMP;
-		m_pBody->GetMotion()->BlendSet(m_action);
+		SetAction(ACTION_JUMP);
+		m_pBody->GetMotion()->BlendSet(m_nAction);
 	}
 	else if (m_bMove &&
-		m_action >= ACTION_NEUTRAL && m_action <= ACTION_JUMP)
+		m_nAction >= ACTION_NEUTRAL && m_nAction <= ACTION_JUMP)
 	{// 移動した
-		m_action = ACTION_WALK;
-		m_pBody->GetMotion()->BlendSet(m_action);
+		SetAction(ACTION_WALK);
+		m_pBody->GetMotion()->BlendSet(m_nAction);
 	}
 
-	if (m_action == ACTION_SLIDING) {
-		m_pLeg->GetMotion()->Set(m_action);
+	if (m_nAction == ACTION_SLIDING) {
+		m_pLeg->GetMotion()->Set(m_nAction);
 	}
 	else if (m_bJump)
 	{
@@ -1351,11 +1382,26 @@ void CPlayer::MotionSet(void)
 //===============================================
 void CPlayer::Attack(void)
 {
+	if (m_nAction == ACTION_NORMALATK || m_nAction == ACTION_AXEKICK) {
+		return;
+	}
+
 	CInputKeyboard* pInputKey = CManager::GetInstance()->GetInputKeyboard();	// キーボードのポインタ
 	CInputPad* pInputPad = CManager::GetInstance()->GetInputPad();				// パッドのポインタ
 
 	if (pInputKey->GetTrigger(DIK_I) || pInputPad->GetTrigger(CInputPad::BUTTON_Y, m_nId)) {
-		m_action = ACTION_NORMALATK;
+		// 現在の状態によって攻撃方法を変える
+		switch (m_nAction) {
+		case ACTION_KICKUP:
+			SetAction(ACTION_AXEKICK);
+			break;
+			
+		default:
+		{
+			SetAction(ACTION_NORMALATK);
+		}
+		break;
+		}
 	}
 }
 
@@ -1570,7 +1616,7 @@ void CPlayer::Hit(void)
 		return;
 	}
 
-	if (m_action != ACTION_NORMALATK) {	// 攻撃中ではない場合
+	if (m_nAction != ACTION_NORMALATK) {	// 攻撃中ではない場合
 		return;
 	}
 
@@ -1581,8 +1627,11 @@ void CPlayer::Hit(void)
 	D3DXVECTOR3 pos = { pModel->GetMtx()->_41, pModel->GetMtx()->_42, pModel->GetMtx()->_43 };
 	
 	if (CEnemyManager::GetInstance()->Hit(pos, fRange, nDamage)) {	// 当たった場合
-		m_action = ACTION_WALLKICK;
-		m_Info.move.y = JUMP;
+		if (m_nAction == ACTION_NORMALATK) {
+			m_nAction = ACTION_KICKUP;
+			m_Info.move = { 0.0f, 0.0f, 0.0f };	// 移動量リセット
+			m_Info.move.y = KICKUP_JUMP;
+		}
 	}
 }
 
@@ -1598,4 +1647,15 @@ void CPlayer::SetCamera(CCamera* pCamera)
 
 	m_fCamRotZ = m_pMyCamera->GetRotation().z; 
 	m_fCamLength = m_pMyCamera->GetLength();
+}
+
+//===============================================
+// 使用アクション設定
+//===============================================
+void CPlayer::SetAction(const ACTION action)
+{
+	if (m_nAction != action) {
+		m_nActionOld = m_nAction;
+		m_nAction = action;
+	}
 }

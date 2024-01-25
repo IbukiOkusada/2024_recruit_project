@@ -50,10 +50,7 @@ void CMeshDome::Uninit(void)
 //==========================================================
 void CMeshDome::Update(void)
 {
-	D3DXVECTOR3 rot = GetRotation();
-	rot.y += 0.001f;
-
-	SetRotation(rot);
+	
 }
 
 //==========================================================
@@ -61,6 +58,11 @@ void CMeshDome::Update(void)
 //==========================================================
 void CMeshDome::Draw(void)
 {
+	D3DXVECTOR3 rot = GetRotation();
+	rot.y += 0.0001f;
+
+	SetRotation(rot);
+
 	LPDIRECT3DDEVICE9 pDevice;		//デバイスへのポインタ
 
 	//デバイスの取得

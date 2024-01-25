@@ -50,6 +50,8 @@ public:
 		ACTION_NORMALATK,		// 攻撃
 		ACTION_WALLDUSH,		// 壁走り
 		ACTION_CEILINGDUSH,		// 天井走り
+		ACTION_KICKUP,			// 蹴りあがり
+		ACTION_AXEKICK,			// かかと落とし
 		ACTION_MAX
 	};
 
@@ -143,6 +145,7 @@ private:	// 自分だけがアクセス可能
 	void WallDush(void);
 	bool BodyCheck(CCharacter* pBody);
 	void CeilingDush(void);
+	void SetAction(const ACTION action);
 
 	// メンバ変数
 	CPlayer *m_pPrev;		// 前のオブジェクトへのポインタ
@@ -158,13 +161,14 @@ private:	// 自分だけがアクセス可能
 	float m_fRotMove;		// 現在の角度
 	float m_fRotDiff;		// 目的の角度
 	float m_fRotDest;		// 角度計算
-	float m_fCamRotZ;
-	float m_fCamLength;
-	int m_nId;
-	int m_action;
-	int m_nLife;
-	bool m_bJump;
-	bool m_bMove;
+	float m_fCamRotZ;		// 保存カメラ向き
+	float m_fCamLength;		// 保存カメラ距離
+	int m_nId;				// ID
+	int m_nAction;			// 現在のアクション
+	int m_nActionOld;		// 前回のアクション
+	int m_nLife;			// 体力
+	bool m_bJump;			// ジャンプフラグ
+	bool m_bMove;			// 移動フラグ
 };
 
 #endif

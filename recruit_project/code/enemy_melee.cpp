@@ -21,15 +21,15 @@
 // 無名名前空間
 namespace
 {
-	const char* BODYFILEPASS = "data\\TXT\\player\\motion_body.txt";	// ファイルのパス
-	const char* LEGFILEPASS = "data\\TXT\\player\\motion_leg.txt";	// ファイルのパス
+	const char* BODYFILEPASS = "data\\TXT\\enemy\\motion_body.txt";	// ファイルのパス
+	const char* LEGFILEPASS = "data\\TXT\\enemy\\motion_leg.txt";	// ファイルのパス
 	const D3DXVECTOR3 COLLIMAX = { 20.0f, 120.0f, 20.0f };	// 当たり判定最大
 	const D3DXVECTOR3 COLLIMIN = { -20.0f, 0.0f, -20.0f };	// 当たり判定最小
 	const int DAMAGEINTERVAL = (60);	// ダメージインターバル
 	const float CHASE_MAXLENGTH = (1000.0f);	// 追跡最長距離
-	const float CHASE_NEARLENGTH = (400.0f);
-	const float CHASE_MINLENGTH = (200.0f);
-	const float SEARCH_HEIGHT = (180.0f);	// 探索高さ制限
+	const float CHASE_NEARLENGTH = (400.0f);	// 追跡近距離
+	const float CHASE_MINLENGTH = (100.0f);		// 追跡0距離
+	const float SEARCH_HEIGHT = (180.0f);		// 探索高さ制限
 	const float MOVE_INER = (0.3f);			// 移動慣性
 }
 
@@ -38,7 +38,14 @@ namespace SPEED
 {
 	const float MOVE_FAR = (2.0f);	// 遠距離移動
 	const float MOVE_NEAR = (1.0f);	// 近距離移動
-	const float MOVE_MIN = (0.25f);
+	const float MOVE_MIN = (0.15f);	// 移動量移動
+}
+
+// インターバル
+namespace INTERVAL
+{
+	const float DAMAGE = (30.0f);	// ダメージ
+	const float ATTACK = (30.0f);	// 攻撃
 }
 
 //==========================================================
@@ -47,7 +54,7 @@ namespace SPEED
 CEnemyMelee::CEnemyMelee()
 {
 	// 値のクリア
-	m_nAction = 7;
+	m_nAction = ACTION_NEUTRAL;
 	m_pBody = nullptr;
 	m_pLeg = nullptr;
 	m_pWaist = nullptr;
@@ -202,6 +209,12 @@ void CEnemyMelee::MethodLine(void)
 	// 当たり判定確認
 	CObjectX::COLLISION_AXIS axis = CObjectX::TYPE_MAX;
 	CMeshWall::Collision(pInfo->pos, pInfo->posOld, pInfo->move, COLLIMAX, COLLIMIN, axis);
+
+	// アクション設定
+	SetMotion();
+
+	// 状態管理
+	SetState();
 }
 
 //==========================================================
@@ -321,6 +334,11 @@ void CEnemyMelee::Damage(const int nDamage)
 		return;
 	}
 
+	// 状態確認
+	if (m_StateInfo.state == STATE_APPEAR || m_StateInfo.state == STATE_DEATH) {	// ダメージを受けない状態
+		return;
+	}
+
 	// インターバルを変更
 	m_nInterVal = DAMAGEINTERVAL;
 
@@ -329,10 +347,12 @@ void CEnemyMelee::Damage(const int nDamage)
 	nLife -= nDamage;
 
 	if (nLife <= 0) {	// 体力がなくなった
-		Uninit();
+		m_StateInfo.state = STATE_DEATH;
 	}
 	else {	// まだある
 		SetLife(nLife);
+		m_StateInfo.state = STATE_DAMAGE;
+		m_StateInfo.fCounter = INTERVAL::DAMAGE;
 	}
 }
 
@@ -346,6 +366,10 @@ void CEnemyMelee::AttackCheck(void)
 	}
 
 	if (m_StateInfo.state != STATE_ATTACK) {
+		return;
+	}
+
+	if (m_StateInfo.fCounter > 0.0f) {
 		return;
 	}
 
@@ -401,6 +425,9 @@ CPlayer* CEnemyMelee::Search(float& fChaseLength)
 void CEnemyMelee::Chase(void)
 {
 	if (m_Chase.pTarget == nullptr) {
+		if (m_nAction <= ACTION_DUSH) {
+			m_nAction = ACTION_NEUTRAL;
+		}
 		return;
 	}
 
@@ -427,10 +454,22 @@ void CEnemyMelee::Chase(void)
 		if (m_Chase.fLength <= CHASE_NEARLENGTH && 
 			m_Chase.fLength > CHASE_MINLENGTH) {	// 近距離判定の距離
 			fSpeed = SPEED::MOVE_NEAR + (rand() % 2) * SPEED::MOVE_MIN;
+			m_nAction = ACTION_WALK;
+			m_StateInfo.state = STATE_CHASE;
 		}
 		else if (m_Chase.fLength <= CHASE_MINLENGTH){	// 最も近い距離判定
 			fSpeed = SPEED::MOVE_MIN + (rand() % 3) * SPEED::MOVE_MIN;	// 移動量に少しランダムを持たせる
+			
+			if (m_StateInfo.state <= STATE_CHASE) {
+				m_StateInfo.state = STATE_ATTACK;
+				m_nAction = ACTION_ATK;
+			}
 		}
+		else {
+			m_nAction = ACTION_DUSH;
+			m_StateInfo.state = STATE_CHASE;
+		}
+
 		D3DXVECTOR3 move = GetMove();
 		D3DXVECTOR3 nor = pos - MyPos;
 		nor.y = 0.0f;
@@ -471,14 +510,16 @@ void CEnemyMelee::SetState(void)
 
 	case STATE_ATTACK:
 	{
-		
+		if (m_StateInfo.fCounter <= 0.0f) {	// カウンター終了
+			m_StateInfo.fCounter = 0.0f;
+		}
 	}
 		break;
 
 	case STATE_DAMAGE:
 	{
 		if (m_StateInfo.fCounter <= 0.0f) {	// カウンター終了
-			m_StateInfo.state = STATE_APPEAR;
+			m_StateInfo.fCounter = 0.0f;
 		}
 	}
 		break;
@@ -486,6 +527,9 @@ void CEnemyMelee::SetState(void)
 	case STATE_DEATH:
 	{
 		if (m_StateInfo.fCounter <= 0.0f) {	// カウンター終了
+			// 爆発パーティクル設置
+
+			// 敵を削除
 			Uninit();
 		}
 	}
@@ -494,6 +538,113 @@ void CEnemyMelee::SetState(void)
 	default:
 	{
 
+	}
+		break;
+	}
+}
+
+//===============================================
+// アクション設定
+//===============================================
+void CEnemyMelee::SetMotion(void)
+{
+	if (!BodyCheck(m_pBody)) {// 胴体確認失敗
+		return;
+	}
+
+	if (!BodyCheck(m_pLeg)) {// 下半身確認失敗
+		return;
+	}
+
+	// ダメージ状態
+	if (m_StateInfo.state == STATE_DAMAGE) {
+
+		m_nAction = ACTION_DAMAGE;
+		m_pBody->GetMotion()->Set(m_nAction);
+		m_pLeg->GetMotion()->Set(m_nAction);
+
+		if (m_pBody->GetMotion()->GetEnd())
+		{// モーション終了
+			m_nAction = ACTION_NEUTRAL;	// 保持状態に変更
+			m_StateInfo.state = STATE_APPEAR;
+		}
+		else
+		{
+			return;
+		}
+	}
+
+	switch (m_nAction) {
+	case ACTION_NEUTRAL:
+	{
+		if (m_pBody->GetMotion()->GetEnd())
+		{// モーション終了
+			m_pBody->GetMotion()->BlendSet(m_nAction);
+			m_pLeg->GetMotion()->BlendSet(m_nAction);
+		}
+	}
+		break;
+
+	case ACTION_WALK:
+	{
+		m_pBody->GetMotion()->BlendSet(m_nAction);
+		m_pLeg->GetMotion()->BlendSet(m_nAction);
+	}
+		break;
+		
+	case ACTION_DUSH:
+	{
+		m_pBody->GetMotion()->BlendSet(m_nAction);
+		m_pLeg->GetMotion()->BlendSet(m_nAction);
+	}
+		break;
+
+	case ACTION_ATK:
+	{
+		m_pBody->GetMotion()->Set(m_nAction);
+		m_pLeg->GetMotion()->Set(m_nAction);
+
+		if (m_pBody->GetMotion()->GetEnd())
+		{// モーション終了
+			if (m_Chase.fLength < CHASE_MINLENGTH) {
+				m_nAction = ACTION_2NDATK;
+			}
+			else {
+				m_nAction = ACTION_NEUTRAL;
+			}
+		}
+	}
+		break;
+
+	case ACTION_2NDATK:
+	{
+		m_pBody->GetMotion()->BlendSet(m_nAction);
+		m_pLeg->GetMotion()->BlendSet(m_nAction);
+
+		if (m_pBody->GetMotion()->GetEnd())
+		{// モーション終了
+			m_StateInfo.fCounter = INTERVAL::ATTACK;
+			m_nAction = ACTION_NEUTRAL;
+		}
+	}
+		break;
+
+	case ACTION_DAMAGE:
+	{
+		m_pBody->GetMotion()->BlendSet(m_nAction);
+		m_pLeg->GetMotion()->BlendSet(m_nAction);
+
+		if (m_pBody->GetMotion()->GetEnd())
+		{// モーション終了	
+			m_nAction = ACTION_NEUTRAL;
+		}
+	}
+		break;
+
+	case ACTION_DEATH:
+	{
+		m_pBody->GetMotion()->Set(m_nAction);
+		m_pLeg->GetMotion()->Set(m_nAction);
 	}
 		break;
 	}

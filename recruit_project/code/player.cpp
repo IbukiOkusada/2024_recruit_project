@@ -1570,6 +1570,10 @@ void CPlayer::Hit(void)
 		return;
 	}
 
+	if (m_Info.state != ACTION_NORMALATK) {
+		return;
+	}
+
 	CModel* pModel = m_pLeg->GetParts(3);
 	float fRange = 50.0f;
 	int nDamage = 1;

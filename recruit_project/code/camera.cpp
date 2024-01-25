@@ -15,6 +15,7 @@
 #include "camera.h"
 #include "camera_manager.h"
 #include "objectX.h"
+#include "slow.h"
 
 //無名名前空間
 namespace
@@ -24,28 +25,24 @@ namespace
 	const D3DXVECTOR3 GOAL_CAMERAPOSV = { -660.0f, 280.0f, 1460.0f };      // 目標の位置
 	const float DEFAULT_LENGTH = 700.0f;
 	const float ZOOM_SPEED = 0.18f;
-	const float ZOOMSTARTDOOR_COUNT = 300;                                  // スタートドアを見ている時間
+	const float ZOOMSTARTDOOR_COUNT = 300;          // スタートドアを見ている時間
+	const float CAMERA_MOVESPEED = (1.0f);			// 移動量
+	const float CAMERA_LENGTHMOVE = (0.8f);			// カメラ距離移動量
+	const float ROTATE_SPEED = (0.0125f);			// カメラの回転速度
+	const float PAD_ROTATE = (0.01f);		// 向き
+	const float CAMERA_MAXLENGTH = (5000.0f);		// カメラ最大距離
+	const float CAMERA_MINLENGTH = (120.0f);			// カメラ最小距離
+	const float MOUSE_MOVESPEED = (0.9f);		// マウス移動速度
+	const float MOUSE_ROTATESPEED_X = (0.001f);		// マウス回転速度x軸
+	const float MOUSE_ROTATESPEED_Z = (0.005f);		// マウス回転速度z軸
+	const float MOUSE_WHEELSPEED = (0.1f);			// マウスホイール回転速度
+	const float MAX_SLOWROT = (0.15f);		// 
+	const float MESSAGERAND = (120);
+	const float SLOW_CAMERAROT = (0.7f);
+	const float TITLE_ROTATESPD = (0.0025f);	// タイトル回転量
+	const float CAMERA_PADMAX = (D3DX_PI * 0.5f);
+	const float CAMERA_LENGTHINER = (0.25f);
 }
-
-//==========================================================
-// マクロ定義
-//==========================================================
-#define CAMERA_MOVESPEED	(1.0f)			// 移動量
-#define CAMERA_LENGTHMOVE	(0.8f)			// カメラ距離移動量
-#define ROTATE_SPEED		(0.0154f)			// カメラの回転速度
-#define PAD_ROTATE			(0.01f)		// 向き
-#define CAMERA_MAXLENGTH	(5000.0f)		// カメラ最大距離
-#define CAMERA_MINLENGTH	(120.0f)			// カメラ最小距離
-#define MOUSE_MOVESPEED		(0.9f)		// マウス移動速度
-#define MOUSE_ROTATESPEED_X	(0.001f)		// マウス回転速度x軸
-#define MOUSE_ROTATESPEED_Z	(0.005f)		// マウス回転速度z軸
-#define MOUSE_WHEELSPEED	(0.1f)			// マウスホイール回転速度
-#define MAX_SLOWROT			(0.15f)		// 
-#define MESSAGERAND			(120)
-#define SLOW_CAMERAROT		(0.7f)
-#define TITLE_ROTATESPD		(0.0025f)	// タイトル回転量
-#define CAMERA_PADMAX	(D3DX_PI * 0.5f)
-#define CAMERA_LENGTHINER	(0.25f)
 
 //==========================================================
 // コンストラクタ
@@ -300,26 +297,26 @@ void CCamera::MoveV(void)
 	//	}
 	//}
 
-	////z軸の移動
-	//if (pInputPad->GetStickPress(nId, CInputPad::BUTTON_RIGHT_Y, 0.1f, CInputPad::STICK_PLUS) == true)
-	//{//Yキー入力
-	//	//角度の変更
-	//	m_rot.z += PAD_ROTATE * pInputPad->GetStickAdd(nId, CInputPad::BUTTON_RIGHT_Y, 0.5f, CInputPad::STICK_PLUS) * fMultiSlow;
-	//	if (m_rot.z > CAMERA_PADMAX)
-	//	{//角度が限界を超えた場合
-	//		m_rot.z = CAMERA_PADMAX;
-	//	}
-	//}
-	//else if (pInputPad->GetStickPress(nId, CInputPad::BUTTON_RIGHT_Y, 0.1f, CInputPad::STICK_MINUS) == true)
-	//{//Nキー入力
-	//	//角度の変更
-	//	m_rot.z += PAD_ROTATE * 2 * pInputPad->GetStickAdd(nId, CInputPad::BUTTON_RIGHT_Y, 0.5f, CInputPad::STICK_MINUS) * fMultiSlow;
+	//z軸の移動
+	if (pInputPad->GetStickPress(nId, CInputPad::BUTTON_RIGHT_Y, 0.1f, CInputPad::STICK_PLUS) == true)
+	{//Yキー入力
+		//角度の変更
+		m_rot.z += PAD_ROTATE * pInputPad->GetStickAdd(nId, CInputPad::BUTTON_RIGHT_Y, 0.5f, CInputPad::STICK_PLUS) * fMultiSlow;
+		if (m_rot.z > CAMERA_PADMAX)
+		{//角度が限界を超えた場合
+			m_rot.z = CAMERA_PADMAX;
+		}
+	}
+	else if (pInputPad->GetStickPress(nId, CInputPad::BUTTON_RIGHT_Y, 0.1f, CInputPad::STICK_MINUS) == true)
+	{//Nキー入力
+		//角度の変更
+		m_rot.z += PAD_ROTATE * 2 * pInputPad->GetStickAdd(nId, CInputPad::BUTTON_RIGHT_Y, 0.5f, CInputPad::STICK_MINUS) * fMultiSlow;
 
-	//	if (m_rot.z < MIN_CAMERA_ROTZ)
-	//	{//角度が限界を超えた場合
-	//		m_rot.z = MIN_CAMERA_ROTZ;
-	//	}
-	//}
+		if (m_rot.z < MIN_CAMERA_ROTZ)
+		{//角度が限界を超えた場合
+			m_rot.z = MIN_CAMERA_ROTZ;
+		}
+	}
 
 	////z軸の移動
 	//if (pKey->GetPress(DIK_Y) == true && pKey->GetPress(DIK_N) != true)
@@ -604,6 +601,42 @@ void CCamera::Pursue(const D3DXVECTOR3 pos, const D3DXVECTOR3 rot, const float f
 	m_posV.x += VDiff.x * 0.2f;
 	m_posV.y += VDiff.y * 0.1f;
 	m_posV.z += VDiff.z * 0.2f;
+
+	if (CManager::GetInstance()->GetSlow()->Get() == 1.0f)
+	{
+		float fRotDiff;
+		float fRotDest;
+
+		fRotDest = 1.4f;	//目的の向きを取得
+
+		fRotDiff = fRotDest - m_rot.z;
+
+		if (fRotDiff > D3DX_PI || fRotDiff < -D3DX_PI)
+		{//-3.14～3.14の範囲外の場合
+			if (fRotDiff > D3DX_PI)
+			{
+				fRotDiff += (-D3DX_PI * 2);
+			}
+			else if (fRotDiff < -D3DX_PI)
+			{
+				fRotDiff += (D3DX_PI * 2);
+			}
+		}
+
+		m_rot.z += fRotDiff * 0.06f;
+
+		if (m_rot.z > D3DX_PI || m_rot.z < -D3DX_PI)
+		{//-3.14～3.14の範囲外の場合
+			if (m_rot.z > D3DX_PI)
+			{
+				m_rot.z += (-D3DX_PI * 2);
+			}
+			else if (m_rot.z < -D3DX_PI)
+			{
+				m_rot.z += (D3DX_PI * 2);
+			}
+		}
+	}
 }
 
 //==========================================================

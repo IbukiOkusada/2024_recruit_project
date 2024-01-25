@@ -23,13 +23,27 @@ private:
 	// 状態列挙型
 	enum STATE
 	{
-		STATE_APPEAR = 0,	// 出現状態
+		STATE_NONE = 0,		// 何もない状態
+		STATE_APPEAR,		// 出現状態
 		STATE_NORMAL,		// 通常状態
 		STATE_CHASE,		// 追跡状態
 		STATE_ATTACK,		// 攻撃状態
 		STATE_DAMAGE,		// ダメージ状態
 		STATE_DEATH,		// 死亡状態
 		STATE_MAX
+	};
+
+	// アクション列挙型
+	enum ACTION
+	{
+		ACTION_NEUTRAL = 0,		// 待機
+		ACTION_WALK,			// 歩行
+		ACTION_DUSH,			// 走行
+		ACTION_ATK,				// 攻撃
+		ACTION_2NDATK,			// 二段攻撃
+		ACTION_DAMAGE,			// ダメージ
+		ACTION_DEATH,			// 死亡
+		ACTION_MAX
 	};
 
 	// 追跡対象情報構造体
@@ -75,12 +89,13 @@ private:	// 自分だけがアクセス可能
 	void Chase(void);
 	void MethodLine(void);
 	void SetState(void);
+	void SetMotion(void);
 
 	// メンバ変数
 	CWaist* m_pWaist;		// 腰
 	CCharacter* m_pBody;	// 上半身
 	CCharacter* m_pLeg;		// 下半身
-	SChase m_Chase;
+	SChase m_Chase;			// 追跡管理
 	SStateInfo m_StateInfo;	// 状態管理
 	int m_nAction;			// アクション番号
 	int m_nInterVal;

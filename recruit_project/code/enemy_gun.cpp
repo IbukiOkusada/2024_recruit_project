@@ -1,10 +1,10 @@
 //==========================================================
 //
-// 近接攻撃の敵 [enemy_melee.cpp]
+// 遠距離攻撃の敵 [enemy_gun.cpp]
 // Author : Ibuki Okusada
 //
 //==========================================================
-#include "enemy_melee.h"
+#include "enemy_gun.h"
 #include "waist.h"
 #include "character.h"
 #include "mesh.h"
@@ -28,8 +28,8 @@ namespace
 	const D3DXVECTOR3 COLLIMIN = { -20.0f, 0.0f, -20.0f };	// 当たり判定最小
 	const int DAMAGEINTERVAL = (60);	// ダメージインターバル
 	const float CHASE_MAXLENGTH = (1000.0f);	// 追跡最長距離
-	const float CHASE_NEARLENGTH = (400.0f);	// 追跡近距離
-	const float CHASE_MINLENGTH = (100.0f);		// 追跡0距離
+	const float CHASE_NEARLENGTH = (700.0f);	// 追跡近距離
+	const float CHASE_MINLENGTH = (400.0f);		// 追跡0距離
 	const float SEARCH_HEIGHT = (180.0f);		// 探索高さ制限
 	const float MOVE_INER = (0.3f);			// 移動慣性
 }
@@ -38,7 +38,7 @@ namespace
 namespace SPEED
 {
 	const float MOVE_FAR = (2.0f);	// 遠距離移動
-	const float MOVE_NEAR = (1.0f);	// 近距離移動
+	const float MOVE_NEAR = (-1.0f);	// 近距離移動
 	const float MOVE_MIN = (0.15f);	// 移動量移動
 	const float GRAVITY = (-0.9f);	// 重力
 	const float DAMAGE_MOVE = (2.0f);	// 移動量
@@ -54,7 +54,7 @@ namespace INTERVAL
 //==========================================================
 // コンストラクタ
 //==========================================================
-CEnemyMelee::CEnemyMelee()
+CEnemyGun::CEnemyGun()
 {
 	// 値のクリア
 	m_nAction = ACTION_NEUTRAL;
@@ -71,7 +71,7 @@ CEnemyMelee::CEnemyMelee()
 //==========================================================
 // デストラクタ
 //==========================================================
-CEnemyMelee::~CEnemyMelee()
+CEnemyGun::~CEnemyGun()
 {
 
 }
@@ -79,7 +79,7 @@ CEnemyMelee::~CEnemyMelee()
 //==========================================================
 // 初期化処理
 //==========================================================
-HRESULT CEnemyMelee::Init(void)
+HRESULT CEnemyGun::Init(void)
 {
 	// 種類を近距離に設定
 	SetType(TYPE_MELEE);
@@ -144,7 +144,7 @@ HRESULT CEnemyMelee::Init(void)
 //==========================================================
 // 終了処理
 //==========================================================
-void CEnemyMelee::Uninit(void)
+void CEnemyGun::Uninit(void)
 {
 	if (m_pBody != nullptr) {
 		m_pBody->Uninit();
@@ -170,7 +170,7 @@ void CEnemyMelee::Uninit(void)
 //==========================================================
 // 更新処理
 //==========================================================
-void CEnemyMelee::Update(void)
+void CEnemyGun::Update(void)
 {
 	// 前回の座標を取得
 	{
@@ -190,12 +190,9 @@ void CEnemyMelee::Update(void)
 //===============================================
 // 処理の順番
 //===============================================
-void CEnemyMelee::MethodLine(void)
+void CEnemyGun::MethodLine(void)
 {
 	SInfo* pInfo = GetInfo();
-
-	// 攻撃確認
-	AttackCheck();
 
 	if (m_StateInfo.state != STATE_DEATH || m_StateInfo.state != STATE_DAMAGE) {
 
@@ -203,7 +200,7 @@ void CEnemyMelee::MethodLine(void)
 		m_Chase.pTarget = Search(m_Chase.fLength);
 
 		// 追跡
-		Chase();
+		LockOn();
 
 		// 移動
 		AddMove();
@@ -231,34 +228,34 @@ void CEnemyMelee::MethodLine(void)
 //==========================================================
 // 生成
 //==========================================================
-CEnemyMelee *CEnemyMelee::Create(D3DXVECTOR3& pos, D3DXVECTOR3& rot)
+CEnemyGun *CEnemyGun::Create(D3DXVECTOR3& pos, D3DXVECTOR3& rot)
 {
-	CEnemyMelee *pEnemyMelee = nullptr;
+	CEnemyGun *pEnemyGun = nullptr;
 
-	pEnemyMelee = new CEnemyMelee;
+	pEnemyGun = new CEnemyGun;
 
-	if (pEnemyMelee != nullptr)
+	if (pEnemyGun != nullptr)
 	{
 		// 初期化処理
-		pEnemyMelee->Init();
+		pEnemyGun->Init();
 
 		// データリセット
-		pEnemyMelee->InfoReset();
+		pEnemyGun->InfoReset();
 
 		// データ設定
-		pEnemyMelee->SetPosition(pos);
-		pEnemyMelee->SetRotation(rot);
-		pEnemyMelee->SetRotDiff(rot.y);
-		pEnemyMelee->SetIner(MOVE_INER);
+		pEnemyGun->SetPosition(pos);
+		pEnemyGun->SetRotation(rot);
+		pEnemyGun->SetRotDiff(rot.y);
+		pEnemyGun->SetIner(MOVE_INER);
 	}
 
-	return pEnemyMelee;
+	return pEnemyGun;
 }
 
 //===============================================
 // 使用階層構造の設定
 //===============================================
-void CEnemyMelee::BodySet(void)
+void CEnemyGun::BodySet(void)
 {
 	// 下半身更新
 	if (BodyCheck(m_pLeg))
@@ -290,7 +287,7 @@ void CEnemyMelee::BodySet(void)
 //===============================================
 // 体使用確認
 //===============================================
-bool CEnemyMelee::BodyCheck(CCharacter* pBody)
+bool CEnemyGun::BodyCheck(CCharacter* pBody)
 {
 	if (pBody == nullptr) {	// 使用されている
 		return false;
@@ -306,7 +303,7 @@ bool CEnemyMelee::BodyCheck(CCharacter* pBody)
 //===============================================
 // 当たり判定確認
 //===============================================
-bool CEnemyMelee::Hit(D3DXVECTOR3& pos, const float fRange, const int nDamage)
+bool CEnemyGun::Hit(D3DXVECTOR3& pos, const float fRange, const int nDamage)
 {
 	SInfo* pInfo = GetInfo();
 
@@ -340,7 +337,7 @@ bool CEnemyMelee::Hit(D3DXVECTOR3& pos, const float fRange, const int nDamage)
 //===============================================
 // ダメージ処理
 //===============================================
-void CEnemyMelee::Damage(const int nDamage)
+void CEnemyGun::Damage(const int nDamage)
 {
 	if (m_nInterVal > 0) {	// インターバルが戻ってきていない
 		return;
@@ -370,33 +367,9 @@ void CEnemyMelee::Damage(const int nDamage)
 }
 
 //===============================================
-// 攻撃判定確認
-//===============================================
-void CEnemyMelee::AttackCheck(void)
-{
-	if (!BodyCheck(m_pBody) || !BodyCheck(m_pLeg)) {
-		return;
-	}
-
-	if (m_StateInfo.state != STATE_ATTACK) {
-		return;
-	}
-
-	if (m_StateInfo.fCounter > 0.0f) {
-		return;
-	}
-
-	CModel* pModel = m_pLeg->GetParts(3);
-	float fRange = 50.0f;
-	int nDamage = 1;
-	D3DXVECTOR3 pos = { pModel->GetMtx()->_41, pModel->GetMtx()->_42, pModel->GetMtx()->_43 };
-	CPlayerManager::GetInstance()->Hit(pos, fRange, nDamage);
-}
-
-//===============================================
 // プレイヤーを探索
 //===============================================
-CPlayer* CEnemyMelee::Search(float& fChaseLength)
+CPlayer* CEnemyGun::Search(float& fChaseLength)
 {
 	CPlayer* pPlayer = CPlayerManager::GetInstance()->GetTop();
 	CPlayer* pChasePlayer = nullptr;
@@ -435,18 +408,23 @@ CPlayer* CEnemyMelee::Search(float& fChaseLength)
 //===============================================
 // チェイス中処理
 //===============================================
-void CEnemyMelee::Chase(void)
+void CEnemyGun::LockOn(void)
 {
 	if (m_Chase.pTarget == nullptr) {
-		if (m_nAction <= ACTION_DUSH) {
-			m_nAction = ACTION_NEUTRAL;
+		if (m_StateInfo.state == STATE_LOCKON) {
+			m_StateInfo.state = STATE_NORMAL;
 		}
 		return;
 	}
 
 	if (m_StateInfo.state >= STATE_DAMAGE) {
+		if (m_StateInfo.state == STATE_LOCKON) {
+			m_StateInfo.state = STATE_NORMAL;
+		}
 		return;
 	}
+
+	m_StateInfo.state = STATE_LOCKON;
 
 	CManager::GetInstance()->GetDebugProc()->Print("プレイヤーとの距離 [%f]\n", m_Chase.fLength);
 
@@ -467,24 +445,17 @@ void CEnemyMelee::Chase(void)
 
 	// 移動量を設定
 	{
-		float fSpeed = SPEED::MOVE_FAR;
-		if (m_Chase.fLength <= CHASE_NEARLENGTH && 
-			m_Chase.fLength > CHASE_MINLENGTH) {	// 近距離判定の距離
-			fSpeed = SPEED::MOVE_NEAR + (rand() % 2) * SPEED::MOVE_MIN;
+		float fSpeed = 0.0f;
+		if (m_Chase.fLength >= CHASE_NEARLENGTH) {	// 適性距離より遠い
+			fSpeed = SPEED::MOVE_FAR;
 			m_nAction = ACTION_WALK;
-			m_StateInfo.state = STATE_CHASE;
 		}
-		else if (m_Chase.fLength <= CHASE_MINLENGTH){	// 最も近い距離判定
-			fSpeed = SPEED::MOVE_MIN + (rand() % 3) * SPEED::MOVE_MIN;	// 移動量に少しランダムを持たせる
-			
-			if (m_StateInfo.state <= STATE_CHASE) {
-				m_StateInfo.state = STATE_ATTACK;
-				m_nAction = ACTION_ATK;
-			}
+		else if (m_Chase.fLength <= CHASE_MINLENGTH) {	// 適性距離より近い
+			fSpeed = SPEED::MOVE_NEAR;
+			m_nAction = ACTION_WALK;
 		}
 		else {
-			m_nAction = ACTION_DUSH;
-			m_StateInfo.state = STATE_CHASE;
+			m_nAction = ACTION_ATK;
 		}
 
 		D3DXVECTOR3 move = GetMove();
@@ -500,7 +471,7 @@ void CEnemyMelee::Chase(void)
 //===============================================
 // 状態設定
 //===============================================
-void CEnemyMelee::SetState(void)
+void CEnemyGun::SetState(void)
 {
 	m_StateInfo.fCounter -= CManager::GetInstance()->GetSlow()->Get();
 
@@ -516,20 +487,6 @@ void CEnemyMelee::SetState(void)
 	case STATE_NORMAL:
 	{
 
-	}
-		break;
-
-	case STATE_CHASE:
-	{
-
-	}
-		break;
-
-	case STATE_ATTACK:
-	{
-		if (m_StateInfo.fCounter <= 0.0f) {	// カウンター終了
-			m_StateInfo.fCounter = 0.0f;
-		}
 	}
 		break;
 
@@ -581,7 +538,7 @@ void CEnemyMelee::SetState(void)
 //===============================================
 // アクション設定
 //===============================================
-void CEnemyMelee::SetMotion(void)
+void CEnemyGun::SetMotion(void)
 {
 	if (!BodyCheck(m_pBody)) {// 胴体確認失敗
 		return;
@@ -626,13 +583,6 @@ void CEnemyMelee::SetMotion(void)
 		m_pLeg->GetMotion()->BlendSet(m_nAction);
 	}
 		break;
-		
-	case ACTION_DUSH:
-	{
-		m_pBody->GetMotion()->BlendSet(m_nAction);
-		m_pLeg->GetMotion()->BlendSet(m_nAction);
-	}
-		break;
 
 	case ACTION_ATK:
 	{
@@ -641,24 +591,6 @@ void CEnemyMelee::SetMotion(void)
 
 		if (m_pBody->GetMotion()->GetEnd())
 		{// モーション終了
-			if (m_Chase.fLength < CHASE_MINLENGTH) {
-				m_nAction = ACTION_2NDATK;
-			}
-			else {
-				m_nAction = ACTION_NEUTRAL;
-			}
-		}
-	}
-		break;
-
-	case ACTION_2NDATK:
-	{
-		m_pBody->GetMotion()->BlendSet(m_nAction);
-		m_pLeg->GetMotion()->BlendSet(m_nAction);
-
-		if (m_pBody->GetMotion()->GetEnd())
-		{// モーション終了
-			m_StateInfo.fCounter = INTERVAL::ATTACK;
 			m_nAction = ACTION_NEUTRAL;
 		}
 	}
@@ -688,7 +620,7 @@ void CEnemyMelee::SetMotion(void)
 //===============================================
 // 重力設定
 //===============================================
-void CEnemyMelee::Gravity(void)
+void CEnemyGun::Gravity(void)
 {
 	SInfo* pInfo = GetInfo();
 	float fGravity = SPEED::GRAVITY;;

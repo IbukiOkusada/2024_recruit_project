@@ -1,11 +1,11 @@
 //==========================================================
 //
-// 近接攻撃の敵 [enemy_melee.h]
+// 遠距離攻撃の敵 [enemy_gun.h]
 // Author : Ibuki Okusada
 //
 //==========================================================
-#ifndef _ENEMY_MELEE_H_		// このマクロが定義されていない場合
-#define _ENEMY_MELEE_H_		// 二重インクルード防止用マクロを定義
+#ifndef _ENEMY_GUN_H_		// このマクロが定義されていない場合
+#define _ENEMY_GUN_H_		// 二重インクルード防止用マクロを定義
 
 #include "enemy.h"	// これでファイルインクルードできます
 
@@ -16,7 +16,7 @@ class CPlayer;
 //==========================================================
 // サンプルのクラス定義
 //==========================================================
-class CEnemyMelee : public CEnemy
+class CEnemyGun : public CEnemy
 {
 private:
 
@@ -26,8 +26,7 @@ private:
 		STATE_NONE = 0,		// 何もない状態
 		STATE_APPEAR,		// 出現状態
 		STATE_NORMAL,		// 通常状態
-		STATE_CHASE,		// 追跡状態
-		STATE_ATTACK,		// 攻撃状態
+		STATE_LOCKON,		// ロックオン状態
 		STATE_DAMAGE,		// ダメージ状態
 		STATE_DEATH,		// 死亡状態
 		STATE_MAX
@@ -38,9 +37,7 @@ private:
 	{
 		ACTION_NEUTRAL = 0,		// 待機
 		ACTION_WALK,			// 歩行
-		ACTION_DUSH,			// 走行
 		ACTION_ATK,				// 攻撃
-		ACTION_2NDATK,			// 二段攻撃
 		ACTION_DAMAGE,			// ダメージ
 		ACTION_DEATH,			// 死亡
 		ACTION_MAX
@@ -62,14 +59,14 @@ private:
 
 public:	// 誰でもアクセス可能
 
-	CEnemyMelee();	// コンストラクタ(オーバーロード)
-	~CEnemyMelee();	// デストラクタ
+	CEnemyGun();	// コンストラクタ(オーバーロード)
+	~CEnemyGun();	// デストラクタ
 
 	// メンバ関数
 	HRESULT Init(void);
 	void Uninit(void);
 	void Update(void);
-	static CEnemyMelee *Create(D3DXVECTOR3 &pos, D3DXVECTOR3 &rot);
+	static CEnemyGun *Create(D3DXVECTOR3 &pos, D3DXVECTOR3 &rot);
 
 	// メンバ関数
 	bool Hit(D3DXVECTOR3& pos, const float fRange, const int nDamage) override;
@@ -83,10 +80,9 @@ private:	// 自分だけがアクセス可能
 	// メンバ関数
 	void BodySet(void);
 	bool BodyCheck(CCharacter* pBody);
-	void AttackCheck(void);
 	void Damage(const int nDamage);
 	CPlayer *Search(float &fChaseLength);
-	void Chase(void);
+	void LockOn(void);
 	void MethodLine(void);
 	void SetState(void);
 	void SetMotion(void);

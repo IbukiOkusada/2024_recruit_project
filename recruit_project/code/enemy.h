@@ -65,7 +65,7 @@ public:	// 誰でもアクセス可能
 	void SetRotDiff(const float fRotDiff) { m_fRotDiff = fRotDiff; }
 
 	// メンバ関数
-	virtual void Hit(D3DXVECTOR3& pos, const float fRange, const int nDamage);
+	virtual bool Hit(D3DXVECTOR3& pos, const float fRange, const int nDamage);
 
 protected:
 

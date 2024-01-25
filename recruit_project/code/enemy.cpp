@@ -96,9 +96,9 @@ void CEnemy::SetMatrix(void)
 //===============================================
 // ƒqƒbƒgˆ—
 //===============================================
-void CEnemy::Hit(D3DXVECTOR3& pos, const float fRange, const int nDamage)
+bool CEnemy::Hit(D3DXVECTOR3& pos, const float fRange, const int nDamage)
 {
-
+	return false;
 }
 
 //===============================================

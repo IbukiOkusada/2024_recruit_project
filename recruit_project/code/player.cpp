@@ -1570,15 +1570,20 @@ void CPlayer::Hit(void)
 		return;
 	}
 
-	if (m_Info.state != ACTION_NORMALATK) {
+	if (m_action != ACTION_NORMALATK) {	// çUåÇíÜÇ≈ÇÕÇ»Ç¢èÍçá
 		return;
 	}
 
+	// îªíËÇéÊÇÈèÍèäÇéÊìæ
 	CModel* pModel = m_pLeg->GetParts(3);
 	float fRange = 50.0f;
 	int nDamage = 1;
 	D3DXVECTOR3 pos = { pModel->GetMtx()->_41, pModel->GetMtx()->_42, pModel->GetMtx()->_43 };
-	CEnemyManager::GetInstance()->Hit(pos, fRange, nDamage);
+	
+	if (CEnemyManager::GetInstance()->Hit(pos, fRange, nDamage)) {	// ìñÇΩÇ¡ÇΩèÍçá
+		m_action = ACTION_WALLKICK;
+		m_Info.move.y = JUMP;
+	}
 }
 
 //===============================================

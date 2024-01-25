@@ -147,14 +147,17 @@ void CEnemyManager::ListOut(CEnemy* pEnemy)
 //==========================================================
 // UŒ‚ƒqƒbƒgŠm”F
 //==========================================================
-void CEnemyManager::Hit(D3DXVECTOR3& pos, const float fRange, const int nDamage)
+bool CEnemyManager::Hit(D3DXVECTOR3& pos, const float fRange, const int nDamage)
 {
 	CEnemy* pEnemy = m_pTop;
+	bool bhit = false;
 
 	//ŒÂ•Ê”»’è
 	while (pEnemy != nullptr) {
 		CEnemy* pEnemyNext = pEnemy->GetNext();
-		pEnemy->Hit(pos, fRange, nDamage);
+		if (pEnemy->Hit(pos, fRange, nDamage)) { bhit = true; }	// “–‚½‚Á‚½
 		pEnemy = pEnemyNext;
 	}
+
+	return bhit;
 }

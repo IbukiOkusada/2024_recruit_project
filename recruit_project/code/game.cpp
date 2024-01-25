@@ -34,6 +34,7 @@
 #include "enemy_melee.h"
 #include "enemy_manager.h"
 #include "player_manager.h"
+#include "enemy_gun.h"
 
 // 無名名前空間を定義
 namespace {
@@ -265,7 +266,7 @@ HRESULT CGame::Init(void)
         break;
     }
 
-    CEnemyMelee::Create(D3DXVECTOR3(0.0f, 600.0f, 2250.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+    CEnemyGun::Create(D3DXVECTOR3(0.0f, 600.0f, 2250.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 
     //ドーム追加
     CMeshDome::Create(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), 4000.0f, 3000.0f, 3, 8, 8);

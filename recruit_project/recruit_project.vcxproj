@@ -161,6 +161,7 @@
     <ClCompile Include="code\debugproc.cpp" />
     <ClCompile Include="code\effect.cpp" />
     <ClCompile Include="code\enemy.cpp" />
+    <ClCompile Include="code\enemy_gun.cpp" />
     <ClCompile Include="code\enemy_manager.cpp" />
     <ClCompile Include="code\enemy_melee.cpp" />
     <ClCompile Include="code\fade.cpp" />
@@ -219,6 +220,7 @@
     <ClInclude Include="code\debugproc.h" />
     <ClInclude Include="code\effect.h" />
     <ClInclude Include="code\enemy.h" />
+    <ClInclude Include="code\enemy_gun.h" />
     <ClInclude Include="code\enemy_manager.h" />
     <ClInclude Include="code\enemy_melee.h" />
     <ClInclude Include="code\fade.h" />

@@ -36,6 +36,7 @@
 #include "meshwall.h"
 #include "enemy_manager.h"
 #include "player_manager.h"
+#include "enemy.h"
 
 //===============================================
 // マクロ定義
@@ -74,8 +75,14 @@ namespace {
 	const float SLIDING_LENGTH = (200.0f);
 	const float KICKUP_SPEED = (1.5f);
 	const float KICKUP_JUMP = (21.0f);
+	const float AXEKICK_ROTZ = (D3DX_PI * 0.21f);
+	const float AXEKICK_CAMERALENGTH = (400.0f);
+	const float SLOW_KICKCHARGE = (10.0f);
 	const D3DXVECTOR3 COLLIMAX = { 20.0f, 70.0f, 20.0f };
 	const D3DXVECTOR3 COLLIMIN = { -20.0f, 0.0f, -20.0f };
+	const float KICK_LENGTH = (1000.0f);	// 攻撃範囲
+	const float RIDERKICK_SPEED = (24.0f);
+	const float RIDERKICK_CAMERALENGTH = (600.0f);
 }
 
 // 前方宣言
@@ -331,6 +338,9 @@ void CPlayer::Update(void)
 			if (m_nAction == ACTION_SLIDING || m_nAction == ACTION_CEILINGDUSH) {	// スライディングの時
 				fRot = SLIDINNG_ROTZ;
 			}
+			else if (m_nAction == ACTION_AXEKICK) {
+				fRot = AXEKICK_ROTZ;
+			}
 			CamRot.z = fRot;
 			m_pMyCamera->InerRot(CamRot, CAMROT_INER);
 
@@ -338,6 +348,12 @@ void CPlayer::Update(void)
 			float fLength = m_fCamLength;
 			if (m_nAction == ACTION_SLIDING || m_nAction == ACTION_CEILINGDUSH) {	// スライディングの時
 				fLength = SLIDING_LENGTH;
+			}
+			else if (m_nAction == ACTION_AXEKICK) {
+				fLength = AXEKICK_CAMERALENGTH;
+			}
+			else if (m_nAction == ACTION_RIDERKICK) {
+				fLength = RIDERKICK_CAMERALENGTH;
 			}
 			m_pMyCamera->Pursue(GetPosition(), GetRotation(), fLength);
 		}
@@ -396,8 +412,9 @@ void CPlayer::Controller(void)
 	m_fRotMove = rot.y;	//現在の向きを取得
 
 	// 操作処理
-		if (m_Info.state != STATE_DEATH) {	// 死亡していない
-			
+	if (m_Info.state != STATE_DEATH) {	// 死亡していない
+
+		if (m_nAction != ACTION_RIDERKICK) {	// ライダーキック中ではない
 			Move();			// 移動
 			Rotation();		// 回転
 			WallSlide();	// 壁ずり確認
@@ -406,8 +423,13 @@ void CPlayer::Controller(void)
 			CeilingDush();	// 天井走り
 			Slide();		// スライディング
 			Attack();		// 攻撃
-			Hit();			// 攻撃チェック
 		}
+		else {
+			RiderKick();
+		}
+
+		Hit();	// 攻撃チェック
+	}
 
 	MotionSet();	// モーション設定
 
@@ -427,6 +449,10 @@ void CPlayer::Controller(void)
 
 	case ACTION_SLIDEJUMP:
 		fIner = SLIDEJUMP_INER;
+		break;
+
+	case ACTION_RIDERKICK:
+		fIner = 0.0f;
 		break;
 
 	default:
@@ -991,6 +1017,12 @@ void CPlayer::Gravity(void)
 		}
 		break;
 
+	case ACTION_RIDERKICK:
+
+		fGravity = 0.0f;
+
+		break;
+
 	default:
 
 		break;
@@ -1319,13 +1351,25 @@ void CPlayer::MotionSet(void)
 
 		case ACTION_AXEKICK:
 		{
-			if (m_pBody->GetMotion()->GetEnd())
+			if (m_pBody->GetMotion()->GetEnd() && !m_bJump)
 			{// モーション終了
 				SetAction(ACTION_NEUTRAL);
 			}
 
-			m_pBody->GetMotion()->BlendSet(m_nAction);
-			m_pLeg->GetMotion()->BlendSet(m_nAction);
+			m_pBody->GetMotion()->Set(m_nAction);
+			m_pLeg->GetMotion()->Set(m_nAction);
+		}
+		break;
+
+		case ACTION_RIDERKICK:
+		{
+			if (m_pBody->GetMotion()->GetEnd() && !m_bJump)
+			{// モーション終了
+				SetAction(ACTION_NEUTRAL);
+			}
+
+			m_pBody->GetMotion()->Set(m_nAction);
+			m_pLeg->GetMotion()->Set(m_nAction);
 		}
 		break;
 
@@ -1382,12 +1426,44 @@ void CPlayer::MotionSet(void)
 //===============================================
 void CPlayer::Attack(void)
 {
-	if (m_nAction == ACTION_NORMALATK || m_nAction == ACTION_AXEKICK) {
+	if (m_nAction == ACTION_NORMALATK || m_nAction == ACTION_AXEKICK || m_nAction == ACTION_RIDERKICK) {
 		return;
 	}
 
 	CInputKeyboard* pInputKey = CManager::GetInstance()->GetInputKeyboard();	// キーボードのポインタ
 	CInputPad* pInputPad = CManager::GetInstance()->GetInputPad();				// パッドのポインタ
+
+	if (m_nAction == ACTION_WALLKICK || m_nActionOld == ACTION_WALLKICK) {	// 直前、もしくは現在壁キック状態
+
+		if (pInputKey->GetPress(DIK_I) || pInputPad->GetPress(CInputPad::BUTTON_Y, m_nId)) {
+			m_fAtkChargeCnter += 1.0f;
+
+			if (m_fAtkChargeCnter >= SLOW_KICKCHARGE) {	// 攻撃チャージしている
+
+			}
+
+			return;
+		}
+		else {
+
+			if (m_fAtkChargeCnter <= 0.0f) {	// 攻撃をchargeしていない
+				return;
+			}
+			else if(m_fAtkChargeCnter >= SLOW_KICKCHARGE) {	// チャージしている
+				//m_pTarget = ;
+			}
+			else {	// 即出し
+				NearLockOn();	// 攻撃対象を決める
+			}
+
+			if (m_pTarget != nullptr) {	// 攻撃対象が存在
+				SetAction(ACTION_RIDERKICK);
+			}
+
+			m_fAtkChargeCnter = 0.0f;
+			m_Info.move = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+		}
+	}
 
 	if (pInputKey->GetTrigger(DIK_I) || pInputPad->GetTrigger(CInputPad::BUTTON_Y, m_nId)) {
 		// 現在の状態によって攻撃方法を変える
@@ -1616,7 +1692,7 @@ void CPlayer::Hit(void)
 		return;
 	}
 
-	if (m_nAction != ACTION_NORMALATK) {	// 攻撃中ではない場合
+	if (m_nAction != ACTION_NORMALATK && m_nAction != ACTION_RIDERKICK && m_nAction != ACTION_AXEKICK) {	// 攻撃中ではない場合
 		return;
 	}
 
@@ -1631,6 +1707,13 @@ void CPlayer::Hit(void)
 			m_nAction = ACTION_KICKUP;
 			m_Info.move = { 0.0f, 0.0f, 0.0f };	// 移動量リセット
 			m_Info.move.y = KICKUP_JUMP;
+		}
+		else if (m_nAction == ACTION_RIDERKICK) {
+			//m_nAction = ACTION_NEUTRAL;
+			m_nAction = ACTION_KICKUP;
+			m_Info.move = { 0.0f, 0.0f, 0.0f };	// 移動量リセット
+			m_Info.move.y = KICKUP_JUMP;
+			m_pTarget = nullptr;
 		}
 	}
 }
@@ -1657,5 +1740,86 @@ void CPlayer::SetAction(const ACTION action)
 	if (m_nAction != action) {
 		m_nActionOld = m_nAction;
 		m_nAction = action;
+	}
+}
+
+//===============================================
+// ロックオン処理
+//===============================================
+void CPlayer::NearLockOn(void)
+{
+	CEnemy* pEnemy = CEnemyManager::GetInstance()->GetTop();
+	float fMinLength = KICK_LENGTH;
+	m_pTarget = nullptr;
+	D3DXVECTOR3 MyPos = GetPosition();
+
+	// もっとも近い敵を見つける
+	while (pEnemy != nullptr) {
+		CEnemy* pEnemyNext = pEnemy->GetNext();
+		D3DXVECTOR3 EnemPos = pEnemy->GetPosition();
+
+		float fLength = sqrtf((EnemPos.x - MyPos.x) * (EnemPos.x - MyPos.x)	// 距離を取得
+			+ (EnemPos.z - MyPos.z) * (EnemPos.z - MyPos.z));
+
+		if (fLength > KICK_LENGTH) {
+			pEnemy = pEnemyNext;
+			continue;
+		}
+
+		if (m_pTarget == nullptr) {	// まだ誰もロックオンしていない
+			m_pTarget = pEnemy;
+			fMinLength = fLength;
+		}
+		else if (fLength <= fMinLength) {	// 現在ロックオンしている敵よりも近い
+			m_pTarget = pEnemy;
+			fMinLength = fLength;
+		}
+
+		pEnemy = pEnemyNext;
+	}
+}
+
+//===============================================
+// ライダーキック中処理
+//===============================================
+void CPlayer::RiderKick(void)
+{
+	if (!BodyCheck(m_pLeg)) {
+		return;
+	}
+
+	if (m_pTarget == nullptr) {
+		return;
+	}
+
+	// 目標向き設定
+	D3DXVECTOR3 MyPos = GetPosition();	// 自分の座標
+	D3DXVECTOR3 pos = m_pTarget->GetPosition();
+	{
+		float fDiff = m_fRotDest;
+		fDiff = atan2f(pos.x - MyPos.x, pos.z - MyPos.z) + D3DX_PI;
+		if (fDiff < -D3DX_PI) {
+			fDiff += D3DX_PI * 2;
+		}
+		else if (fDiff > D3DX_PI) {
+			fDiff += -D3DX_PI * 2;
+		}
+		m_fRotDest = fDiff;
+	}
+
+	if (!m_pLeg->GetMotion()->GetEnd()) {
+		return;
+	}
+
+	// 移動量を設定
+	{
+		float fSpeed = RIDERKICK_SPEED;
+
+		D3DXVECTOR3 move = m_Info.move;
+		D3DXVECTOR3 nor = pos - MyPos;
+		D3DXVec3Normalize(&nor, &nor);
+		move = nor * fSpeed;
+
+		m_Info.move = move;
 	}
 }

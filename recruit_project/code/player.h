@@ -16,6 +16,7 @@
 class CWaist;
 class CCharacter;
 class CCamera;
+class CEnemy;
 
 // マクロ定義
 #define MAX_ITEM  (1280)  // 所持できるアイテムの最大数
@@ -52,6 +53,7 @@ public:
 		ACTION_CEILINGDUSH,		// 天井走り
 		ACTION_KICKUP,			// 蹴りあがり
 		ACTION_AXEKICK,			// かかと落とし
+		ACTION_RIDERKICK,		// ライダーキック
 		ACTION_MAX
 	};
 
@@ -74,8 +76,8 @@ private:	// 自分だけがアクセス可能な定義
 		D3DXVECTOR3 pos;		// 位置
 		D3DXVECTOR3 rot;		// 向き
 		D3DXVECTOR3 move;		// 移動量
-		float fSlideMove;	// スライディング開始移動量
-		D3DXVECTOR3 posOld;	// 設定位置
+		float fSlideMove;		// スライディング開始移動量
+		D3DXVECTOR3 posOld;		// 設定位置
 		D3DXMATRIX mtxWorld;	// ワールドマトリックス
 		D3DXVECTOR3 posDiff;	// 目標の座標
 		STATE state;			// 状態
@@ -146,6 +148,8 @@ private:	// 自分だけがアクセス可能
 	bool BodyCheck(CCharacter* pBody);
 	void CeilingDush(void);
 	void SetAction(const ACTION action);
+	void NearLockOn(void);
+	void RiderKick(void);
 
 	// メンバ変数
 	CPlayer *m_pPrev;		// 前のオブジェクトへのポインタ
@@ -158,11 +162,13 @@ private:	// 自分だけがアクセス可能
 	TYPE m_type;
 	D3DXVECTOR3 m_ColiNor;	// 当たり判定ベクトル
 	D3DXVECTOR3 m_MoveNor;	// 移動方向ベクトル
+	CEnemy* m_pTarget;		// ロックオン対象
 	float m_fRotMove;		// 現在の角度
 	float m_fRotDiff;		// 目的の角度
 	float m_fRotDest;		// 角度計算
 	float m_fCamRotZ;		// 保存カメラ向き
 	float m_fCamLength;		// 保存カメラ距離
+	float m_fAtkChargeCnter;	// 攻撃chargeカウンタ
 	int m_nId;				// ID
 	int m_nAction;			// 現在のアクション
 	int m_nActionOld;		// 前回のアクション

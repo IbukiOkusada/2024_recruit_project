@@ -16,31 +16,13 @@ int CTexture::m_nNumAll = 0;	// ì«Ç›çûÇ›ëçêî
 const char *CTexture::m_apDefFileName[TYPE_MAX] =
 {
 	"data\\TEXTURE\\effect000.jpg",
-	"data\\TEXTURE\\money0.png",
-	"data\\TEXTURE\\frame0.png",
-	"data\\TEXTURE\\frame1.png",
-	"data\\TEXTURE\\frame2.png",
-	"data\\TEXTURE\\frame3.png",
-	"data\\TEXTURE\\player_icon0.png",
-	"data\\TEXTURE\\player_icon1.png",
-	"data\\TEXTURE\\player_icon2.png",
-	"data\\TEXTURE\\player_icon3.png",
 	"data\\TEXTURE\\number004.png",
-	"data\\TEXTURE\\heartL_0.png",
-	"data\\TEXTURE\\heartR_0.png",
 	"data\\TEXTURE\\smook.png",
-	"data\\TEXTURE\\rank00.png",
-	"data\\TEXTURE\\ranking_one00.png",
-	"data\\TEXTURE\\ranking_team00.png",
-	"data\\TEXTURE\\new_record00.png",
-	"data\\TEXTURE\\rank01.png",
-	"data\\TEXTURE\\clear000.png",
-	"data\\TEXTURE\\clear001.png",
 	"data\\TEXTURE\\effect000.png",
 	"data\\TEXTURE\\effect001.png",
 	"data\\TEXTURE\\effect002.png",
 	"data\\TEXTURE\\effect003.png",
-	"data\\TEXTURE\\warning000.png",
+	"data\\TEXTURE\\lockon000.png",
 };
 
 //===============================================

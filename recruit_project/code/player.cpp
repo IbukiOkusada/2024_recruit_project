@@ -37,6 +37,7 @@
 #include "enemy_manager.h"
 #include "player_manager.h"
 #include "enemy.h"
+#include "lockon.h"
 
 //===============================================
 // マクロ定義
@@ -77,7 +78,7 @@ namespace {
 	const float KICKUP_JUMP = (21.0f);
 	const float AXEKICK_ROTZ = (D3DX_PI * 0.21f);
 	const float AXEKICK_CAMERALENGTH = (400.0f);
-	const float SLOW_KICKCHARGE = (10.0f);
+	const float SLOW_KICKCHARGE = (15.0f);
 	const D3DXVECTOR3 COLLIMAX = { 20.0f, 70.0f, 20.0f };
 	const D3DXVECTOR3 COLLIMIN = { -20.0f, 0.0f, -20.0f };
 	const float KICK_LENGTH = (1000.0f);	// 攻撃範囲
@@ -120,6 +121,8 @@ CPlayer::CPlayer()
 	m_bMove = false;
 	m_nLife = 5;
 	m_Info.fSlideMove = 0.0f;
+	m_pLockOn = nullptr;
+	m_pTarget = nullptr;
 
 	CPlayerManager::GetInstance()->ListIn(this);
 }
@@ -184,6 +187,7 @@ HRESULT CPlayer::Init(void)
 	m_Info.state = STATE_APPEAR;
 	m_nAction = ACTION_NEUTRAL;
 	m_type = TYPE_NONE;
+	
 
 	return S_OK;
 }
@@ -258,6 +262,9 @@ HRESULT CPlayer::Init(const char *pBodyName, const char *pLegName)
 	m_type = TYPE_NONE;
 	SetAction(ACTION_NEUTRAL);
 
+	// ロックオンの生成
+	m_pLockOn = CLockOn::Create(&m_Info.mtxWorld, CLockOn::TYPE_TARGET);
+
 	//m_pScore->AddScore(500 * m_nItemCnt);
 
 	return S_OK;
@@ -286,6 +293,11 @@ void CPlayer::Uninit(void)
 	if (m_pWaist != nullptr){
 		delete m_pWaist;
 		m_pWaist = nullptr;
+	}
+
+	if (m_pLockOn != nullptr) {
+		m_pLockOn->Uninit();
+		m_pLockOn = nullptr;
 	}
 
 	CPlayerManager::GetInstance()->ListOut(this);
@@ -364,7 +376,7 @@ void CPlayer::Update(void)
 	BodySet();
 
 	CManager::GetInstance()->GetDebugProc()->Print("アクション[ %d ], 前回のアクション [ %d ]\n", m_nAction, m_nActionOld);
-	CManager::GetInstance()->GetDebugProc()->Print("体力 [ %d ]\n", m_nLife);
+	CManager::GetInstance()->GetDebugProc()->Print("体力 [ %d ], 向き [ %f ]\n", m_nLife, m_Info.rot.y);
 }
 
 //===============================================
@@ -493,6 +505,12 @@ void CPlayer::Controller(void)
 			else if (m_nAction == ACTION_SLIDEJUMP) {
 				SetAction(ACTION_NEUTRAL);
 			}
+
+			if (m_fAtkChargeCnter > 0.0f) {
+				m_fAtkChargeCnter = 0.0f;
+				CManager::GetInstance()->GetSlow()->SetSlow(false);
+				m_pLockOn->SetLock(false);
+			}
 		}
 	}
 
@@ -526,6 +544,12 @@ void CPlayer::Controller(void)
 		}
 		else if (m_nAction == ACTION_SLIDEJUMP) {
 			SetAction(ACTION_NEUTRAL);
+		}
+
+		if (m_fAtkChargeCnter > 0.0f) {
+			m_fAtkChargeCnter = 0.0f;
+			CManager::GetInstance()->GetSlow()->SetSlow(false);
+			m_pLockOn->SetLock(false);
 		}
 	}
 
@@ -808,7 +832,7 @@ void CPlayer::Jump(void)
 	CInputPad *pInputPad = CManager::GetInstance()->GetInputPad();
 
 	// 入力
-	if (pInputPad->GetTrigger(CInputPad::BUTTON_B, m_nId) || pInputKey->GetTrigger(DIK_SPACE))
+	if (pInputPad->GetTrigger(CInputPad::BUTTON_LEFTBUTTON, m_nId) || pInputKey->GetTrigger(DIK_SPACE))
 	{
 		if (m_bJump == false)
 		{// ジャンプしていない場合
@@ -946,7 +970,7 @@ void CPlayer::WallDush(void)
 	CInputKeyboard* pInputKey = CManager::GetInstance()->GetInputKeyboard();	// キーボードのポインタ
 
 	// 入力中
-	if (pInputPad->GetPress(CInputPad::BUTTON_B, m_nId) || pInputKey->GetPress(DIK_SPACE)) {
+	if (pInputPad->GetPress(CInputPad::BUTTON_LEFTBUTTON, m_nId) || pInputKey->GetPress(DIK_SPACE)) {
 		SetAction(ACTION_WALLDUSH);
 	}
 	else {	// 離した
@@ -979,7 +1003,7 @@ void CPlayer::CeilingDush(void)
 	}
 
 	// 入力中
-	if (pInputPad->GetPress(CInputPad::BUTTON_B, m_nId) || pInputKey->GetPress(DIK_SPACE)) {
+	if (pInputPad->GetPress(CInputPad::BUTTON_LEFTBUTTON, m_nId) || pInputKey->GetPress(DIK_SPACE)) {
 		SetAction(ACTION_CEILINGDUSH);
 		m_Info.move.y = JUMP;
 	}
@@ -1435,11 +1459,16 @@ void CPlayer::Attack(void)
 
 	if (m_nAction == ACTION_WALLKICK || m_nActionOld == ACTION_WALLKICK) {	// 直前、もしくは現在壁キック状態
 
-		if (pInputKey->GetPress(DIK_I) || pInputPad->GetPress(CInputPad::BUTTON_Y, m_nId)) {
+		if (pInputKey->GetPress(DIK_I) || pInputPad->GetPress(CInputPad::BUTTON_RIGHTBUTTON, m_nId)) {
 			m_fAtkChargeCnter += 1.0f;
 
 			if (m_fAtkChargeCnter >= SLOW_KICKCHARGE) {	// 攻撃チャージしている
+				if (m_pLockOn == nullptr) {	// ロックオンが存在しない
+					return;
+				}
 
+				m_pLockOn->SetLock(true);
+				CManager::GetInstance()->GetSlow()->SetSlow(true);
 			}
 
 			return;
@@ -1450,7 +1479,11 @@ void CPlayer::Attack(void)
 				return;
 			}
 			else if(m_fAtkChargeCnter >= SLOW_KICKCHARGE) {	// チャージしている
-				//m_pTarget = ;
+				if (m_pLockOn != nullptr) {	// ロックオンが存在
+					m_pTarget = m_pLockOn->GetEnemy();
+					m_pLockOn->SetLock(false);
+				}
+				CManager::GetInstance()->GetSlow()->SetSlow(false);
 			}
 			else {	// 即出し
 				NearLockOn();	// 攻撃対象を決める
@@ -1465,7 +1498,7 @@ void CPlayer::Attack(void)
 		}
 	}
 
-	if (pInputKey->GetTrigger(DIK_I) || pInputPad->GetTrigger(CInputPad::BUTTON_Y, m_nId)) {
+	if (pInputKey->GetTrigger(DIK_I) || pInputPad->GetTrigger(CInputPad::BUTTON_RIGHTBUTTON, m_nId)) {
 		// 現在の状態によって攻撃方法を変える
 		switch (m_nAction) {
 		case ACTION_KICKUP:

@@ -22,6 +22,7 @@ protected:
 		TYPE_MELEE = 0,		// 近接型(近距離)
 		TYPE_SHIELD,		// 盾持ち
 		TYPE_GUN,			// 銃(遠距離)
+		TYPE_BOSS,			// ボス
 		TYPE_MAX
 	};
 
@@ -53,6 +54,7 @@ public:	// 誰でもアクセス可能
 	D3DXVECTOR3 GetPosition(void) const { return m_Info.pos; }
 	D3DXVECTOR3 GetRotation(void) const { return m_Info.rot; }
 	D3DXVECTOR3 GetMove(void) const { return m_Info.move; }
+	D3DXMATRIX* GetMtx(void) { return &m_Info.mtxWorld; }
 	float GetRotDiff(void) { return m_fRotDiff; }
 	float GetRotMove(void) { return m_fRotMove; }
 
@@ -80,6 +82,7 @@ protected:
 	void InfoReset(void);
 	void AddMove(void);
 	void SetIner(const float fIner) { m_fMoveIner = fIner; }
+	void SetRotMulti(const float fMulti) { m_fRotMulti = fMulti; }
 
 private:	// 自分だけがアクセス可能
 
@@ -95,6 +98,7 @@ private:	// 自分だけがアクセス可能
 	float m_fRotMove;	// 現在の角度
 	float m_fRotDiff;	// 目的の角度
 	float m_fMoveIner;	// 移動量の慣性設定
+	float m_fRotMulti;	// 向きの補正速度
 };
 
 #endif

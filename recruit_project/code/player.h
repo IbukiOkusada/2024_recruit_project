@@ -17,6 +17,7 @@ class CWaist;
 class CCharacter;
 class CCamera;
 class CEnemy;
+class CLockOn;
 
 // マクロ定義
 #define MAX_ITEM  (1280)  // 所持できるアイテムの最大数
@@ -41,7 +42,7 @@ public:
 	// アクション列挙型
 	enum ACTION
 	{
-		ACTION_NEUTRAL = 0,	// 待機
+		ACTION_NEUTRAL = 0,		// 待機
 		ACTION_WALK,			// 歩行
 		ACTION_JUMP,			// ジャンプ
 		ACTION_SLIDING,			// スライディング
@@ -55,6 +56,16 @@ public:
 		ACTION_AXEKICK,			// かかと落とし
 		ACTION_RIDERKICK,		// ライダーキック
 		ACTION_MAX
+	};
+
+	// 攻撃種類
+	enum ATK
+	{
+		ATK_NORMAL = 0,	// 通常
+		ATK_AXEKICK,	// かかと落とし
+		ATK_RIDERKICK,	// ライダーキック
+		ATK_SLOWKICK,	// スローライダーキック
+		ATK_MAX
 	};
 
 private:	// 自分だけがアクセス可能な定義
@@ -163,6 +174,7 @@ private:	// 自分だけがアクセス可能
 	D3DXVECTOR3 m_ColiNor;	// 当たり判定ベクトル
 	D3DXVECTOR3 m_MoveNor;	// 移動方向ベクトル
 	CEnemy* m_pTarget;		// ロックオン対象
+	CLockOn* m_pLockOn;		// ロックオン
 	float m_fRotMove;		// 現在の角度
 	float m_fRotDiff;		// 目的の角度
 	float m_fRotDest;		// 角度計算

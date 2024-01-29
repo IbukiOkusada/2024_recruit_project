@@ -239,14 +239,6 @@ void CTime::Add(int nValue)
 	if (m_pWarning != nullptr) {	// ‚·‚Å‚ÉŒx‚ª•\Ž¦’†
 		return;
 	}
-
-	// Œx‚ð¶¬
-	m_pWarning = CObject2D::Create(WARNING_SETPOS, WARNING_SETROT, 6);
-
-	if (m_pWarning != nullptr) {	// ¶¬‚Å‚«‚½
-		m_pWarning->SetLength(WARNING_SIZE.x, WARNING_SIZE.y);
-		m_pWarning->BindTexture(CTexture::TYPE_WARNING);
-	}
 }
 
 //===============================================

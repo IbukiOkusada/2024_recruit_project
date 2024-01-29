@@ -10,8 +10,8 @@
 #include "debugproc.h"
 
 // マクロ定義
-#define MAX_SLOWTIME	(5)		// スローの限界時間
-#define BOOST_CNT		(10)	// スロー量増加タイマー
+#define MAX_SLOWTIME	(10)		// スローの限界時間
+#define BOOST_CNT		(3)	// スロー量増加タイマー
 
 //==========================================================
 // コンストラクタ

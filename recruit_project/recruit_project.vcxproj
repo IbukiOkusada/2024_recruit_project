@@ -162,6 +162,7 @@
     <ClCompile Include="code\debugproc.cpp" />
     <ClCompile Include="code\effect.cpp" />
     <ClCompile Include="code\enemy.cpp" />
+    <ClCompile Include="code\enemy_boss.cpp" />
     <ClCompile Include="code\enemy_gun.cpp" />
     <ClCompile Include="code\enemy_manager.cpp" />
     <ClCompile Include="code\enemy_melee.cpp" />
@@ -170,6 +171,7 @@
     <ClCompile Include="code\game.cpp" />
     <ClCompile Include="code\input.cpp" />
     <ClCompile Include="code\light.cpp" />
+    <ClCompile Include="code\lockon.cpp" />
     <ClCompile Include="code\main.cpp" />
     <ClCompile Include="code\manager.cpp" />
     <ClCompile Include="code\mesh.cpp" />
@@ -222,6 +224,7 @@
     <ClInclude Include="code\debugproc.h" />
     <ClInclude Include="code\effect.h" />
     <ClInclude Include="code\enemy.h" />
+    <ClInclude Include="code\enemy_boss.h" />
     <ClInclude Include="code\enemy_gun.h" />
     <ClInclude Include="code\enemy_manager.h" />
     <ClInclude Include="code\enemy_melee.h" />
@@ -230,6 +233,7 @@
     <ClInclude Include="code\game.h" />
     <ClInclude Include="code\input.h" />
     <ClInclude Include="code\light.h" />
+    <ClInclude Include="code\lockon.h" />
     <ClInclude Include="code\main.h" />
     <ClInclude Include="code\manager.h" />
     <ClInclude Include="code\mesh.h" />

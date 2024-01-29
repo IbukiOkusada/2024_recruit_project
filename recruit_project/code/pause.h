@@ -31,7 +31,7 @@ private:	// 自分だけがアクセス可能な定義
 		TYPE_CONTINUE = 0,	// ゲームに戻る
 		TYPE_RETRY,			// ゲームをやり直す
 		TYPE_QUIT,			// タイトル画面に戻る
-		TYPE_BG,				// 背景
+		TYPE_BG,			// 背景
 		TYPE_MAX
 	};
 

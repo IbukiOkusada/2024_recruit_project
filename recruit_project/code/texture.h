@@ -24,31 +24,13 @@ public:	// 誰でもアクセス可能な定義
 	enum TYPE
 	{
 		TYPE_EFFECT = 0,		// エフェクト
-		TYPE_MONEY,				// スコアの単位
-		TYPE_FRAME0,			// 枠0
-		TYPE_FRAME1,			// 枠1
-		TYPE_FRAME2,			// 枠2
-		TYPE_FRAME3,			// 枠3
-		TYPE_PLAYER0,			// プレイヤーの顔0
-		TYPE_PLAYER1,			// プレイヤーの顔1
-		TYPE_PLAYER2,			// プレイヤーの顔2
-		TYPE_PLAYER3,			// プレイヤーの顔3
 		TYPE_TIMER,			//  タイム
-		TYPE_LIFE0,			// 体力0
-		TYPE_LIFE1,			// 体力1
 		TYPE_SMOOK,          // 煙
-		TYPE_RANK,			// 順位
-		TYPE_RANK_ONE,		// 個人スコア
-		TYPE_RANK_TEAM,		// チームスコア
-		TYPE_RANK_NEW,		// スコア更新
-		TYPE_RESULTRANK,		// リザルト
-		TYPE_RESULTCLEAR,		// ノルマ達成
-		TYPE_RESULTFAILED,	// ノルマ失敗
 		TYPE_ITEMGET_EF,		// アイテム獲得エフェクト
 		TYPE_WOODPOW,			// 木っ端
 		TYPE_WALK,			// 歩き
 		TYPE_AIRWOOD,			// 風で舞った木っ端
-		TYPE_WARNING,			// 警告
+		TYPE_LOCKON,
 		TYPE_MAX				   
 	};
 

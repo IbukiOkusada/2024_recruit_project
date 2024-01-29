@@ -24,10 +24,11 @@ CEnemy::CEnemy()
 	m_Info.rot = { 0.0f, 0.0f, 0.0f };
 	m_Info.move = { 0.0f, 0.0f, 0.0f };
 	m_Info.posOld = { 0.0f, 0.0f, 0.0f };
-	m_nLife = 3;
+	m_nLife = 8;
 	m_fRotMove = 0.0f;
 	m_fRotDiff = 0.0f;
 	m_fMoveIner = 0.0f;
+	m_fRotMulti = ROT_MULTI;
 
 	// ƒŠƒXƒg‚É‘}“ü
 	CEnemyManager::GetInstance()->ListIn(this);
@@ -72,6 +73,10 @@ void CEnemy::Update(void)
 	SetMatrix();
 
 	CManager::GetInstance()->GetDebugProc()->Print("“G‚Ì‘Ì—Í [ %d ]\n", m_nLife);
+
+	if (m_Info.pos.y <= 0.0f) {
+		Uninit();
+	}
 }
 
 //===============================================
@@ -158,7 +163,7 @@ void CEnemy::Adjust(void)
 		}
 	}
 
-	m_Info.rot.y += fRotDest * ROT_MULTI;
+	m_Info.rot.y += fRotDest * m_fRotMulti;
 
 	while (1)
 	{

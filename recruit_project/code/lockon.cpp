@@ -30,10 +30,12 @@
 #define MINUS_SIZE		(30.0f)		// サイズ変更
 #define ADD_COLA		(0.1f)		// 色
 #define SHOT_LENGTH		(1500.0f)
+#define MAX_LOCKON		(5)
 
 // 静的メンバ変数
 CLockOn *CLockOn::m_pTop = NULL;	// 先頭のオブジェクトへのポインタ
 CLockOn *CLockOn::m_pCur = NULL;	// 最後尾のオブジェクトへのポインタ
+int CLockOn::m_nNum = 0;
 
 //==========================================================
 // コンストラクタ
@@ -60,6 +62,8 @@ CLockOn::CLockOn()
 		m_pTop = this;	// 自分自身が先頭になる
 		m_pCur = this;	// 自分自身が最後尾になる
 	}
+
+	m_nNum++;
 }
 
 //==========================================================
@@ -67,7 +71,7 @@ CLockOn::CLockOn()
 //==========================================================
 CLockOn::~CLockOn()
 {
-
+	m_nNum--;
 }
 
 //==========================================================
@@ -83,7 +87,7 @@ HRESULT CLockOn::Init(void)
 
 	m_pObj->BindTexture(CTexture::TYPE_LOCKON);
 
-	m_pObj->SetDraw(false);
+	//m_pObj->SetDraw(false);
 
 	m_bUse = false;
 
@@ -114,6 +118,43 @@ void CLockOn::Update(void)
 
 	if (m_bUse == false && m_type == TYPE_TARGET)
 	{
+		return;
+	}
+	else if (m_type != TYPE_TARGET)
+	{
+		m_pObj->SetPosition(D3DXVECTOR3(m_pTarget->GetMtx()->_41, m_pTarget->GetMtx()->_42 + 50.0f, m_pTarget->GetMtx()->_43));
+
+		float fSize = m_pObj->GetWidth();
+		D3DXCOLOR col = m_pObj->GetCol();
+		D3DXVECTOR3 rot = m_pObj->GetRotation();
+
+		if (fSize > MULTIDEF_SIZE)
+		{// 既定のサイズより大きい
+			fSize -= MULTIMINUS_SIZE;
+			col.a += MULTIADD_COLA;
+			rot.z += D3DX_PI * 0.025f;
+
+			if (fSize < MULTIDEF_SIZE)
+			{
+				fSize = MULTIDEF_SIZE;
+				rot.z = 0.0f;
+			}
+
+			if (col.a > 1.0f)
+			{
+				col.a = 1.0f;
+			}
+
+			if (rot.z > D3DX_PI)
+			{
+				rot.z += -D3DX_PI * 2;
+			}
+
+			m_pObj->SetRotation(rot);
+			m_pObj->SetSize(fSize, fSize);
+			m_pObj->SetCol(col);
+		}
+
 		return;
 	}
 
@@ -241,7 +282,23 @@ void CLockOn::LockOn(void)
 
 		CLockOn* pLock = m_pTop;	// 先頭を取得
 
-		if (pOldObj != NULL)
+		while (pLock != NULL)
+		{// 使用されている間繰り返し
+			CLockOn* pLockNext = pLock->m_pNext;	// 次を保持
+
+			if (pLock->m_bDeath == false && pLock->m_type == TYPE_MULTI)
+			{
+				if (pLock->m_pTarget == pObj)
+				{// 同じ標的の場合
+					pObj = NULL;
+					break;
+				}
+			}
+
+			pLock = pLockNext;	// 次に移動
+		}
+
+		if (pOldObj != NULL && pObj != nullptr)
 		{// 一番近いオブジェクトがある場合
 
 			D3DXVECTOR3 OldPos = pOldObj->GetPosition();
@@ -297,16 +354,28 @@ void CLockOn::LockOn(void)
 		}
 
 		
-		m_pObj->SetPosition(D3DXVECTOR3(pOldObj->GetPosition().x, pOldObj->GetPosition().y + 30.0f, pOldObj->GetPosition().z));
-		if (m_pTarget != pObj)
-		{
-			m_pObj->SetSize(START_SIZE, START_SIZE);
-			m_pObj->SetCol(D3DXCOLOR(m_pObj->GetCol().r, m_pObj->GetCol().g, m_pObj->GetCol().b, 0.3f));
-			m_pObj->SetDraw(true);
-		}
+		{// スローしている
+			if (CManager::GetInstance()->GetSlow()->Get() < 1.0f)
+			{
+				m_bLock = false;
+				m_pObj->SetSize(0.0f, 0.0f);
+				m_pTarget = NULL;
 
-		m_bLock = true;
-		m_pTarget = pObj;
+				if (m_nNum < MAX_LOCKON) {
+					CLockOn* pLock = CLockOn::Create(pObj->GetMtx(), CLockOn::TYPE_MULTI);
+					pLock->SetTag(pObj);
+					pLock->GetObj()->SetCol(D3DXCOLOR(m_nNum * 0.2f, 1.0f - m_nNum * 0.2f, 0.5f, 0.3f));
+					pLock->SetLock(true);
+					pLock->GetObj()->SetDraw(true);
+				}
+			}
+			else
+			{
+				m_bLock = false;
+				m_pObj->SetSize(0.0f, 0.0f);
+				m_pTarget = NULL;
+			}
+		}
 	}
 	else
 	{
@@ -315,6 +384,41 @@ void CLockOn::LockOn(void)
 		m_pObj->SetDraw(false);
 		m_pTarget = NULL;
 	}
+
+	//if (pObj != NULL)
+	//{// 使用されている場合
+	//	EnemyPos.x = pObj->GetMtx()->_41;
+	//	EnemyPos.y = pObj->GetMtx()->_42;
+	//	EnemyPos.z = pObj->GetMtx()->_43;
+	//	// 今回のモデルとプレイヤーの距離を求める
+	//	float fObjLength =
+	//		sqrtf((EnemyPos.x - m_pMtx->_41) * (EnemyPos.x - m_pMtx->_41)
+	//			+ (EnemyPos.z - m_pMtx->_43) * (EnemyPos.z - m_pMtx->_43));
+
+	//	if (fObjLength >= SHOT_LENGTH)
+	//	{
+	//		m_bLock = false;
+	//		m_pObj->SetSize(0.0f, 0.0f);
+	//		m_pTarget = NULL;
+	//		return;
+	//	}	
+	//	m_pObj->SetPosition(D3DXVECTOR3(pOldObj->GetPosition().x, pOldObj->GetPosition().y + 30.0f, pOldObj->GetPosition().z));
+	//	if (m_pTarget != pObj)
+	//	{
+	//		m_pObj->SetSize(START_SIZE, START_SIZE);
+	//		m_pObj->SetCol(D3DXCOLOR(m_pObj->GetCol().r, m_pObj->GetCol().g, m_pObj->GetCol().b, 0.3f));
+	//		m_pObj->SetDraw(true);
+	//	}
+	//	m_bLock = true;
+	//	m_pTarget = pObj;
+	//}
+	//else
+	//{
+	//	m_bLock = false;
+	//	m_pObj->SetSize(0.0f, 0.0f);
+	//	m_pObj->SetDraw(false);
+	//	m_pTarget = NULL;
+	//}
 }
 
 //==========================================================
@@ -388,5 +492,47 @@ void  CLockOn::SetLock(bool bLock)
 		if (m_pObj != nullptr) {
 			m_pObj->SetDraw(false);
 		}
+	}
+}
+
+//===============================================
+// 死亡確認
+//===============================================
+void CLockOn::Check(CEnemy* pObject)
+{
+	CLockOn* pLock = m_pTop;	// 先頭を取得
+
+	while (pLock != NULL)
+	{// 使用されている間繰り返し
+		CLockOn* pLockNext = pLock->m_pNext;	// 次を保持
+
+		if (pLock->m_bDeath == false && pLock->m_type == TYPE_MULTI)
+		{
+			if (pLock->m_pTarget == pObject)
+			{// 同じ標的の場合
+				pLock->Uninit();
+			}
+		}
+
+		pLock = pLockNext;	// 次に移動
+	}
+}
+
+//===============================================
+// multiターゲット削除
+//===============================================
+void CLockOn::MultiDeath(void)
+{
+	CLockOn* pLock = m_pTop;	// 先頭を取得
+
+	while (pLock != NULL)
+	{// 使用されている間繰り返し
+		CLockOn* pLockNext = pLock->m_pNext;	// 次を保持
+
+		if (pLock->m_bDeath == false && pLock->m_type == TYPE_MULTI)
+		{
+			pLock->Uninit();
+		}
+		pLock = pLockNext;	// 次に移動
 	}
 }

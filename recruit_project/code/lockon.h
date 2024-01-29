@@ -18,12 +18,13 @@ class CObjectBillboard;
 //**********************************************************
 class CLockOn : public CTask
 {
-public:		// 誰でもアクセス可能な定義
+public:	// 誰でもアクセス可能な定義
 	// ロックオン種類
 	typedef enum 
 	{
 		TYPE_NONE = 0,	// 何もない
 		TYPE_TARGET,	// 単体ロックオン
+		TYPE_MULTI,		// 複数ロックオン
 		TYPE_MAX
 	}TYPE;
 
@@ -41,12 +42,15 @@ public:	// 誰でもアクセス可能
 	void SetLock(bool bLock);
 	static CLockOn *Create(D3DXMATRIX *pMtx, TYPE type = TYPE_TARGET);
 	void SetTag(CEnemy *pEnemy) { m_pTarget = pEnemy; }
-	void DeathCheck(void);
 	static CLockOn *GetTop(void) { return m_pTop; }
 	CLockOn *GetNext(void) { return m_pNext; }
 	CEnemy *GetEnemy(void) { return m_pTarget; }
 	TYPE GetType(void) { return m_type; }
 	bool GetDeath(void) { return m_bDeath; }
+	static void Check(CEnemy* pObject);
+	CObjectBillboard* GetObj(void) { return m_pObj; }
+	void DeathCheck(void);
+	static void MultiDeath(void);
 
 private:	// 自分だけがアクセス可能
 
@@ -55,6 +59,7 @@ private:	// 自分だけがアクセス可能
 
 	static CLockOn *m_pTop;	// 先頭のオブジェクトへのポインタ
 	static CLockOn *m_pCur;	// 最後尾のオブジェクトへのポインタ
+	static int m_nNum;
 	CLockOn *m_pPrev;		// 前のオブジェクトへのポインタ
 	CLockOn *m_pNext;		// 次のオブジェクトへのポインタ
 	CEnemy *m_pTarget;			// ロックオンするモデル

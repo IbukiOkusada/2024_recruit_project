@@ -147,7 +147,7 @@ void CEnemyManager::ListOut(CEnemy* pEnemy)
 //==========================================================
 // 攻撃ヒット確認
 //==========================================================
-bool CEnemyManager::Hit(D3DXVECTOR3& pos, const float fRange, const int nDamage)
+bool CEnemyManager::Hit(D3DXVECTOR3& pos, const float fRange, const int nDamage, CEnemy* pTarget)
 {
 	CEnemy* pEnemy = m_pTop;
 	bool bhit = false;
@@ -155,6 +155,10 @@ bool CEnemyManager::Hit(D3DXVECTOR3& pos, const float fRange, const int nDamage)
 	//個別判定
 	while (pEnemy != nullptr) {
 		CEnemy* pEnemyNext = pEnemy->GetNext();
+		if (pTarget != nullptr && pTarget != pEnemy) { // 目標が存在していてかつ確認しているのと一致していない
+			pEnemy = pEnemyNext;
+			continue;
+		}
 		if (pEnemy->Hit(pos, fRange, nDamage)) { bhit = true; }	// 当たった
 		pEnemy = pEnemyNext;
 	}

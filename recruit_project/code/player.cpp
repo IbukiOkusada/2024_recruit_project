@@ -1505,6 +1505,9 @@ void CPlayer::Attack(void)
 			SetAction(ACTION_AXEKICK);
 			break;
 			
+		case ACTION_JUMP:
+			SetAction(ACTION_AXEKICK);
+			break;
 		default:
 		{
 			SetAction(ACTION_NORMALATK);
@@ -1735,7 +1738,7 @@ void CPlayer::Hit(void)
 	int nDamage = 1;
 	D3DXVECTOR3 pos = { pModel->GetMtx()->_41, pModel->GetMtx()->_42, pModel->GetMtx()->_43 };
 	
-	if (CEnemyManager::GetInstance()->Hit(pos, fRange, nDamage)) {	// “–‚½‚Á‚½ê‡
+	if (CEnemyManager::GetInstance()->Hit(pos, fRange, nDamage, m_pTarget)) {	// “–‚½‚Á‚½ê‡
 		if (m_nAction == ACTION_NORMALATK) {
 			m_nAction = ACTION_KICKUP;
 			m_Info.move = { 0.0f, 0.0f, 0.0f };	// ˆÚ“®—ÊƒŠƒZƒbƒg

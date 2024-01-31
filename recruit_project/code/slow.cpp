@@ -22,6 +22,7 @@ CSlow::CSlow()
 	m_b = false;
 	m_nTimeCnt = 0;
 	m_nTimer = 0;
+	m_fAdd = 0.0f;
 }
 
 //==========================================================
@@ -41,6 +42,7 @@ void CSlow::Init(void)
 	m_b = false;
 	m_nTimeCnt = 0;
 	m_nTimer = 0;
+	m_fAdd = 1.0f;
 }
 
 //==========================================================

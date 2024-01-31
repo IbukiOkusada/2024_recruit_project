@@ -12,21 +12,11 @@
 #include "object2D.h"
 #include "slow.h"
 #include "debugproc.h"
-#include "sound.h"
 
 // マクロ定義
-#define X_SPACE		(50)	// 横の移動量
-#define NUM_WIDTH		(20)
-#define NUM_HEIGHT	(50)
-
-namespace {
-	const D3DXVECTOR3 WARNING_SETPOS = { SCREEN_WIDTH * 1.3f, SCREEN_HEIGHT * 0.5f, 0.0f };
-	const D3DXVECTOR3 WARNING_SETROT = { 0.0f, 0.0f, D3DX_PI * 0.0f };
-	const D3DXVECTOR2 WARNING_SIZE = { 470.0f, 150.0f };
-	const float WARNING_MOVESPEED = (-1.5f);
-	const float WARNING_MOVESIN = (0.05f);
-	const float WARNING_MOVESIZE = (30.0f);
-}
+#define X_SPACE		(60)	// 横の移動量
+#define NUM_WIDTH	(25)
+#define NUM_HEIGHT	(60)
 
 //===============================================
 // コンストラクタ
@@ -44,13 +34,12 @@ CTime::CTime()
 	m_fAnimTimer = 0.0f;
 	m_nIdxTexture = -1;
 	m_nMaxNum = 0;
+	m_nSetNum = 0;
 	m_fDiff = 0.0f;
 	m_nStartDeltaTime = 0;
 	m_nPauseTimer = 0;
 	m_mode = MODE_MAX;
 	m_bActive = false;
-	m_pWarning = nullptr;
-	m_nSound = 0;
 }
 
 //===============================================
@@ -73,15 +62,15 @@ HRESULT CTime::Init(void)
 	// テクスチャの読み込み
 	m_nIdxTexture = pTexture->Regist(CTexture::GetFileName(CTexture::TYPE_TIMER));
 	CObject2D *pObj = CObject2D::Create(6);
-	pObj->SetPosition(D3DXVECTOR3(m_pos.x + X_SPACE * 1.0f + NUM_WIDTH * 1.25f, m_pos.y, 0.0f));
+	pObj->SetPosition(D3DXVECTOR3(m_pos.x + X_SPACE * 2.0f + NUM_WIDTH * 1.35f, m_pos.y, 0.0f));
 	pObj->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.75f));
-	pObj->SetSize(NUM_WIDTH * 5.0f, NUM_HEIGHT * 0.7f);
+	pObj->SetSize(NUM_WIDTH * 5 + X_SPACE * 1.5f, NUM_HEIGHT * 0.8f);
 	pObj->BindTexture(pTexture->Regist("data\\TEXTURE\\map001.png"));
 
-	pObj = CObject2D::Create(6);
+	pObj = CObject2D::Create(7);
 	pObj->SetPosition(D3DXVECTOR3(m_pos.x + X_SPACE * 1.0f + NUM_WIDTH * 1.4f, m_pos.y, 0.0f));
 	pObj->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
-	pObj->SetSize(NUM_WIDTH * 0.4f, NUM_HEIGHT * 0.45f);
+	pObj->SetSize(NUM_WIDTH * 0.4f, NUM_HEIGHT * 0.5f);
 	pObj->BindTexture(pTexture->Regist("data\\TEXTURE\\number002.png"));
 
 	for (int nCnt = 0; nCnt < NUM_PLACE; nCnt++)
@@ -90,7 +79,7 @@ HRESULT CTime::Init(void)
 		{// 使用していない場合
 			D3DXVECTOR3 pos = m_pos;	// 設定座標
 			pos.x += nCnt * X_SPACE + 1.0f;	// 横移動
-			m_apNumber[nCnt] = CNumber::Create(pos, NUM_WIDTH * 0.75f, NUM_HEIGHT * 0.5f);
+			m_apNumber[nCnt] = CNumber::Create(pos, NUM_WIDTH, NUM_HEIGHT);
 
 
 			if (m_apNumber[nCnt] != NULL)
@@ -120,12 +109,6 @@ void CTime::Uninit(void)
 			m_apNumber[nCnt] = NULL;
 		}
 	}
-
-	if (m_pWarning != nullptr)
-	{
-		m_pWarning->Uninit();
-		m_pWarning = nullptr;
-	}
 }
 
 //===============================================
@@ -138,57 +121,22 @@ void CTime::Update(void)
 		return;
 	}
 
+	if (CManager::GetInstance()->GetSlow()->Get() < 1.0f) {	// スロー
+		m_nSetNum += static_cast<int>(CManager::GetInstance()->GetSlow()->Get() * 10.0f);
+	}
+
 	m_fAnimTimer += CManager::GetInstance()->GetSlow()->Get();
-	if (m_fAnimTimer >= 60)
+	if (m_fAnimTimer >= 0)
 	{// 12フレーム立った
 		m_fAnimTimer = 0;	// カウンターリセット
-		Add(-1);
-	}
-
-	// 警告更新
-	if (m_pWarning == nullptr) {
-		return;
-	}
-
-	{
-		m_nSound++;
-		if (m_nSound == 1)
+		if (m_mode == MODE_PLUS)
 		{
-			CManager::GetInstance()->GetSound()->Play(CSound::LABEL_SE_WARNING);
+			Set((int)((timeGetTime() - m_nStartDeltaTime) * 0.1f) - m_nPauseTimer);
 		}
-
-		D3DXVECTOR3 pos = m_pWarning->GetPosition();
-
-		// 移動
-		if (pos.x > SCREEN_WIDTH * 0.75f)
+		else if (m_mode == MODE_MINUS)
 		{
-			pos.x -= 30.0f;
-		}
-		else if (pos.x < SCREEN_WIDTH * 0.35f)
-		{
-			pos.x -= 40.0f;
-			m_pWarning->SetLength(m_pWarning->GetWidth() * 1.7f, m_pWarning->GetHeight() * 1.7f);
-		}
-		else
-		{
-			pos.x += WARNING_MOVESPEED;
-
-			// 大きくしたり小さくする
-			m_fWarningSin += WARNING_MOVESIN;
-			float fSin = sinf(m_fWarningSin);
-			if (fSin >= 0.0f) {
-				m_pWarning->SetLength(WARNING_SIZE.x + fSin * WARNING_MOVESIZE, WARNING_SIZE.y + fSin * WARNING_MOVESIZE);
-			}
-		}
-
-		m_pWarning->SetPosition(pos);
-		m_pWarning->SetVtx();
-
-		if (pos.x < -SCREEN_WIDTH * 0.5f)
-		{
-			m_pWarning->Uninit();
-			m_pWarning = NULL;
-			m_nSound = 0;
+			
+			SetNum(m_nSetNum - ((int)((timeGetTime() - m_nStartDeltaTime) * 0.1f) - m_nPauseTimer));
 		}
 	}
 }
@@ -198,18 +146,18 @@ void CTime::Update(void)
 //===============================================
 CTime *CTime::Create(const D3DXVECTOR3& pos)
 {
-	CTime *pTime = NULL;
+	CTime *pBg = NULL;
 
 	// オブジェクト2Dの生成
-	pTime = new CTime;
+	pBg = new CTime;
 
-	if (pTime != NULL)
+	if (pBg != NULL)
 	{// 生成できた場合
 
-		pTime->m_pos = pos;
+		pBg->m_pos = pos;
 
 		// 初期化処理
-		pTime->Init();
+		pBg->Init();
 	}
 	else
 	{// 生成に失敗した場合
@@ -217,7 +165,7 @@ CTime *CTime::Create(const D3DXVECTOR3& pos)
 	}
 
 
-	return pTime;
+	return pBg;
 }
 
 //===============================================
@@ -230,15 +178,6 @@ void CTime::Add(int nValue)
 
 	// 数値設定
 	SetValue();
-
-	// 警告メッセージ生成確認
-	if (m_nNum != 60) {	// 残り1分ではない
-		return;
-	}
-
-	if (m_pWarning != nullptr) {	// すでに警告が表示中
-		return;
-	}
 }
 
 //===============================================
@@ -283,6 +222,14 @@ void CTime::SetValue(void)
 	}
 
 	int nNum = m_nNum;
+
+	//タイムを各配列に格納
+	aTexU[5] = nNum % 10;
+	aTexU[4] = (int)((nNum % 100 - aTexU[5]) * 0.1f);
+
+	nNum -= nNum % 100;
+	nNum = (int)(nNum * 0.01f);
+
 	aTexU[0] = nNum / 60 / 10;
 	aTexU[1] = nNum / 60 - aTexU[0] * 10;
 	aTexU[2] = nNum % 60 / 10;

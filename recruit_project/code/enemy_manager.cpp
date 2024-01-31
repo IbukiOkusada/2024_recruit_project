@@ -6,6 +6,7 @@
 //==========================================================
 #include "enemy_manager.h"
 #include "enemy.h"
+#include "lockon.h"
 
 // 静的メンバ変数宣言
 CEnemyManager* CEnemyManager::m_pInstance = nullptr;	// インスタンス
@@ -159,7 +160,10 @@ bool CEnemyManager::Hit(D3DXVECTOR3& pos, const float fRange, const int nDamage,
 			pEnemy = pEnemyNext;
 			continue;
 		}
-		if (pEnemy->Hit(pos, fRange, nDamage)) { bhit = true; }	// 当たった
+		if (pEnemy->Hit(pos, fRange, nDamage)) { // 当たった
+			bhit = true; 
+			CLockOn::Check(pEnemy);
+		}	
 		pEnemy = pEnemyNext;
 	}
 

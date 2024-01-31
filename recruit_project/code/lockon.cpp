@@ -30,7 +30,7 @@
 #define MINUS_SIZE		(30.0f)		// サイズ変更
 #define ADD_COLA		(0.1f)		// 色
 #define SHOT_LENGTH		(1500.0f)
-#define MAX_LOCKON		(5)
+#define MAX_LOCKON		(12)
 
 // 静的メンバ変数
 CLockOn *CLockOn::m_pTop = NULL;	// 先頭のオブジェクトへのポインタ
@@ -87,7 +87,7 @@ HRESULT CLockOn::Init(void)
 
 	m_pObj->BindTexture(CTexture::TYPE_LOCKON);
 
-	//m_pObj->SetDraw(false);
+	m_pObj->SetDraw(false);
 
 	m_bUse = false;
 
@@ -103,6 +103,11 @@ void CLockOn::Uninit(void)
 	m_bDeath = true;
 
 	DeathCheck();
+
+	if (m_pObj != nullptr) {
+		m_pObj->Uninit();
+		m_pObj = nullptr;
+	}
 
 	Release();
 }

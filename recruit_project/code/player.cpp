@@ -76,13 +76,16 @@ namespace {
 	const float SLIDING_LENGTH = (200.0f);
 	const float KICKUP_SPEED = (1.5f);
 	const float KICKUP_JUMP = (21.0f);
+	const float KICKUP_QUICKJUMP = (19.0f);
 	const float AXEKICK_ROTZ = (D3DX_PI * 0.21f);
+	const float RIDERKICK_ROTZ = (D3DX_PI * 0.31f);
 	const float AXEKICK_CAMERALENGTH = (400.0f);
 	const float SLOW_KICKCHARGE = (15.0f);
 	const D3DXVECTOR3 COLLIMAX = { 20.0f, 70.0f, 20.0f };
 	const D3DXVECTOR3 COLLIMIN = { -20.0f, 0.0f, -20.0f };
 	const float KICK_LENGTH = (1000.0f);	// 攻撃範囲
 	const float RIDERKICK_SPEED = (24.0f);
+	const float RIDERKICK_HIGHSPEED = (60.0f);
 	const float RIDERKICK_CAMERALENGTH = (600.0f);
 }
 
@@ -353,6 +356,9 @@ void CPlayer::Update(void)
 			else if (m_nAction == ACTION_AXEKICK) {
 				fRot = AXEKICK_ROTZ;
 			}
+			else if (m_nAction == ACTION_RIDERKICK) {
+				fRot = RIDERKICK_ROTZ;
+			}
 			CamRot.z = fRot;
 			m_pMyCamera->InerRot(CamRot, CAMROT_INER);
 
@@ -374,6 +380,13 @@ void CPlayer::Update(void)
 	SetMatrix();
 
 	BodySet();
+
+	if (CManager::GetInstance()->GetSlow()->Get() == 1.0f && CLockOn::GetNumAll() > 1) {
+
+		if (!m_bJump) {
+			CLockOn::MultiDeath();
+		}
+	}
 
 	CManager::GetInstance()->GetDebugProc()->Print("アクション[ %d ], 前回のアクション [ %d ]\n", m_nAction, m_nActionOld);
 	CManager::GetInstance()->GetDebugProc()->Print("体力 [ %d ], 向き [ %f ]\n", m_nLife, m_Info.rot.y);
@@ -435,6 +448,7 @@ void CPlayer::Controller(void)
 			CeilingDush();	// 天井走り
 			Slide();		// スライディング
 			Attack();		// 攻撃
+			KickChance();	// キックチャンス
 		}
 		else {
 			RiderKick();
@@ -1479,8 +1493,12 @@ void CPlayer::Attack(void)
 				return;
 			}
 			else if(m_fAtkChargeCnter >= SLOW_KICKCHARGE) {	// チャージしている
+
+				if (m_pLockOn->GetNext() != nullptr){
+					m_pTarget = m_pLockOn->GetNext()->GetEnemy();
+				}
+
 				if (m_pLockOn != nullptr) {	// ロックオンが存在
-					m_pTarget = m_pLockOn->GetEnemy();
 					m_pLockOn->SetLock(false);
 				}
 				CManager::GetInstance()->GetSlow()->SetSlow(false);
@@ -1749,7 +1767,14 @@ void CPlayer::Hit(void)
 			m_nAction = ACTION_KICKUP;
 			m_Info.move = { 0.0f, 0.0f, 0.0f };	// 移動量リセット
 			m_Info.move.y = KICKUP_JUMP;
-			m_pTarget = nullptr;
+
+			if (m_pLockOn->GetNext() == nullptr) {	// 複数ロックオンではない
+				m_pTarget = nullptr;
+				return;
+			}
+
+			m_Info.move.y = KICKUP_QUICKJUMP;
+			m_pTarget = m_pLockOn->GetNext()->GetEnemy();
 		}
 	}
 }
@@ -1851,11 +1876,43 @@ void CPlayer::RiderKick(void)
 	{
 		float fSpeed = RIDERKICK_SPEED;
 
+		if (m_pTarget->GetNext() != nullptr) {
+			fSpeed = RIDERKICK_HIGHSPEED;
+		}
+
 		D3DXVECTOR3 move = m_Info.move;
 		D3DXVECTOR3 nor = pos - MyPos;
 		D3DXVec3Normalize(&nor, &nor);
 		move = nor * fSpeed;
 
 		m_Info.move = move;
+	}
+}
+
+//===============================================
+// ロックオンキックコンボ確認
+//===============================================
+void CPlayer::KickChance(void)
+{
+	if (m_nAction != ACTION_KICKUP && m_nActionOld != ACTION_KICKUP) {
+		return;
+	}
+
+	if (m_pTarget == nullptr) {
+		return;
+	}
+
+	if (m_Info.move.y <= 1.0f) {
+		SetAction(ACTION_RIDERKICK);
+	}
+	else {
+		CInputKeyboard* pInputKey = CManager::GetInstance()->GetInputKeyboard();	// キーボードのポインタ
+		CInputPad* pInputPad = CManager::GetInstance()->GetInputPad();				// パッドのポインタ
+
+		// 攻撃を中止
+		if (pInputKey->GetTrigger(DIK_I) || pInputPad->GetTrigger(CInputPad::BUTTON_RIGHTBUTTON, m_nId)) {
+			m_pTarget = nullptr;
+			CLockOn::MultiDeath();
+		}
 	}
 }

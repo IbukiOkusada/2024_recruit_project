@@ -161,6 +161,7 @@ private:	// 自分だけがアクセス可能
 	void SetAction(const ACTION action);
 	void NearLockOn(void);
 	void RiderKick(void);
+	void KickChance(void);
 
 	// メンバ変数
 	CPlayer *m_pPrev;		// 前のオブジェクトへのポインタ
@@ -186,7 +187,8 @@ private:	// 自分だけがアクセス可能
 	int m_nActionOld;		// 前回のアクション
 	int m_nLife;			// 体力
 	bool m_bJump;			// ジャンプフラグ
-	bool m_bMove;			// 移動フラグ
+	bool m_bMove;			// 移動フラ
+	bool m_bLockOn;			// ロックオン中かどうか
 };
 
 #endif

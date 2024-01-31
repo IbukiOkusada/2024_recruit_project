@@ -48,6 +48,7 @@ public:	// 誰でもアクセス可能
 	TYPE GetType(void) { return m_type; }
 	bool GetDeath(void) { return m_bDeath; }
 	static void Check(CEnemy* pObject);
+	static int GetNumAll(void) { return m_nNum; }
 	CObjectBillboard* GetObj(void) { return m_pObj; }
 	void DeathCheck(void);
 	static void MultiDeath(void);

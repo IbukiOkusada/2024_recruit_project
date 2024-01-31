@@ -14,13 +14,13 @@ NUM_MODEL = 7
 #------------------------------------------------------------------------------
 # モデルファイル名
 #------------------------------------------------------------------------------
-MODEL_FILENAME = data/MODEL/sample/waist.x				# [0]腰
-MODEL_FILENAME = data/MODEL/sample/righthigh.x			# [1]右腿
-MODEL_FILENAME = data/MODEL/sample/rightcalf.x			# [2]右脛
-MODEL_FILENAME = data/MODEL/sample/rightleg.x			# [3]右足
-MODEL_FILENAME = data/MODEL/sample/lefthigh.x			# [4]左腿
-MODEL_FILENAME = data/MODEL/sample/leftcalf.x			# [5]左脛
-MODEL_FILENAME = data/MODEL/sample/leftleg.x			# [6]左足
+MODEL_FILENAME = data/MODEL/enemy/waist.x				# [0]腰
+MODEL_FILENAME = data/MODEL/enemy/righthigh.x			# [1]右腿
+MODEL_FILENAME = data/MODEL/enemy/rightcalf.x			# [2]右脛
+MODEL_FILENAME = data/MODEL/enemy/rightleg.x			# [3]右足
+MODEL_FILENAME = data/MODEL/enemy/lefthigh.x			# [4]左腿
+MODEL_FILENAME = data/MODEL/enemy/leftcalf.x			# [5]左脛
+MODEL_FILENAME = data/MODEL/enemy/leftleg.x			# [6]左足
 
 #------------------------------------------------------------------------------
 # キャラクター情報
@@ -34,7 +34,7 @@ CHARACTERSET
 	PARTSSET
 		INDEX = 0					# 腰
 		PARENT = -1					# (親)NULL
-		POS = 0.0 34.0 0.0
+		POS = 0.0 41.0 0.0
 		ROT = 0.0 0.0 0.0
 	END_PARTSSET
 	
@@ -48,14 +48,14 @@ CHARACTERSET
 	PARTSSET
 		INDEX = 2					# 右脛
 		PARENT = 1					# (親)右腿
-		POS = -0.1 -11.0 0.0
+		POS = 0.2 -13.5 0.0
 		ROT = 0.0 0.0 0.0
 	END_PARTSSET
 	
 	PARTSSET
 		INDEX = 3					# 右足
 		PARENT = 2					# (親)右脛
-		POS = 0.0 -11.0 0.0
+		POS = 0.0 -16.0 0.0
 		ROT = 0.0 0.0 0.0
 	END_PARTSSET
 	
@@ -69,14 +69,14 @@ CHARACTERSET
 	PARTSSET
 		INDEX = 5					# 左脛
 		PARENT = 4					# (親)左腿
-		POS = 0.1 -11.0 0.0
+		POS = -0.6 -13.8 0.0
 		ROT = 0.0 0.0 0.0
 	END_PARTSSET
 	
 	PARTSSET
 		INDEX = 6					# 左足
 		PARENT = 5					# (親)左脛
-		POS = -0.05 -11.0 0.0
+		POS = -0.05 -16.0 0.0
 		ROT = 0.0 0.0 0.0
 	END_PARTSSET
 	

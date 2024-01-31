@@ -129,22 +129,11 @@ CGame::CGame()
     m_pMeshDome = nullptr;
     m_pClient = nullptr;
     m_pTimer = nullptr;
-    m_QuataScore = nullptr;
-    m_QuataUI = nullptr;
-	m_ppLever = nullptr;
-	m_ppMultiDoor = nullptr;
     m_nSledCnt = 0;
     m_bEnd = false;
-    m_nStartCnt = 0;
-    m_nCntLostQuataUI = 0;
-	m_nCntGoal = 0;
 	m_fOpenDoorUISin = 0.0f;
     m_bPause = false;
     m_pPause = nullptr;
-    m_bQuota = false;
-    m_bDispQuataUI = false;
-	m_bOpenStartDoor = false;
-	m_pEnemy = nullptr;
 }
 
 //===============================================
@@ -159,20 +148,11 @@ CGame::CGame(int nNumPlayer)
     m_pMeshDome = nullptr;
     m_pClient = nullptr;
     m_pTimer = nullptr;
-    m_QuataScore = nullptr;
-    m_QuataUI = nullptr;
-	m_ppLever = nullptr;
     m_nSledCnt = 0;
     m_bEnd = false;
-    m_nStartCnt = 0;
-    m_nCntLostQuataUI = 0;
-	m_nCntGoal = 0;
 	m_fOpenDoorUISin = 0.0f;
     m_bPause = false;
     m_pPause = nullptr;
-    m_bQuota = false;
-    m_bDispQuataUI = false;
-	m_bOpenStartDoor = false;
 
     // 人数設定
     m_nNumPlayer = nNumPlayer;
@@ -268,11 +248,25 @@ HRESULT CGame::Init(void)
     }
 
     CEnemyGun::Create(D3DXVECTOR3(0.0f, 600.0f, 2350.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
-    CEnemyMelee::Create(D3DXVECTOR3(0.0f, 600.0f, 2250.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
-    CEnemyBoss::Create(D3DXVECTOR3(0.0f, 600.0f, 2350.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+    CEnemyMelee::Create(D3DXVECTOR3(100.0f, 600.0f, 2250.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+    CEnemyBoss::Create(D3DXVECTOR3(200.0f, 600.0f, 2350.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+    CEnemyGun::Create(D3DXVECTOR3(-100.0f, 600.0f, 2350.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+    CEnemyMelee::Create(D3DXVECTOR3(300.0f, 600.0f, 2250.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+    CEnemyBoss::Create(D3DXVECTOR3(-300.0f, 600.0f, 2350.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+    CEnemyGun::Create(D3DXVECTOR3(50.0f, 600.0f, 2350.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+    CEnemyMelee::Create(D3DXVECTOR3(80.0f, 600.0f, 2250.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+    CEnemyBoss::Create(D3DXVECTOR3(120.0f, 600.0f, 2350.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+    CEnemyGun::Create(D3DXVECTOR3(70.0f, 600.0f, 2350.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+    CEnemyMelee::Create(D3DXVECTOR3(430.0f, 600.0f, 2250.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+    CEnemyBoss::Create(D3DXVECTOR3(220.0f, 600.0f, 2350.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 
     //ドーム追加
     CMeshDome::Create(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), 4000.0f, 3000.0f, 3, 8, 8);
+
+    // タイマー追加
+    m_pTimer = CTime::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.3f, SCREEN_HEIGHT * 0.05f, 0.0f));
+    m_pTimer->Set(6000 * 3);
+    m_pTimer->SetActive(true);
 
     return S_OK;
 }
@@ -291,13 +285,6 @@ void CGame::Uninit(void)
         {
             break;
         }
-    }
-
-    if (m_QuataScore != nullptr)
-    {
-        m_QuataScore->Uninit();
-        delete m_QuataScore;
-        m_QuataScore = nullptr;
     }
 
     if (m_pPause != nullptr) {
@@ -319,12 +306,6 @@ void CGame::Uninit(void)
         m_pClient->Uninit();
         delete m_pClient;
         m_pClient = nullptr;
-    }
-
-    if (m_QuataScore != nullptr) {
-        m_QuataScore->Uninit();
-        delete m_QuataScore;
-        m_QuataScore = nullptr;
     }
 
     if (m_ppPlayer != nullptr) { // 使用していた場合
@@ -383,6 +364,10 @@ void CGame::Update(void)
 			m_pPause->SetDraw(m_bPause);
 		}
 	}
+
+    if (m_pTimer != nullptr) {
+        m_pTimer->Update();
+    }
 
     if (CEnemyManager::GetInstance()->GetNum() <= 0) {
         CManager::GetInstance()->GetFade()->Set(CScene::MODE_RESULT);

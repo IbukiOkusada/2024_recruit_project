@@ -16,7 +16,7 @@ int CTexture::m_nNumAll = 0;	// ì«Ç›çûÇ›ëçêî
 const char *CTexture::m_apDefFileName[TYPE_MAX] =
 {
 	"data\\TEXTURE\\effect000.jpg",
-	"data\\TEXTURE\\number004.png",
+	"data\\TEXTURE\\number000.png",
 	"data\\TEXTURE\\smook.png",
 	"data\\TEXTURE\\effect000.png",
 	"data\\TEXTURE\\effect001.png",

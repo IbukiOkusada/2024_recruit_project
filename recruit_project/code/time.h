@@ -61,7 +61,7 @@ public:	// ここから関数(誰でもアクセス可能)
 private:	// 自分だけがアクセス可能
 
 	// マクロ定義
-	const static int NUM_PLACE = 4;
+	#define NUM_PLACE	(6)	// スコアの桁数
 
 	// メンバ関数
 	void SetValue(void);
@@ -69,8 +69,6 @@ private:	// 自分だけがアクセス可能
 	// メンバ変数
 	CNumber *m_apNumber[NUM_PLACE];			// 数字のポインタ
 	D3DXVECTOR3 m_pos;	// 座標
-	CObject2D *m_pWarning;	// 警告オブジェクト
-	float m_fWarningSin;
 	int m_nNum;	// 現在の値
 	int m_nSetNum;	// 設定値
 	int m_nMaxNum;	// 最大値
@@ -81,7 +79,6 @@ private:	// 自分だけがアクセス可能
 	int m_nIdxTexture;	// テクスチャ番号
 	bool m_bActive;	// 動作可能状態
 	MODE m_mode;		// モード
-	int m_nSound;
 };
 
 #endif

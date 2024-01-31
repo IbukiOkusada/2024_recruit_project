@@ -17,13 +17,7 @@ class CPlayer;
 class CFileLoad;
 class CClient;
 class CMeshDome;
-class CMiniMap;
 class CPause;
-class CQuataUI;
-class CGimmickLever;
-class CGimmickStartDoor;
-class CEnemy;
-class CObject2D;
 
 // マクロ定義
 #define NUM_FILTER	(2)
@@ -65,8 +59,6 @@ public:
 	void SendGoal(void);
 	static void SetNumPlayer(int nNum) { m_nNumPlayer = nNum; }
 	static int GetNumPlayer(void) { return m_nNumPlayer; }
-	CMiniMap* GetMiniMap(void) { return m_pMiniMap; }
-	bool GetbopenDoor(void) { return m_bOpenStartDoor; }
 
 	// メンバ関数(ポインタ)
 	CPlayer *GetPlayer(void);
@@ -87,14 +79,7 @@ private:
 	CMultiCamera **m_ppCamera;	// カメラのポインタ
 	CMeshDome *m_pMeshDome;		// メッシュドームのポインタ
 	CTime *m_pTimer;			// タイマー
-	CMiniMap* m_pMiniMap;		// ミニマップ
 	CClient *m_pClient;			// クライアントのポインタ
-	CScore *m_QuataScore;       // ノルマのスコア
-	CQuataUI *m_QuataUI;        // ノルマのUI
-	CGimmickLever **m_ppLever;  // レバーのポインタ
-	CGimmickStartDoor **m_ppMultiDoor;  // 協力扉のポインタ
-	CEnemy *m_pEnemy;			// 敵のポインタ
-	CObject2D *m_pAllOpen;      // オブジェクト2Dのポインタ
 	char m_aAddress[30];		// 接続先サーバーのアドレス
 	static STATE m_state;		// 状態
 	int m_nSledCnt;				// 現在動作しているスレッド数
@@ -103,18 +88,8 @@ private:
 	WSADATA m_wsaData;
 	std::mutex m_mutex;
 	bool m_bEnd;
-	int m_nStartCnt;			// 開始タイマー
-	int m_nCntLostQuataUI;      // ノルマのUIが消えるまでのカウント
-	int m_nCntGoal;             // ゴールした人数
-	int m_nCntLookGoal;         //
-	int m_nOldOpenDoor;         // 
 	float m_fOpenDoorUISin;
 	bool m_bPause;              // ポーズ
-	bool m_bQuota;              // ノルマ達成しているどうか
-	bool m_bDispQuataUI;        // ノルマのUIができるかどうか
-	bool m_bSetOnceAngle;		// 1度だけの角度設定をしたか
-	bool m_bOpenStartDoor;      // スタートのドアがすべて開いているかどうか
-	bool m_bAllOpenUI;
 };
 
 #endif

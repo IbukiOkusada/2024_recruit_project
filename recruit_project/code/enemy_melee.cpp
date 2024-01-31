@@ -416,8 +416,7 @@ CPlayer* CEnemyMelee::Search(float& fChaseLength)
 		}
 
 		// 距離を取得
-		float fLength = sqrtf((pos.x - MyPos.x) * (pos.x - MyPos.x)
-			+ (pos.z - MyPos.z) * (pos.z - MyPos.z));
+		float fLength = sqrtf((pos.x - MyPos.x) * (pos.x - MyPos.x)	+ (pos.z - MyPos.z) * (pos.z - MyPos.z));
 
 		// 追跡確認
 		if (fLength < fMinLength) {	// 現在見ているプレイヤーの方が近い場合

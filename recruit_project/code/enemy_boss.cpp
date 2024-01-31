@@ -23,8 +23,8 @@
 // 無名名前空間
 namespace
 {
-	const char* BODYFILEPASS = "data\\TXT\\enemy\\motion_body.txt";	// ファイルのパス
-	const char* LEGFILEPASS = "data\\TXT\\enemy\\motion_leg.txt";	// ファイルのパス
+	const char* BODYFILEPASS = "data\\TXT\\enemy_boss\\motion_body.txt";	// ファイルのパス
+	const char* LEGFILEPASS = "data\\TXT\\enemy_boss\\motion_leg.txt";	// ファイルのパス
 	const D3DXVECTOR3 COLLIMAX = { 20.0f, 120.0f, 20.0f };	// 当たり判定最大
 	const D3DXVECTOR3 COLLIMIN = { -20.0f, 0.0f, -20.0f };	// 当たり判定最小
 	const int DAMAGEINTERVAL = (60);	// ダメージインターバル

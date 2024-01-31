@@ -275,6 +275,16 @@ void CMotion::LoadMotionData(FILE *pFile)
 				memset(&m_aInfo[m_nNumMotion].pKeyInfo[nCnt], NULL, sizeof(KEY_INFO));
 
 				m_aInfo[m_nNumMotion].pKeyInfo[nCnt].aKey = new KEY[m_FileData.nNumParts];
+
+				for (int i = 0; i < m_FileData.nNumParts; i++)
+				{
+					m_aInfo[m_nNumMotion].pKeyInfo[nCnt].aKey[i].fPosX = 0.0f;
+					m_aInfo[m_nNumMotion].pKeyInfo[nCnt].aKey[i].fPosY = 0.0f;
+					m_aInfo[m_nNumMotion].pKeyInfo[nCnt].aKey[i].fPosZ = 0.0f;
+					m_aInfo[m_nNumMotion].pKeyInfo[nCnt].aKey[i].fRotX = 0.0f;
+					m_aInfo[m_nNumMotion].pKeyInfo[nCnt].aKey[i].fRotY = 0.0f;
+					m_aInfo[m_nNumMotion].pKeyInfo[nCnt].aKey[i].fRotZ = 0.0f;
+				}
 			}
 
 			bKey = true;	//ƒL[”‚ðŽæ“¾‚µ‚½ó‘Ô‚É‚·‚é

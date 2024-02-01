@@ -48,6 +48,7 @@ private:
 	{
 		CPlayer* pTarget;	// 標的
 		float fLength;		// 標的との距離
+		D3DXVECTOR3 nor;	// 方向ベクトル
 	};
 
 	// 状態管理用構造体

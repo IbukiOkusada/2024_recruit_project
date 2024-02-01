@@ -55,6 +55,8 @@ public:		// 誰でもアクセス可能
 	static CPause *Create(void);
 	bool GetSelect(void) { return m_bSelect; }
 	void SetDraw(const bool bValue);
+	void MeasureStart(void){ m_nStartDeltaTime = timeGetTime(); }
+	void MeasureEnd(void);
 
 private:	// 自分だけがアクセス可能
 

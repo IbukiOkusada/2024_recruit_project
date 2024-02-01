@@ -247,26 +247,26 @@ HRESULT CGame::Init(void)
         break;
     }
 
-    CEnemyGun::Create(D3DXVECTOR3(0.0f, 600.0f, 2350.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
-    CEnemyMelee::Create(D3DXVECTOR3(100.0f, 600.0f, 2250.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
-    CEnemyBoss::Create(D3DXVECTOR3(200.0f, 600.0f, 2350.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
-    CEnemyGun::Create(D3DXVECTOR3(-100.0f, 600.0f, 2350.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
-    CEnemyMelee::Create(D3DXVECTOR3(300.0f, 600.0f, 2250.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
-    CEnemyBoss::Create(D3DXVECTOR3(-300.0f, 600.0f, 2350.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
-    CEnemyGun::Create(D3DXVECTOR3(50.0f, 600.0f, 2350.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
-    CEnemyMelee::Create(D3DXVECTOR3(80.0f, 600.0f, 2250.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
-    CEnemyBoss::Create(D3DXVECTOR3(120.0f, 600.0f, 2350.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
-    CEnemyGun::Create(D3DXVECTOR3(70.0f, 600.0f, 2350.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
-    CEnemyMelee::Create(D3DXVECTOR3(430.0f, 600.0f, 2250.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
-    CEnemyBoss::Create(D3DXVECTOR3(220.0f, 600.0f, 2350.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+    CEnemyBoss::Create(D3DXVECTOR3(-1200.0f, 1000.0f, 3650.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+    //CEnemyGun::Create(D3DXVECTOR3(0.0f, 600.0f, 2350.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+    //CEnemyMelee::Create(D3DXVECTOR3(100.0f, 600.0f, 2250.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+    //CEnemyGun::Create(D3DXVECTOR3(-100.0f, 600.0f, 2350.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+    //CEnemyMelee::Create(D3DXVECTOR3(300.0f, 600.0f, 2250.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+    //CEnemyGun::Create(D3DXVECTOR3(50.0f, 600.0f, 2350.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+    //CEnemyMelee::Create(D3DXVECTOR3(80.0f, 600.0f, 2250.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+    //CEnemyGun::Create(D3DXVECTOR3(70.0f, 600.0f, 2350.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+    //CEnemyMelee::Create(D3DXVECTOR3(430.0f, 600.0f, 2250.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 
     //ドーム追加
-    CMeshDome::Create(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), 4000.0f, 3000.0f, 3, 8, 8);
+    CMeshDome::Create(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), 9000.0f, 3000.0f, 3, 8, 8);
+    CMeshDome::Create(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(D3DX_PI, 0.0f, 0.0f), 9000.0f, 3000.0f, 3, 8, 8);
 
     // タイマー追加
-    m_pTimer = CTime::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.3f, SCREEN_HEIGHT * 0.05f, 0.0f));
+    m_pTimer = CTime::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.4f, SCREEN_HEIGHT * 0.05f, 0.0f));
     m_pTimer->Set(6000 * 3);
     m_pTimer->SetActive(true);
+
+    m_pPause = CPause::Create();
 
     return S_OK;
 }
@@ -362,8 +362,26 @@ void CGame::Update(void)
 
 		if (m_pPause != nullptr) {
 			m_pPause->SetDraw(m_bPause);
+
+            if (!m_bPause) {    // ポーズ解除
+                m_pPause->MeasureEnd();
+            }
+            else {
+                m_pPause->MeasureStart();
+            }
 		}
 	}
+
+    if (m_bPause == true)
+    {
+        if (m_pPause != nullptr) {
+            if (m_pPause->Update()) {
+                m_bPause = false;
+                m_pPause->SetDraw(m_bPause);
+            }
+        }
+        return;
+    }
 
     if (m_pTimer != nullptr) {
         m_pTimer->Update();

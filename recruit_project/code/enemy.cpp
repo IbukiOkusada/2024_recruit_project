@@ -72,8 +72,6 @@ void CEnemy::Update(void)
 	// マトリックス設定
 	SetMatrix();
 
-	CManager::GetInstance()->GetDebugProc()->Print("敵の体力 [ %d ]\n", m_nLife);
-
 	if (m_Info.pos.y <= 0.0f) {
 		Uninit();
 	}

@@ -31,7 +31,8 @@ namespace
 	const float CHASE_MAXLENGTH = (1000.0f);	// 追跡最長距離
 	const float CHASE_NEARLENGTH = (700.0f);	// 追跡近距離
 	const float CHASE_MINLENGTH = (400.0f);		// 追跡0距離
-	const float SEARCH_HEIGHT = (180.0f);		// 探索高さ制限
+	const float SEARCH_HEIGHT = (220.0f);		// 探索高さ制限
+	const float SEARCH_DOWN = (180.0f);
 	const float MOVE_INER = (0.3f);			// 移動慣性
 	const int ATK_RANDRANGE = (6);			// 攻撃中ランダム範囲
 	const int BACK_RANDRANGE = (2);
@@ -46,7 +47,7 @@ namespace SPEED
 	const float MOVE_MIN = (0.15f);	// 移動量移動
 	const float GRAVITY = (-0.9f);	// 重力
 	const float DAMAGE_MOVE = (2.0f);	// 移動量
-	const float BULLET = (-6.0f);	// 弾速
+	const float BULLET = (6.0f);	// 弾速
 }
 
 // インターバル
@@ -68,6 +69,7 @@ CEnemyGun::CEnemyGun()
 	m_pWaist = nullptr;
 	m_Chase.pTarget = nullptr;
 	m_Chase.fLength = 0.0f;
+	m_Chase.nor = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	m_fInterVal = 0;
 	m_StateInfo.state = STATE_APPEAR;
 	m_StateInfo.fCounter = 0.0f;
@@ -87,8 +89,8 @@ CEnemyGun::~CEnemyGun()
 //==========================================================
 HRESULT CEnemyGun::Init(void)
 {
-	// 種類を近距離に設定
-	SetType(TYPE_MELEE);
+	// 種類を遠距離に設定
+	SetType(TYPE_GUN);
 
 	SInfo* pInfo = GetInfo();
 
@@ -183,7 +185,7 @@ void CEnemyGun::Update(void)
 		SInfo* pInfo = GetInfo();
 		pInfo->posOld = pInfo->pos;
 	}
-	m_fInterVal--;
+	m_fInterVal -= CManager::GetInstance()->GetSlow()->Get();
 
 	// 処理
 	MethodLine();
@@ -389,7 +391,7 @@ CPlayer* CEnemyGun::Search(float& fChaseLength)
 
 		D3DXVECTOR3 pos = pPlayer->GetPosition();
 
-		if (pos.y < MyPos.y - SEARCH_HEIGHT || pos.y > MyPos.y + SEARCH_HEIGHT) {	// 高さ感知範囲外
+		if (pos.y < MyPos.y - SEARCH_DOWN || pos.y > MyPos.y + SEARCH_HEIGHT) {	// 高さ感知範囲外
 			pPlayer = pPlayerNext;
 			continue;
 		}
@@ -469,8 +471,10 @@ void CEnemyGun::LockOn(void)
 
 		D3DXVECTOR3 move = GetMove();
 		D3DXVECTOR3 nor = pos - MyPos;
+		m_Chase.nor = nor;
 		nor.y = 0.0f;
 		D3DXVec3Normalize(&nor, &nor);
+		D3DXVec3Normalize(&m_Chase.nor, &m_Chase.nor);
 		move += nor * fSpeed;
 
 		SetMove(move);
@@ -646,15 +650,24 @@ void CEnemyGun::Gravity(void)
 //===============================================
 void CEnemyGun::Attack(const int nRandRange)
 {
+	if (!BodyCheck(m_pBody)) {
+		return;
+	}
+
 	SInfo* pInfo = GetInfo();
 	float CMinusCnter = static_cast<float>(rand() % nRandRange);
 	m_fAtkCnter -= CMinusCnter * CManager::GetInstance()->GetSlow()->Get();
 
 	if (m_fAtkCnter <= 0.0f) {	// 攻撃できる
 		m_fAtkCnter = INTERVAL::ATTACK;
-		CBullet::Create(GetInfo()->pos, 
+
+		CModel* pModel = m_pBody->GetParts(m_pBody->GetNumParts() - 1);
+		if (pModel == nullptr) { return; }	// モデル使われていない
+
+		D3DXVECTOR3 pos = { pModel->GetMtx()->_41, pModel->GetMtx()->_42, pModel->GetMtx()->_43 };
+		CBullet::Create(pos, 
 			D3DXVECTOR3(0.0f, 0.0f, 0.0f), 
-			D3DXVECTOR3(sinf(pInfo->rot.y) * SPEED::BULLET, 0.0f, cosf(pInfo->rot.y) * SPEED::BULLET),
+			m_Chase.nor * SPEED::BULLET,
 			CBullet::TYPE_ENEMY);
 	}
 }

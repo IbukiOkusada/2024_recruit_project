@@ -97,7 +97,7 @@ void CMotion::Update(void)
 	int nNowKey = m_nNowKey;		// 現在のキー
 	int nNextkey = (nNowKey + 1) % m_aInfo[nNowMotion].nNumKey;	//次のキー
 	int nFrame = m_aInfo[nNowMotion].pKeyInfo[nNowKey].nFrame;
-	float fFrame = ((float)m_fNowFrame / (float)nFrame);	// フレーム間の差分
+	float fFrame = static_cast<float>((float)m_fNowFrame / (float)nFrame);	// フレーム間の差分
 
 	for (int nCntParts = 0; nCntParts < m_FileData.nNumParts; nCntParts++)
 	{
@@ -204,15 +204,20 @@ void CMotion::Update(void)
 
 	if (m_fNowFrame >= nFrame)
 	{//現在のフレーム数が到達した場合
+
+		if (nNextkey == 3) {
+			int a = 0;
+		}
+
 		for (int nCntParts = 0; nCntParts < m_FileData.nNumParts; nCntParts++)
 		{
 			// 前回の値を取得
-			m_OldKey[nCntParts].fPosX = m_FileData.ppParts[nCntParts]->GetCurrentPosition().x;
-			m_OldKey[nCntParts].fPosY = m_FileData.ppParts[nCntParts]->GetCurrentPosition().y;
-			m_OldKey[nCntParts].fPosZ = m_FileData.ppParts[nCntParts]->GetCurrentPosition().z;
-			m_OldKey[nCntParts].fRotX = m_FileData.ppParts[nCntParts]->GetCurrentRotation().x;
-			m_OldKey[nCntParts].fRotY = m_FileData.ppParts[nCntParts]->GetCurrentRotation().y;
-			m_OldKey[nCntParts].fRotZ = m_FileData.ppParts[nCntParts]->GetCurrentRotation().z;
+			m_OldKey[nCntParts].fPosX = m_FileData.ppParts[nCntParts]->GetPosition().x + m_aInfo[nNowMotion].pKeyInfo[nNextkey].aKey[nCntParts].fPosX;
+			m_OldKey[nCntParts].fPosY = m_FileData.ppParts[nCntParts]->GetPosition().y + m_aInfo[nNowMotion].pKeyInfo[nNextkey].aKey[nCntParts].fPosY;
+			m_OldKey[nCntParts].fPosZ = m_FileData.ppParts[nCntParts]->GetPosition().z + m_aInfo[nNowMotion].pKeyInfo[nNextkey].aKey[nCntParts].fPosZ;
+			m_OldKey[nCntParts].fRotX = m_FileData.ppParts[nCntParts]->GetRotation().x + m_aInfo[nNowMotion].pKeyInfo[nNextkey].aKey[nCntParts].fRotX;
+			m_OldKey[nCntParts].fRotY = m_FileData.ppParts[nCntParts]->GetRotation().y + m_aInfo[nNowMotion].pKeyInfo[nNextkey].aKey[nCntParts].fRotY;
+			m_OldKey[nCntParts].fRotZ = m_FileData.ppParts[nCntParts]->GetRotation().z + m_aInfo[nNowMotion].pKeyInfo[nNextkey].aKey[nCntParts].fRotZ;
 		}
 
 		if (nNextkey >= m_aInfo[nNowMotion].nNumKey - 1)

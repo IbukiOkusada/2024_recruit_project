@@ -65,7 +65,7 @@ public:
 	virtual CPlayer *GetPlayer(void) { return NULL; }
 	virtual CFileLoad *GetFileLoad(void) { return NULL; }
 	virtual CEditor *GetEditor(void) { return NULL; }
-	virtual CMiniMap* GetMiniMap(void) { return nullptr; }
+	virtual CTime* GetTime(void) { return nullptr; }
 	virtual void SendPosition(D3DXVECTOR3&) {  }
 	virtual void SendRotation(D3DXVECTOR3&) {  }
 	virtual void SendDamage(int) {  }

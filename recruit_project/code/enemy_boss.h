@@ -18,6 +18,15 @@ class CPlayer;
 //==========================================================
 class CEnemyBoss : public CEnemy
 {
+public:
+
+	// 追加パーツ列挙型
+	enum PARTS {
+		PARTS_LEFTARM,	// 左腕
+		PARTS_RIGHTARM,	// 右腕
+		PARTS_MAX
+	};
+
 private:
 
 	// 状態列挙型
@@ -33,8 +42,7 @@ private:
 	};
 
 	// アクション列挙型
-	enum ACTION
-	{
+	enum ACTION {
 		ACTION_NEUTRAL = 0,		// 待機
 		ACTION_WALK,			// 歩行
 		ACTION_ATK,				// 攻撃
@@ -43,11 +51,11 @@ private:
 		ACTION_MAX
 	};
 
-	// 追加パーツ列挙型
-	enum PARTS {
-		PARTS_LEFTARM,	// 左腕
-		PARTS_RIGHTARM,	// 右腕
-		PARTS_MAX
+	// 腕アクション列挙型
+	enum ARM {
+		ARM_NEUTRAL = 0,	// 待機
+		ARM_ATTACK,			// 攻撃
+		ARM_MAX
 	};
 
 	// 追跡対象情報構造体
@@ -94,10 +102,16 @@ private:	// 自分だけがアクセス可能
 	void SetState(void);
 	void SetMotion(void);
 	void Gravity(void);
-	void Attack(const int nRandRange = 1);
+	void AttackCheck(void);
+	void Attack(const int nRandRange = 3);
+	void FootCheck(void);
+	void ArmDamage(void);
 
 	// メンバ変数
 	CWaist* m_pWaist;		// 腰
+	CCharacter* m_apArm[PARTS_MAX];	// 腕
+	int m_nArmAction;
+	int m_NowArm;			// 現在動作する腕
 	CCharacter* m_pBody;	// 上半身
 	CCharacter* m_pLeg;		// 下半身
 	SChase m_Chase;			// 追跡管理

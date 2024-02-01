@@ -121,11 +121,14 @@ public:	// 誰でもアクセス可能
 	void SetDraw(bool bDraw);
 	void SetNext(CPlayer* pNext) { m_pNext = pNext; }
 	void SetPrev(CPlayer* pPrev) { m_pPrev = pPrev; }
+	void SetJump(bool bJump) { m_bJump = bJump; }
 
 	// メンバ関数(取得)
 	D3DXVECTOR3 GetMove(void) { return m_Info.move; }
 	D3DXVECTOR3 GetPosition(void) { return m_Info.pos; }
 	D3DXVECTOR3 GetRotation(void) { return m_Info.rot; }
+	D3DXVECTOR3 GetOldPosition(void) { return m_Info.posOld; }
+	D3DXVECTOR3 GetColliMax(void);
 	CPlayer* GetNext(void) { return m_pNext; }
 	CPlayer* GetPrev(void) { return m_pPrev; }
 	void Damage(int nDamage);

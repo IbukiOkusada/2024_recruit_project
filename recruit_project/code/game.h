@@ -57,6 +57,7 @@ public:
 	void SendLife(int nLife);
 	void SendSetUp(void);
 	void SendGoal(void);
+	CTime* GetTime(void)override { return m_pTimer; }
 	static void SetNumPlayer(int nNum) { m_nNumPlayer = nNum; }
 	static int GetNumPlayer(void) { return m_nNumPlayer; }
 

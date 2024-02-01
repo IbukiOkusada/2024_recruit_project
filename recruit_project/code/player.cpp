@@ -390,6 +390,7 @@ void CPlayer::Update(void)
 
 	CManager::GetInstance()->GetDebugProc()->Print("アクション[ %d ], 前回のアクション [ %d ]\n", m_nAction, m_nActionOld);
 	CManager::GetInstance()->GetDebugProc()->Print("体力 [ %d ], 向き [ %f ]\n", m_nLife, m_Info.rot.y);
+	CManager::GetInstance()->GetDebugProc()->Print("移動 [ %f, %f, %f ]\n", m_Info.pos.x, m_Info.pos.y, m_Info.pos.z);
 }
 
 //===============================================
@@ -1915,4 +1916,12 @@ void CPlayer::KickChance(void)
 			CLockOn::MultiDeath();
 		}
 	}
+}
+
+//===============================================
+// ロックオンキックコンボ確認
+//===============================================
+D3DXVECTOR3 CPlayer::GetColliMax(void)
+{
+	return COLLIMAX;
 }

@@ -15,14 +15,14 @@
 #include "object2D.h"
 
 //マクロ定義
-#define BUTTONWIDTH		(140.0f)		//ポーズ画面ボタン幅
-#define BUTTONHEIGHT		(45.0f)			//ポーズ画面ボタン高さ
-#define BUTTONX			(640.0f)		//ポーズ画面X座標
-#define BUTTONY			(250.0f)		//ポーズ画面Y座標
-#define BUTTONSPACE		(130.0f)		//ポーズ画面縦スペース
-#define MOVECOLA		(-0.02f)			//毎フレーム変わるボタンの透明度
-#define BGSIZE			(270.0f)		//サイズ
-#define BGHEIGHT		(270.0f)			//縦幅
+#define BUTTONWIDTH		(140.0f)		// ポーズ画面ボタン幅
+#define BUTTONHEIGHT	(45.0f)			// ポーズ画面ボタン高さ
+#define BUTTONX			(640.0f)		// ポーズ画面X座標
+#define BUTTONY			(250.0f)		// ポーズ画面Y座標
+#define BUTTONSPACE		(130.0f)		// ポーズ画面縦スペース
+#define MOVECOLA		(-0.02f)		// 毎フレーム変わるボタンの透明度
+#define BGSIZE			(270.0f)		// サイズ
+#define BGHEIGHT		(270.0f)		// 縦幅
 
 //===============================================
 // テクスチャファイル名
@@ -186,6 +186,7 @@ bool CPause::Update(void)
 		switch (m_SelectMenu)
 		{
 		case MENU_CONTINUE:
+			MeasureEnd();
 			break;
 		case MENU_RETRY:
 			pFade->Set(CScene::MODE_GAME);
@@ -291,4 +292,12 @@ void CPause::SetDraw(const bool bValue)
 			m_aMenu[nCnt].pObject2D->SetDraw(bValue);
 		}
 	}
+}
+
+//===============================================
+// 測定終了
+//===============================================
+void CPause::MeasureEnd(void)
+{
+	CManager::GetInstance()->GetScene()->GetTime()->SetPauseTimer((int)((timeGetTime() - m_nStartDeltaTime) * 0.1f) + CManager::GetInstance()->GetScene()->GetTime()->GetPauseTimer());
 }

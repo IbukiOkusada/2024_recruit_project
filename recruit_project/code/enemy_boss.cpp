@@ -19,12 +19,18 @@
 #include "slow.h"
 #include "meshfield.h"
 #include "bullet.h"
+#include "input.h"
+#include "Xfile.h"
 
 // 無名名前空間
 namespace
 {
 	const char* BODYFILEPASS = "data\\TXT\\enemy_boss\\motion_body.txt";	// ファイルのパス
 	const char* LEGFILEPASS = "data\\TXT\\enemy_boss\\motion_leg.txt";	// ファイルのパス
+	const char* ARMFILEPASS[CEnemyBoss::PARTS_MAX] = {
+		"data\\TXT\\enemy_boss\\motion_leftarm.txt",
+		"data\\TXT\\enemy_boss\\motion_rightarm.txt",
+	};
 	const D3DXVECTOR3 COLLIMAX = { 20.0f, 120.0f, 20.0f };	// 当たり判定最大
 	const D3DXVECTOR3 COLLIMIN = { -20.0f, 0.0f, -20.0f };	// 当たり判定最小
 	const int DAMAGEINTERVAL = (60);	// ダメージインターバル
@@ -54,7 +60,7 @@ namespace SPEED
 namespace INTERVAL
 {
 	const float DAMAGE = (20.0f);	// ダメージ
-	const float ATTACK = (140.0f);	// 攻撃
+	const float ATTACK = (500.0f);	// 攻撃
 }
 
 //==========================================================
@@ -73,6 +79,11 @@ CEnemyBoss::CEnemyBoss()
 	m_StateInfo.state = STATE_APPEAR;
 	m_StateInfo.fCounter = 0.0f;
 	m_fAtkCnter = 0.0f;
+	m_nArmAction = 0;
+
+	for (int i = 0; i < PARTS_MAX; i++) {
+		m_apArm[i] = nullptr;
+	}
 }
 
 //==========================================================
@@ -88,8 +99,8 @@ CEnemyBoss::~CEnemyBoss()
 //==========================================================
 HRESULT CEnemyBoss::Init(void)
 {
-	// 種類を近距離に設定
-	SetType(TYPE_MELEE);
+	// 種類をボスに設定
+	SetType(TYPE_BOSS);
 
 	SInfo* pInfo = GetInfo();
 
@@ -125,6 +136,23 @@ HRESULT CEnemyBoss::Init(void)
 		m_pLeg->GetMotion()->InitSet(m_nAction);
 	}
 
+	// 追加腕の設定
+	for (int i = 0; i < PARTS_MAX; i++) {
+		m_apArm[i] = CCharacter::Create(ARMFILEPASS[i]);
+		m_apArm[i]->SetParent(m_pWaist->GetMtxWorld());
+		m_apArm[i]->SetShadow(true);
+		m_apArm[i]->SetDraw();
+
+		if (m_apArm[i]->GetMotion() != nullptr)
+		{
+			// 初期モーションの設定
+			m_apArm[i]->GetMotion()->InitSet(ARM_NEUTRAL);
+		}
+	}
+
+	m_nArmAction = ARM_NEUTRAL;
+	m_NowArm = PARTS_LEFTARM;
+
 	// 腰の高さを合わせる
 	if (m_pLeg != nullptr)
 	{// 脚が使用されている場合
@@ -154,6 +182,15 @@ HRESULT CEnemyBoss::Init(void)
 //==========================================================
 void CEnemyBoss::Uninit(void)
 {
+	// 追加腕の設定
+	for (int i = 0; i < PARTS_MAX; i++) {
+		if (m_apArm[i] != nullptr){
+			m_apArm[i]->Uninit();
+			delete m_apArm[i];
+			m_apArm[i] = nullptr;
+		}
+	}
+
 	if (m_pBody != nullptr) {
 		m_pBody->Uninit();
 		delete m_pBody;
@@ -193,6 +230,10 @@ void CEnemyBoss::Update(void)
 	//マトリックス設定
 	CEnemy::Update();
 	BodySet();
+
+	if (CManager::GetInstance()->GetInputKeyboard()->GetTrigger(DIK_H)) {
+		ArmDamage();
+	}
 }
 
 //===============================================
@@ -212,10 +253,18 @@ void CEnemyBoss::MethodLine(void)
 
 		// 移動
 		AddMove();
+
+		// 攻撃
+		Attack();
 	}
 
 	// 重力
-	Gravity();
+	if (m_NowArm >= PARTS_MAX) {
+		Gravity();
+	}
+	else {
+		FootCheck();
+	}
 
 	// 当たり判定確認
 	CObjectX::COLLISION_AXIS axis = CObjectX::TYPE_MAX;
@@ -290,6 +339,14 @@ void CEnemyBoss::BodySet(void)
 	{// 使用されている場合
 		m_pBody->Update();
 	}
+
+	// 腕更新
+	for (int i = 0; i < PARTS_MAX; i++) {
+		if (BodyCheck(m_apArm[i]))
+		{
+			m_apArm[i]->Update();
+		}
+	}
 }
 
 //===============================================
@@ -316,6 +373,10 @@ bool CEnemyBoss::Hit(D3DXVECTOR3& pos, const float fRange, const int nDamage)
 	SInfo* pInfo = GetInfo();
 
 	if (m_fInterVal > 0) {
+		return false;
+	}
+
+	if (m_NowArm < PARTS_MAX) {
 		return false;
 	}
 
@@ -441,13 +502,19 @@ void CEnemyBoss::LockOn(void)
 	D3DXVECTOR3 pos = m_Chase.pTarget->GetPosition();
 	{
 		float fDiff = GetRotDiff();
-		fDiff = atan2f(pos.x - MyPos.x, pos.z - MyPos.z) + D3DX_PI;
-		if (fDiff < -D3DX_PI) {
-			fDiff += D3DX_PI * 2;
+		if (m_nArmAction != ARM_ATTACK && m_NowArm < ARM_MAX || m_NowArm >= ARM_MAX) {
+			fDiff = atan2f(pos.x - MyPos.x, pos.z - MyPos.z) + D3DX_PI;
+			if (fDiff < -D3DX_PI) {
+				fDiff += D3DX_PI * 2;
+			}
+			else if (fDiff > D3DX_PI) {
+				fDiff += -D3DX_PI * 2;
+			}
 		}
-		else if (fDiff > D3DX_PI) {
-			fDiff += -D3DX_PI * 2;
+		else if (m_nArmAction == ARM_ATTACK && m_NowArm < ARM_MAX) {
+			fDiff = 0.0f;
 		}
+
 		SetRotDiff(fDiff);
 	}
 }
@@ -621,11 +688,159 @@ void CEnemyBoss::Gravity(void)
 //===============================================
 void CEnemyBoss::Attack(const int nRandRange)
 {
-	SInfo* pInfo = GetInfo();
 	float CMinusCnter = static_cast<float>(rand() % nRandRange);
-	m_fAtkCnter -= CMinusCnter * CManager::GetInstance()->GetSlow()->Get();
+	m_fAtkCnter -= (CMinusCnter) * CManager::GetInstance()->GetSlow()->Get();
 
-	if (m_fAtkCnter <= 0.0f) {	// 攻撃できる
-		m_fAtkCnter = INTERVAL::ATTACK;
+	if (m_fAtkCnter > 0.0f) {	// 攻撃できない
+		AttackCheck();
+		return;
+	}
+
+	if (m_NowArm >= PARTS_MAX) {
+		return;
+	}
+
+	if (!BodyCheck(m_apArm[m_NowArm])) {
+		return;
+	}
+	m_fAtkCnter = INTERVAL::ATTACK;
+	m_apArm[m_NowArm]->GetMotion()->BlendSet(ARM_ATTACK);
+	m_nArmAction = ARM_ATTACK;
+}
+
+//===============================================
+// 攻撃確認
+//===============================================
+void CEnemyBoss::AttackCheck(void)
+{
+	if (m_NowArm >= PARTS_MAX) {
+		return;
+	}
+
+	if (!BodyCheck(m_apArm[m_NowArm])) {
+		return;
+	}
+
+	if (m_apArm[m_NowArm]->GetMotion()->GetNowMotion() != ARM_ATTACK) {	// 現在攻撃中ではない
+		return;
+	}
+
+	if (m_apArm[m_NowArm]->GetMotion()->GetEnd()) {	// モーション終了
+		m_apArm[m_NowArm]->GetMotion()->BlendSet(ARM_NEUTRAL);
+		m_nArmAction = ARM_NEUTRAL;
+	}
+}
+
+//===============================================
+// 足場確認
+//===============================================
+void CEnemyBoss::FootCheck(void)
+{
+	if (m_NowArm >= PARTS_MAX) {
+		return;
+	}
+
+	if (!BodyCheck(m_apArm[m_NowArm])) {
+		return;
+	}
+
+	if (m_nArmAction != ARM_ATTACK) {
+		return;
+	}
+
+	if (m_apArm[m_NowArm]->GetMotion()->GetNowKey() != 3) {
+		return;
+	}
+
+	CPlayer *pPlayer = CPlayerManager::GetInstance()->GetTop();
+	D3DXVECTOR3 ArmPos = { m_apArm[m_NowArm]->GetParts(1)->GetMtx()->_41, GetPosition().y, m_apArm[m_NowArm]->GetParts(1)->GetMtx()->_43 };
+	D3DXVECTOR3 VtxMax = CManager::GetInstance()->GetModelFile()->GetMax(m_apArm[m_NowArm]->GetParts(1)->GetId());
+	D3DXVECTOR3 VtxMin = CManager::GetInstance()->GetModelFile()->GetMin(m_apArm[m_NowArm]->GetParts(1)->GetId());
+	VtxMax.y *= 2;
+
+	// プレイヤー分繰り返し
+	while (pPlayer != nullptr) {
+		CPlayer* pNext = pPlayer->GetNext();
+		D3DXVECTOR3 PlayerPos = pPlayer->GetPosition();
+		D3DXVECTOR3 PlayerPosOld = pPlayer->GetOldPosition();
+		D3DXVECTOR3 PlayerMove = pPlayer->GetMove();
+		D3DXVECTOR3 PlayerMax = pPlayer->GetColliMax();
+
+		// Y座標確認
+		if (PlayerPos.x >= ArmPos.x + VtxMin.x && PlayerPos.x <= ArmPos.x + VtxMax.x
+			&& PlayerPos.z >= ArmPos.z + VtxMin.z && PlayerPos.z <= ArmPos.z + VtxMax.z) {
+
+			if (PlayerPos.y < ArmPos.y + VtxMax.y && PlayerPosOld.y >= ArmPos.y + VtxMax.y) {
+				PlayerPos.y = ArmPos.y + VtxMax.y;
+				PlayerMove.y = 0.0f;
+				pPlayer->SetJump(false);
+			}
+
+			if (PlayerPos.y + PlayerMax.y > ArmPos.y + VtxMin.y && PlayerPosOld.y + PlayerMax.y <= ArmPos.y + VtxMin.y) {
+				PlayerPos.y = ArmPos.y + VtxMin.y - PlayerMax.y;
+				PlayerMove.y = 0.0f;
+			}
+		}
+
+		// XZ座標確認
+		if (PlayerPos.y <= ArmPos.y + VtxMax.y && PlayerPos.y + PlayerMax.y >= ArmPos.y + VtxMin.y) {
+
+			// X座標
+			if (PlayerPos.z - PlayerMax.z <= ArmPos.z + VtxMax.z
+				&& PlayerPos.z + PlayerMax.z >= ArmPos.z + VtxMin.z) {
+				if (PlayerPos.x - PlayerMax.x < ArmPos.x + VtxMax.x
+					&& PlayerPosOld.x - PlayerMax.x >= ArmPos.x + VtxMax.x) {
+					PlayerPos.x = ArmPos.x + VtxMax.x + PlayerMax.x;
+					PlayerMove.x = 0.0f;
+				}
+				if (PlayerPos.x + PlayerMax.x > ArmPos.x + VtxMin.x
+					&& PlayerPosOld.x + PlayerMax.x <= ArmPos.x + VtxMin.x) {
+					PlayerPos.x = ArmPos.x + VtxMin.x - PlayerMax.x;
+					PlayerMove.x = 0.0f;
+				}
+			}
+
+			// Z座標
+			if (PlayerPos.x - PlayerMax.x <= ArmPos.x + VtxMax.x
+				&& PlayerPos.x + PlayerMax.x >= ArmPos.x + VtxMin.x) {
+				if (PlayerPos.z - PlayerMax.z < ArmPos.z + VtxMax.z
+					&& PlayerPosOld.z - PlayerMax.z >= ArmPos.z + VtxMax.z) {
+					PlayerPos.z = ArmPos.z + VtxMax.z + PlayerMax.z;
+					PlayerMove.z = 0.0f;
+				}
+				if (PlayerPos.z + PlayerMax.z > ArmPos.z + VtxMin.z
+					&& PlayerPosOld.z + PlayerMax.z <= ArmPos.z + VtxMin.z) {
+					PlayerPos.z = ArmPos.z + VtxMin.z - PlayerMax.z;
+					PlayerMove.z = 0.0f;
+				}
+			}
+		}
+
+		pPlayer->SetPosition(PlayerPos);
+		pPlayer->SetMove(PlayerMove);
+
+		pPlayer = pNext;
+	}
+}
+
+//===============================================
+// 腕ダメージ
+//===============================================
+void CEnemyBoss::ArmDamage(void)
+{
+	if (m_NowArm >= PARTS_MAX) {
+		return;
+	}
+
+	if (m_apArm[m_NowArm] != nullptr) {
+		m_apArm[m_NowArm]->Uninit();
+		delete m_apArm[m_NowArm];
+		m_apArm[m_NowArm] = nullptr;
+	}
+
+	m_NowArm++;
+
+	if (m_NowArm >= PARTS_MAX) {
+		m_nArmAction = ARM_NEUTRAL;
 	}
 }

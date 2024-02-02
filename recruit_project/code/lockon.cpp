@@ -369,7 +369,7 @@ void CLockOn::LockOn(void)
 				if (m_nNum < MAX_LOCKON) {
 					CLockOn* pLock = CLockOn::Create(pObj->GetMtx(), CLockOn::TYPE_MULTI);
 					pLock->SetTag(pObj);
-					pLock->GetObj()->SetCol(D3DXCOLOR(m_nNum * 0.2f, 1.0f - m_nNum * 0.2f, 0.5f, 0.3f));
+					pLock->GetObj()->SetCol(D3DXCOLOR(m_nNum * 0.1f, 1.0f - m_nNum * 0.1f, 0.5f, 0.3f));
 					pLock->SetLock(true);
 					pLock->GetObj()->SetDraw(true);
 				}

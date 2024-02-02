@@ -12,6 +12,7 @@
 class CWaist;
 class CCharacter;
 class CPlayer;
+class CBridge;
 
 //==========================================================
 // サンプルのクラス定義
@@ -119,6 +120,7 @@ private:	// 自分だけがアクセス可能
 	int m_nAction;			// アクション番号
 	float m_fInterVal;		// ダメージインターバル
 	float m_fAtkCnter;		// 攻撃カウンター
+	CBridge* m_pBridge;		// 橋
 };
 
 #endif

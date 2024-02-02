@@ -21,6 +21,7 @@
 #include "bullet.h"
 #include "input.h"
 #include "Xfile.h"
+#include "bridge.h"
 
 // 無名名前空間
 namespace
@@ -74,6 +75,7 @@ CEnemyBoss::CEnemyBoss()
 	m_pLeg = nullptr;
 	m_pWaist = nullptr;
 	m_Chase.pTarget = nullptr;
+	m_pBridge = nullptr;
 	m_Chase.fLength = 0.0f;
 	m_fInterVal = 0;
 	m_StateInfo.state = STATE_APPEAR;
@@ -174,6 +176,9 @@ HRESULT CEnemyBoss::Init(void)
 	m_fInterVal = 1;
 	SetRotMulti(ROTDIFF_INER);
 
+	// 動作する橋を生成
+	m_pBridge = CBridge::Create(D3DXVECTOR3(-2700.0f, 1010.0f, 3750.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+
 	return S_OK;
 }
 
@@ -206,6 +211,11 @@ void CEnemyBoss::Uninit(void)
 	if (m_pWaist != nullptr) {
 		delete m_pWaist;
 		m_pWaist = nullptr;
+	}
+
+	if (m_pBridge != nullptr) {
+		m_pBridge->SetClose(true);
+		m_pBridge = nullptr;
 	}
 
 	// 親クラスの終了呼び出し
@@ -752,74 +762,87 @@ void CEnemyBoss::FootCheck(void)
 		return;
 	}
 
-	CPlayer *pPlayer = CPlayerManager::GetInstance()->GetTop();
-	D3DXVECTOR3 ArmPos = { m_apArm[m_NowArm]->GetParts(1)->GetMtx()->_41, GetPosition().y, m_apArm[m_NowArm]->GetParts(1)->GetMtx()->_43 };
-	D3DXVECTOR3 VtxMax = CManager::GetInstance()->GetModelFile()->GetMax(m_apArm[m_NowArm]->GetParts(1)->GetId());
-	D3DXVECTOR3 VtxMin = CManager::GetInstance()->GetModelFile()->GetMin(m_apArm[m_NowArm]->GetParts(1)->GetId());
-	VtxMax.y *= 2;
+	int nNumParts = m_apArm[m_NowArm]->GetNumParts();
 
-	// プレイヤー分繰り返し
-	while (pPlayer != nullptr) {
-		CPlayer* pNext = pPlayer->GetNext();
-		D3DXVECTOR3 PlayerPos = pPlayer->GetPosition();
-		D3DXVECTOR3 PlayerPosOld = pPlayer->GetOldPosition();
-		D3DXVECTOR3 PlayerMove = pPlayer->GetMove();
-		D3DXVECTOR3 PlayerMax = pPlayer->GetColliMax();
+	for (int i = 0; i < nNumParts; i++) {
+		CPlayer* pPlayer = CPlayerManager::GetInstance()->GetTop();
+		D3DXVECTOR3 ArmPos = { m_apArm[m_NowArm]->GetParts(i)->GetMtx()->_41, GetPosition().y, m_apArm[m_NowArm]->GetParts(i)->GetMtx()->_43 };
+		D3DXVECTOR3 VtxMax = CManager::GetInstance()->GetModelFile()->GetMax(m_apArm[m_NowArm]->GetParts(i)->GetId());
+		D3DXVECTOR3 VtxMin = CManager::GetInstance()->GetModelFile()->GetMin(m_apArm[m_NowArm]->GetParts(i)->GetId());
+		VtxMax.y *= 2;
 
-		// Y座標確認
-		if (PlayerPos.x >= ArmPos.x + VtxMin.x && PlayerPos.x <= ArmPos.x + VtxMax.x
-			&& PlayerPos.z >= ArmPos.z + VtxMin.z && PlayerPos.z <= ArmPos.z + VtxMax.z) {
-
-			if (PlayerPos.y < ArmPos.y + VtxMax.y && PlayerPosOld.y >= ArmPos.y + VtxMax.y) {
-				PlayerPos.y = ArmPos.y + VtxMax.y;
-				PlayerMove.y = 0.0f;
-				pPlayer->SetJump(false);
-			}
-
-			if (PlayerPos.y + PlayerMax.y > ArmPos.y + VtxMin.y && PlayerPosOld.y + PlayerMax.y <= ArmPos.y + VtxMin.y) {
-				PlayerPos.y = ArmPos.y + VtxMin.y - PlayerMax.y;
-				PlayerMove.y = 0.0f;
-			}
+		if (i == nNumParts - 1) {
+			ArmPos.y += 60.0f;
 		}
 
-		// XZ座標確認
-		if (PlayerPos.y <= ArmPos.y + VtxMax.y && PlayerPos.y + PlayerMax.y >= ArmPos.y + VtxMin.y) {
+		// プレイヤー分繰り返し
+		while (pPlayer != nullptr) {
+			CPlayer* pNext = pPlayer->GetNext();
+			D3DXVECTOR3 PlayerPos = pPlayer->GetPosition();
+			D3DXVECTOR3 PlayerPosOld = pPlayer->GetOldPosition();
+			D3DXVECTOR3 PlayerMove = pPlayer->GetMove();
+			D3DXVECTOR3 PlayerMax = pPlayer->GetColliMax();
 
-			// X座標
-			if (PlayerPos.z - PlayerMax.z <= ArmPos.z + VtxMax.z
-				&& PlayerPos.z + PlayerMax.z >= ArmPos.z + VtxMin.z) {
-				if (PlayerPos.x - PlayerMax.x < ArmPos.x + VtxMax.x
-					&& PlayerPosOld.x - PlayerMax.x >= ArmPos.x + VtxMax.x) {
-					PlayerPos.x = ArmPos.x + VtxMax.x + PlayerMax.x;
-					PlayerMove.x = 0.0f;
+			// Y座標確認
+			if (PlayerPos.x >= ArmPos.x + VtxMin.x && PlayerPos.x <= ArmPos.x + VtxMax.x
+				&& PlayerPos.z >= ArmPos.z + VtxMin.z && PlayerPos.z <= ArmPos.z + VtxMax.z) {
+
+				if (PlayerPos.y < ArmPos.y + VtxMax.y && PlayerPosOld.y >= ArmPos.y + VtxMax.y) {
+					PlayerPos.y = ArmPos.y + VtxMax.y;
+					PlayerMove.y = 0.0f;
+					pPlayer->SetJump(false);
+
+					if (i == nNumParts - 1) {
+						ArmDamage();
+						return;
+					}
 				}
-				if (PlayerPos.x + PlayerMax.x > ArmPos.x + VtxMin.x
-					&& PlayerPosOld.x + PlayerMax.x <= ArmPos.x + VtxMin.x) {
-					PlayerPos.x = ArmPos.x + VtxMin.x - PlayerMax.x;
-					PlayerMove.x = 0.0f;
+
+				if (PlayerPos.y + PlayerMax.y > ArmPos.y + VtxMin.y && PlayerPosOld.y + PlayerMax.y <= ArmPos.y + VtxMin.y) {
+					PlayerPos.y = ArmPos.y + VtxMin.y - PlayerMax.y;
+					PlayerMove.y = 0.0f;
 				}
 			}
 
-			// Z座標
-			if (PlayerPos.x - PlayerMax.x <= ArmPos.x + VtxMax.x
-				&& PlayerPos.x + PlayerMax.x >= ArmPos.x + VtxMin.x) {
-				if (PlayerPos.z - PlayerMax.z < ArmPos.z + VtxMax.z
-					&& PlayerPosOld.z - PlayerMax.z >= ArmPos.z + VtxMax.z) {
-					PlayerPos.z = ArmPos.z + VtxMax.z + PlayerMax.z;
-					PlayerMove.z = 0.0f;
+			// XZ座標確認
+			if (PlayerPos.y <= ArmPos.y + VtxMax.y && PlayerPos.y + PlayerMax.y >= ArmPos.y + VtxMin.y) {
+
+				// X座標
+				if (PlayerPos.z - PlayerMax.z <= ArmPos.z + VtxMax.z
+					&& PlayerPos.z + PlayerMax.z >= ArmPos.z + VtxMin.z) {
+					if (PlayerPos.x - PlayerMax.x < ArmPos.x + VtxMax.x
+						&& PlayerPosOld.x - PlayerMax.x >= ArmPos.x + VtxMax.x) {
+						PlayerPos.x = ArmPos.x + VtxMax.x + PlayerMax.x;
+						PlayerMove.x = 0.0f;
+					}
+					if (PlayerPos.x + PlayerMax.x > ArmPos.x + VtxMin.x
+						&& PlayerPosOld.x + PlayerMax.x <= ArmPos.x + VtxMin.x) {
+						PlayerPos.x = ArmPos.x + VtxMin.x - PlayerMax.x;
+						PlayerMove.x = 0.0f;
+					}
 				}
-				if (PlayerPos.z + PlayerMax.z > ArmPos.z + VtxMin.z
-					&& PlayerPosOld.z + PlayerMax.z <= ArmPos.z + VtxMin.z) {
-					PlayerPos.z = ArmPos.z + VtxMin.z - PlayerMax.z;
-					PlayerMove.z = 0.0f;
+
+				// Z座標
+				if (PlayerPos.x - PlayerMax.x <= ArmPos.x + VtxMax.x
+					&& PlayerPos.x + PlayerMax.x >= ArmPos.x + VtxMin.x) {
+					if (PlayerPos.z - PlayerMax.z < ArmPos.z + VtxMax.z
+						&& PlayerPosOld.z - PlayerMax.z >= ArmPos.z + VtxMax.z) {
+						PlayerPos.z = ArmPos.z + VtxMax.z + PlayerMax.z;
+						PlayerMove.z = 0.0f;
+					}
+					if (PlayerPos.z + PlayerMax.z > ArmPos.z + VtxMin.z
+						&& PlayerPosOld.z + PlayerMax.z <= ArmPos.z + VtxMin.z) {
+						PlayerPos.z = ArmPos.z + VtxMin.z - PlayerMax.z;
+						PlayerMove.z = 0.0f;
+					}
 				}
 			}
+
+			pPlayer->SetPosition(PlayerPos);
+			pPlayer->SetMove(PlayerMove);
+
+			pPlayer = pNext;
 		}
-
-		pPlayer->SetPosition(PlayerPos);
-		pPlayer->SetMove(PlayerMove);
-
-		pPlayer = pNext;
 	}
 }
 

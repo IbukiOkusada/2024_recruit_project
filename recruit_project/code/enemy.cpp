@@ -193,6 +193,4 @@ void CEnemy::AddMove(void)
 
 	m_Info.pos.x += m_Info.move.x * CManager::GetInstance()->GetSlow()->Get();
 	m_Info.pos.z += m_Info.move.z * CManager::GetInstance()->GetSlow()->Get();
-
-	CManager::GetInstance()->GetDebugProc()->Print("“G‚ÌˆÚ“®—Ê[%f, %f, %f]\n", m_Info.move.x, m_Info.move.y, m_Info.move.z);
 }

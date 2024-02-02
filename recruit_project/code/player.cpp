@@ -38,6 +38,7 @@
 #include "player_manager.h"
 #include "enemy.h"
 #include "lockon.h"
+#include "fade.h"
 
 //===============================================
 // マクロ定義
@@ -65,28 +66,29 @@ namespace {
 	const float WALLKICK_INER = (0.1f);		// 壁キック中慣性
 	const float WALLKICK_SPEED = (1.0f);	// 壁キック中移動速度
 	const float WALLSLIDE_GRAVITY = (-1.5f);	// 壁ずり中落下速度
-	const float SLIDEJUMP_INER = (0.02f);
-	const float SLIDEJUMP_GRAVITY = (-0.25f);
-	const float SLIDEJUMP = (7.0f);
-	const float SLIDEJUMP_SPEED = (1.75f);
-	const float WALLSLIDE_MOVE = (0.05f);
-	const float WALLDUSH_MOVE = (5.0f);
-	const float CAMROT_INER = (0.2f);
-	const float SLIDINNG_ROTZ = (D3DX_PI * 0.51f);
-	const float SLIDING_LENGTH = (200.0f);
-	const float KICKUP_SPEED = (1.5f);
-	const float KICKUP_JUMP = (21.0f);
-	const float KICKUP_QUICKJUMP = (19.0f);
-	const float AXEKICK_ROTZ = (D3DX_PI * 0.21f);
-	const float RIDERKICK_ROTZ = (D3DX_PI * 0.31f);
-	const float AXEKICK_CAMERALENGTH = (400.0f);
-	const float SLOW_KICKCHARGE = (15.0f);
-	const D3DXVECTOR3 COLLIMAX = { 20.0f, 70.0f, 20.0f };
-	const D3DXVECTOR3 COLLIMIN = { -20.0f, 0.0f, -20.0f };
+	const float WALLDUSH_GRAVITY = (-0.75f);
+	const float SLIDEJUMP_INER = (0.02f);		// スライディング慣性
+	const float SLIDEJUMP_GRAVITY = (-0.25f);	// スライディングジャンプ重力
+	const float SLIDEJUMP = (7.0f);				// スライディングジャンプジャンプ力
+	const float SLIDEJUMP_SPEED = (1.75f);		// スライディングジャンプ移動量
+	const float WALLSLIDE_MOVE = (0.05f);		// 壁ずりいどうりょう
+	const float WALLDUSH_MOVE = (5.0f);			// 壁走り移動量
+	const float CAMROT_INER = (0.2f);			// カメラ慣性
+	const float SLIDINNG_ROTZ = (D3DX_PI * 0.51f);	// スライディングカメラ角度
+	const float SLIDING_LENGTH = (200.0f);			//スライディングカメラ距離
+	const float KICKUP_SPEED = (1.5f);			// 蹴りあがり移動速度
+	const float KICKUP_JUMP = (21.0f);			// 蹴りあがりジャンプ力
+	const float KICKUP_QUICKJUMP = (19.0f);		// ライダーキックからのジャンプ力
+	const float AXEKICK_ROTZ = (D3DX_PI * 0.21f);	// かかと落としカメラ
+	const float RIDERKICK_ROTZ = (D3DX_PI * 0.31f);	// ライダーキックカメラ向き
+	const float AXEKICK_CAMERALENGTH = (400.0f);	// かかと落としカメラ距離
+	const float SLOW_KICKCHARGE = (15.0f);			// スローまでのチャージ時間
+	const D3DXVECTOR3 COLLIMAX = { 20.0f, 70.0f, 20.0f };	// 最大当たり判定
+	const D3DXVECTOR3 COLLIMIN = { -20.0f, 0.0f, -20.0f };	// 最小当たり判定
 	const float KICK_LENGTH = (1000.0f);	// 攻撃範囲
-	const float RIDERKICK_SPEED = (24.0f);
-	const float RIDERKICK_HIGHSPEED = (60.0f);
-	const float RIDERKICK_CAMERALENGTH = (600.0f);
+	const float RIDERKICK_SPEED = (24.0f);	// ライダーキック速度
+	const float RIDERKICK_HIGHSPEED = (60.0f);	// ライダーキック最速
+	const float RIDERKICK_CAMERALENGTH = (600.0f);	// ライダーキックカメラ距離
 }
 
 // 前方宣言
@@ -126,6 +128,7 @@ CPlayer::CPlayer()
 	m_Info.fSlideMove = 0.0f;
 	m_pLockOn = nullptr;
 	m_pTarget = nullptr;
+	m_ColiNorOld = { 0.0f, 0.0f, 0.0f };
 
 	CPlayerManager::GetInstance()->ListIn(this);
 }
@@ -391,6 +394,10 @@ void CPlayer::Update(void)
 	CManager::GetInstance()->GetDebugProc()->Print("アクション[ %d ], 前回のアクション [ %d ]\n", m_nAction, m_nActionOld);
 	CManager::GetInstance()->GetDebugProc()->Print("体力 [ %d ], 向き [ %f ]\n", m_nLife, m_Info.rot.y);
 	CManager::GetInstance()->GetDebugProc()->Print("移動 [ %f, %f, %f ]\n", m_Info.pos.x, m_Info.pos.y, m_Info.pos.z);
+
+	if (m_Info.pos.x <= -3000.0f || (m_nLife == 0 && m_Info.state == STATE_APPEAR)) {
+		CManager::GetInstance()->GetFade()->Set(CScene::MODE_RESULT);
+	}
 }
 
 //===============================================
@@ -443,9 +450,9 @@ void CPlayer::Controller(void)
 		if (m_nAction != ACTION_RIDERKICK) {	// ライダーキック中ではない
 			Move();			// 移動
 			Rotation();		// 回転
+			WallDush();		// 壁走り
 			WallSlide();	// 壁ずり確認
 			Jump();			// ジャンプ
-			WallDush();		// 壁走り
 			CeilingDush();	// 天井走り
 			Slide();		// スライディング
 			Attack();		// 攻撃
@@ -868,8 +875,17 @@ void CPlayer::Jump(void)
 			}
 		}
 		else {	// ジャンプしている
-			if (m_nAction == ACTION_WALLSTAND) {	// 壁ずり中
-				m_Info.move += m_ColiNor * WALLKICK_MOVE;
+			if (m_nAction == ACTION_WALLSTAND || (
+				m_nActionOld == ACTION_WALLSTAND && 
+				m_pBody->GetMotion()->GetNowKey() == 0 && 
+				m_pBody->GetMotion()->GetNowFrame() <= 10 && 
+				!m_pBody->GetMotion()->GetEnd())) {	// 壁ずり中
+				if (m_nAction == ACTION_WALLSTAND) {
+					m_Info.move += m_ColiNor * WALLKICK_MOVE;
+				}
+				else {
+					m_Info.move = m_ColiNorOld * WALLKICK_MOVE;
+				}
 				m_Info.move.y = JUMP;
 				m_fRotDest = atan2f(-m_Info.move.x, -m_Info.move.z);
 				SetAction(ACTION_WALLKICK);
@@ -945,13 +961,24 @@ void CPlayer::WallSlide(void)
 
 	// 壁ずり判定
 	if (m_ColiNor.x != 0.0f || m_ColiNor.z != 0.0f) {	// オブジェクトに触れている
-		if (m_nAction < ACTION_WALLDUSH) {
+
+		if (m_nAction == ACTION_WALLKICK) {	// 壁キック中
+			if (m_nActionOld == ACTION_WALLDUSH) {	// 壁を蹴った瞬間だった
+				return;
+			}
+			else {
+				SetAction(ACTION_WALLSTAND);
+				m_ColiNorOld = m_ColiNor;
+			}
+		}
+		else if (m_nAction != ACTION_WALLDUSH) {	// 壁dash以外
 			SetAction(ACTION_WALLSTAND);
+			m_ColiNorOld = m_ColiNor;
 		}
 	}
 	else { // 触れていない
 		if (m_nAction == ACTION_WALLSTAND) { // 壁ずり状態の場合
-			SetAction(ACTION_NEUTRAL);
+			SetAction(ACTION_JUMP);
 
 			if (BodyCheck(m_pBody) && BodyCheck(m_pLeg)) {	// 上下どちらも使用中
 				m_pBody->GetMotion()->Set(m_nAction);
@@ -966,8 +993,11 @@ void CPlayer::WallSlide(void)
 //===============================================
 void CPlayer::WallDush(void)
 {
-	if (m_nAction != ACTION_WALLSTAND) {	// 壁ずり中じゃない
-		if (m_nAction != ACTION_WALLDUSH) {	// 壁走りもしてない
+	if (m_nAction == ACTION_WALLSTAND) {	// 壁ずり中じゃない
+		if (!BodyCheck(m_pBody)) {
+			return;
+		}
+		else if (m_pBody->GetMotion()->GetNowKey() != 0 || m_pBody->GetMotion()->GetNowFrame() != 0 || m_pBody->GetMotion()->GetEnd()) {
 			return;
 		}
 	}
@@ -980,15 +1010,19 @@ void CPlayer::WallDush(void)
 		return;
 	}
 
+	if (!m_bJump) {
+		return;
+	}
+
 	// 壁dash確認
 	CInputPad* pInputPad = CManager::GetInstance()->GetInputPad();
 	CInputKeyboard* pInputKey = CManager::GetInstance()->GetInputKeyboard();	// キーボードのポインタ
 
 	// 入力中
-	if (pInputPad->GetPress(CInputPad::BUTTON_LEFTBUTTON, m_nId) || pInputKey->GetPress(DIK_SPACE)) {
+	if (pInputPad->GetPress(CInputPad::BUTTON_X, m_nId) || pInputKey->GetPress(DIK_J)) {
 		SetAction(ACTION_WALLDUSH);
 	}
-	else {	// 離した
+	if (pInputPad->GetTrigger(CInputPad::BUTTON_LEFTBUTTON, m_nId) || pInputKey->GetTrigger(DIK_SPACE)) {	// 離した
 
 		if (m_nAction == ACTION_WALLDUSH) {	// 壁ずり中
 			m_Info.move += m_ColiNor * WALLKICK_MOVE * 1.0f;
@@ -1052,7 +1086,7 @@ void CPlayer::Gravity(void)
 	case ACTION_WALLDUSH:
 		if (m_Info.move.y <= 0.0f) {
 			fGravity = 0.0f;
-			m_Info.move.y = WALLSLIDE_GRAVITY;
+			m_Info.move.y = WALLDUSH_GRAVITY;
 		}
 		break;
 
@@ -1601,21 +1635,14 @@ bool CPlayer::HitCheck(D3DXVECTOR3 pos, float fRange, int nDamage)
 // 指定モーションに設定
 //===============================================
 void CPlayer::SetMotion(int nMotion) {
-	if (m_pBody == nullptr) {
-		return;
-	}
-
-	if (m_pBody->GetMotion() == nullptr) {
+	
+	if(!BodyCheck(m_pBody)) {
 		return;
 	}
 
 	m_pBody->GetMotion()->InitSet(nMotion);
 
-	if (m_pLeg == nullptr) {
-		return;
-	}
-
-	if (m_pLeg->GetMotion() == nullptr) {
+	if (!BodyCheck(m_pLeg)) {
 		return;
 	}
 

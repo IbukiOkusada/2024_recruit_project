@@ -155,6 +155,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="code\billboard.cpp" />
+    <ClCompile Include="code\bridge.cpp" />
     <ClCompile Include="code\bullet.cpp" />
     <ClCompile Include="code\camera.cpp" />
     <ClCompile Include="code\camera_manager.cpp" />
@@ -217,6 +218,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="code\billboard.h" />
+    <ClInclude Include="code\bridge.h" />
     <ClInclude Include="code\bullet.h" />
     <ClInclude Include="code\camera.h" />
     <ClInclude Include="code\camera_manager.h" />

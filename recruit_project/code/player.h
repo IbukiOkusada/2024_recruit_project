@@ -177,6 +177,7 @@ private:	// 自分だけがアクセス可能
 	TYPE m_type;
 	D3DXVECTOR3 m_ColiNor;	// 当たり判定ベクトル
 	D3DXVECTOR3 m_MoveNor;	// 移動方向ベクトル
+	D3DXVECTOR3 m_ColiNorOld;	// 前回の移動ベクトル
 	CEnemy* m_pTarget;		// ロックオン対象
 	CLockOn* m_pLockOn;		// ロックオン
 	float m_fRotMove;		// 現在の角度

@@ -43,13 +43,13 @@
 //===============================================
 // マクロ定義
 //===============================================
-#define MOVE	(4.5f)		// 移動量
-#define GRAVITY	(-0.9f)		//プレイヤー重力
+#define MOVE	(4.0f)		// 移動量
+#define GRAVITY	(-0.6f)		//プレイヤー重力
 #define ROT_MULTI	(0.1f)	// 向き補正倍率
 #define WIDTH	(20.0f)		// 幅
 #define HEIGHT	(80.0f)		// 高さ
 #define INER	(0.3f)		// 慣性
-#define JUMP	(18.0f)
+#define JUMP	(16.0f)
 
 namespace {
 	const D3DXVECTOR3 PLAYERSTARTPOS = { 0.0f, 0.0f, -2300.0f };  // プレイヤーのスタート位置
@@ -78,7 +78,7 @@ namespace {
 	const float SLIDING_LENGTH = (200.0f);			//スライディングカメラ距離
 	const float KICKUP_SPEED = (1.5f);			// 蹴りあがり移動速度
 	const float KICKUP_JUMP = (21.0f);			// 蹴りあがりジャンプ力
-	const float KICKUP_QUICKJUMP = (19.0f);		// ライダーキックからのジャンプ力
+	const float KICKUP_QUICKJUMP = (20.0f);		// ライダーキックからのジャンプ力
 	const float AXEKICK_ROTZ = (D3DX_PI * 0.21f);	// かかと落としカメラ
 	const float RIDERKICK_ROTZ = (D3DX_PI * 0.31f);	// ライダーキックカメラ向き
 	const float AXEKICK_CAMERALENGTH = (400.0f);	// かかと落としカメラ距離
@@ -89,6 +89,8 @@ namespace {
 	const float RIDERKICK_SPEED = (24.0f);	// ライダーキック速度
 	const float RIDERKICK_HIGHSPEED = (60.0f);	// ライダーキック最速
 	const float RIDERKICK_CAMERALENGTH = (600.0f);	// ライダーキックカメラ距離
+	const float WALLKICK_GRAVITY = (-0.4f);
+	const float WALLKICK_JUMP = (11.0f);
 }
 
 // 前方宣言
@@ -886,7 +888,7 @@ void CPlayer::Jump(void)
 				else {
 					m_Info.move = m_ColiNorOld * WALLKICK_MOVE;
 				}
-				m_Info.move.y = JUMP;
+				m_Info.move.y = WALLKICK_JUMP;
 				m_fRotDest = atan2f(-m_Info.move.x, -m_Info.move.z);
 				SetAction(ACTION_WALLKICK);
 			}
@@ -1027,7 +1029,7 @@ void CPlayer::WallDush(void)
 		if (m_nAction == ACTION_WALLDUSH) {	// 壁ずり中
 			m_Info.move += m_ColiNor * WALLKICK_MOVE * 1.0f;
 			m_fRotDest = atan2f(-m_Info.move.x, -m_Info.move.z);
-			m_Info.move.y = JUMP;
+			m_Info.move.y = WALLKICK_JUMP;
 			SetAction(ACTION_WALLKICK);
 		}
 	}
@@ -1081,6 +1083,10 @@ void CPlayer::Gravity(void)
 
 	case ACTION_SLIDEJUMP:
 		fGravity = SLIDEJUMP_GRAVITY;
+		break;
+
+	case ACTION_WALLKICK:
+		fGravity = WALLKICK_GRAVITY;
 		break;
 
 	case ACTION_WALLDUSH:

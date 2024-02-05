@@ -111,7 +111,7 @@ private:	// 自分だけがアクセス可能
 	// メンバ変数
 	CWaist* m_pWaist;		// 腰
 	CCharacter* m_apArm[PARTS_MAX];	// 腕
-	int m_nArmAction;
+	int m_nArmAction;		// 腕のアクション
 	int m_NowArm;			// 現在動作する腕
 	CCharacter* m_pBody;	// 上半身
 	CCharacter* m_pLeg;		// 下半身

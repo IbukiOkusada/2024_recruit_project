@@ -22,6 +22,7 @@
 #include "input.h"
 #include "Xfile.h"
 #include "bridge.h"
+#include "wave.h"
 
 // 無名名前空間
 namespace
@@ -82,6 +83,7 @@ CEnemyBoss::CEnemyBoss()
 	m_StateInfo.fCounter = 0.0f;
 	m_fAtkCnter = 0.0f;
 	m_nArmAction = 0;
+	m_NowArm = PARTS_MAX;
 
 	for (int i = 0; i < PARTS_MAX; i++) {
 		m_apArm[i] = nullptr;
@@ -733,6 +735,15 @@ void CEnemyBoss::AttackCheck(void)
 
 	if (m_apArm[m_NowArm]->GetMotion()->GetNowMotion() != ARM_ATTACK) {	// 現在攻撃中ではない
 		return;
+	}
+
+	if (m_apArm[m_NowArm]->GetMotion()->GetNowKey() == m_apArm[m_NowArm]->GetMotion()->GetNowNumKey() - 2
+		&& m_apArm[m_NowArm]->GetMotion()->GetNowFrame() == 0)
+	{
+		D3DXVECTOR3 pos = D3DXVECTOR3(m_apArm[m_NowArm]->GetParts(1)->GetMtx()->_41,
+			m_apArm[m_NowArm]->GetParts(1)->GetMtx()->_42,
+			m_apArm[m_NowArm]->GetParts(1)->GetMtx()->_43);
+		CWave::Create(pos, 0);
 	}
 
 	if (m_apArm[m_NowArm]->GetMotion()->GetEnd()) {	// モーション終了

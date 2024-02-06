@@ -56,6 +56,7 @@ private:
 	enum ARM {
 		ARM_NEUTRAL = 0,	// ‘Ò‹@
 		ARM_ATTACK,			// UŒ‚
+		ARM_ROWLING,		// ‰ñ“]UŒ‚
 		ARM_MAX
 	};
 

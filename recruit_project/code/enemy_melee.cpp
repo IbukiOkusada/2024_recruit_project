@@ -197,7 +197,7 @@ void CEnemyMelee::MethodLine(void)
 	// UŒ‚Šm”F
 	AttackCheck();
 
-	if (m_StateInfo.state != STATE_DEATH || m_StateInfo.state != STATE_DAMAGE) {
+	if (m_StateInfo.state != STATE_DEATH) {
 
 		// ‘{õ
 		m_Chase.pTarget = Search(m_Chase.fLength);
@@ -364,8 +364,10 @@ void CEnemyMelee::Damage(const int nDamage)
 	}
 	else {	// ‚Ü‚¾‚ ‚é
 		SetLife(nLife);
-		m_StateInfo.state = STATE_DAMAGE;
-		m_StateInfo.fCounter = INTERVAL::DAMAGE;
+		if (m_StateInfo.state != STATE_ATTACK) {
+			m_StateInfo.state = STATE_DAMAGE;
+			m_StateInfo.fCounter = INTERVAL::DAMAGE;
+		}
 	}
 }
 
@@ -387,6 +389,22 @@ void CEnemyMelee::AttackCheck(void)
 	}
 
 	CModel* pModel = m_pLeg->GetParts(3);
+
+	if (m_pBody->GetMotion()->GetNowMotion() == ACTION_ATK) {	// UŒ‚”»’è’†‚Å‚Í‚È‚¢
+		if (m_pBody->GetMotion()->GetNowKey() != 3) {
+			return;
+		}
+
+		pModel = m_pBody->GetParts(5);
+	}
+
+	if (m_pBody->GetMotion()->GetNowMotion() == ACTION_2NDATK) {	// UŒ‚”»’è’†‚Å‚Í‚È‚¢
+		if (m_pBody->GetMotion()->GetNowKey() != 2) {
+			return;
+		}
+		pModel = m_pLeg->GetParts(3);
+	}
+
 	float fRange = 50.0f;
 	int nDamage = 1;
 	D3DXVECTOR3 pos = { pModel->GetMtx()->_41, pModel->GetMtx()->_42, pModel->GetMtx()->_43 };

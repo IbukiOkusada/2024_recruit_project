@@ -200,7 +200,7 @@ void CEnemyGun::MethodLine(void)
 {
 	SInfo* pInfo = GetInfo();
 
-	if (m_StateInfo.state != STATE_DEATH || m_StateInfo.state != STATE_DAMAGE) {
+	if (m_StateInfo.state != STATE_DEATH) {
 
 		// ‘{õ
 		m_Chase.pTarget = Search(m_Chase.fLength);
@@ -377,6 +377,10 @@ void CEnemyGun::Damage(const int nDamage)
 //===============================================
 CPlayer* CEnemyGun::Search(float& fChaseLength)
 {
+	if (m_nAction == ACTION_ATK) {
+		return m_Chase.pTarget;
+	}
+
 	CPlayer* pPlayer = CPlayerManager::GetInstance()->GetTop();
 	CPlayer* pChasePlayer = nullptr;
 	D3DXVECTOR3 MyPos = GetInfo()->pos;	// Ž©•ª‚ÌÀ•W

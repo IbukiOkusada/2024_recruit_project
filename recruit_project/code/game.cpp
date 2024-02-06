@@ -248,12 +248,12 @@ HRESULT CGame::Init(void)
     }
 
     CEnemyBoss::Create(D3DXVECTOR3(-1200.0f, 1000.0f, 3650.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
-    //CEnemyMelee::Create(D3DXVECTOR3(100.0f, 600.0f, 2250.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+    CEnemyMelee::Create(D3DXVECTOR3(100.0f, 600.0f, 2250.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
     //CEnemyMelee::Create(D3DXVECTOR3(300.0f, 600.0f, 2250.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
     //CEnemyMelee::Create(D3DXVECTOR3(80.0f, 600.0f, 2250.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
     //CEnemyMelee::Create(D3DXVECTOR3(-430.0f, 600.0f, 2250.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
-    CEnemyGun::Create(D3DXVECTOR3(500.0f, 600.0f, 2350.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
-    CEnemyGun::Create(D3DXVECTOR3(-500.0f, 600.0f, 2350.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+    //CEnemyGun::Create(D3DXVECTOR3(500.0f, 600.0f, 2350.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+    //CEnemyGun::Create(D3DXVECTOR3(-500.0f, 600.0f, 2350.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 
     //ÉhÅ[ÉÄí«â¡
     CMeshDome::Create(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), 9000.0f, 3000.0f, 3, 8, 8);

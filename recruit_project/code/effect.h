@@ -23,31 +23,23 @@ public:	// 誰でもアクセス可能な定義
 	// 種類の列挙型定義
 	typedef enum
 	{
-		TYPE_NONE = 0,	// 通常
-		TYPE_SMAKE,		// 煙
-		TYPE_ITEMGET,		// アイテム獲得
-		TYPE_LANDCLEAR,	// 着地成功
-		TYPE_LANDFAILED,	// 失敗
-		TYPE_HIT,		// 攻撃ヒット
-		TYPE_SPEAR,		// 槍
-		TYPE_BLACKSMAKE,	// 黒い煙
-		TYPE_WALK,		// 歩き
-		TYPE_KUNAI,		// クナイ
-		TYPE_BUTTON,		// ボタン
-		TYPE_ROTATEDOOR,	// 回転ドア
-		TYPE_ITEMBOX,		// アイテムボックス
-		TYPE_ITEMBOXSTAR,	// アイテムボックスのキラキラ
-		TYPE_RESULTZITABATA,	// リザルト失敗じたばた
-		TYPE_PULLSTAR,	// 引くオブジェクト表示
-		TYPE_PULLNOW,		// 引いている時
-		TYPE_AIR,		// 風神の術
-		TYPE_CATCH,		// 掴まれた時の汗
-		TYPE_JUMP,		// ジャンプ
-		TYPE_LAND,		// 着地
-		TYPE_PARTY,		// タイトル
-		TYPE_TUTORIAL,	// チュートリアル
-		TYPE_PULLSMAKE,	// 引き中の手
-		TYPE_DUST,		// 埃
+		TYPE_NONE = 0,			// 通常
+		TYPE_SMAKE,				// 煙
+		TYPE_ITEMGET,			// アイテム獲得
+		TYPE_LANDCLEAR,			// 着地成功
+		TYPE_LANDFAILED,		// 失敗
+		TYPE_HIT,				// 攻撃ヒット
+		TYPE_BLACKSMAKE,		// 黒い煙
+		TYPE_WALK,				// 歩き
+		TYPE_KUNAI,				// クナイ
+		TYPE_AIR,				// 風神の術
+		TYPE_JUMP,				// ジャンプ
+		TYPE_LAND,				// 着地
+		TYPE_PARTY,				// タイトル
+		TYPE_TUTORIAL,			// チュートリアル
+		TYPE_PULLSMAKE,			// 引き中の手
+		TYPE_DUST,				// 埃
+		TYPE_GUNCHARGE,			// 弾チャージ
 		TYPE_MAX
 	}TYPE;
 

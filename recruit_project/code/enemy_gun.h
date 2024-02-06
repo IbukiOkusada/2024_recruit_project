@@ -88,7 +88,7 @@ private:	// 自分だけがアクセス可能
 	void SetState(void);
 	void SetMotion(void);
 	void Gravity(void);
-	void Attack(const int nRandRange = 1);
+	void Attack(void);
 
 	// メンバ変数
 	CWaist* m_pWaist;		// 腰

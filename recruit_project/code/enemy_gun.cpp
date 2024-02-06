@@ -19,6 +19,7 @@
 #include "slow.h"
 #include "meshfield.h"
 #include "bullet.h"
+#include "particle.h"
 
 // 無名名前空間
 namespace
@@ -34,9 +35,6 @@ namespace
 	const float SEARCH_HEIGHT = (220.0f);		// 探索高さ制限
 	const float SEARCH_DOWN = (180.0f);
 	const float MOVE_INER = (0.3f);			// 移動慣性
-	const int ATK_RANDRANGE = (6);			// 攻撃中ランダム範囲
-	const int BACK_RANDRANGE = (2);
-	const int FRONT_RANDRANGE = (3);
 }
 
 // 移動速度名前空間
@@ -47,7 +45,7 @@ namespace SPEED
 	const float MOVE_MIN = (0.15f);	// 移動量移動
 	const float GRAVITY = (-0.9f);	// 重力
 	const float DAMAGE_MOVE = (2.0f);	// 移動量
-	const float BULLET = (6.0f);	// 弾速
+	const float BULLET = (12.0f);	// 弾速
 }
 
 // インターバル
@@ -454,19 +452,20 @@ void CEnemyGun::LockOn(void)
 	// 移動量を設定
 	{
 		float fSpeed = 0.0f;
-		if (m_Chase.fLength >= CHASE_NEARLENGTH) {	// 適性距離より遠い
+		if (m_nAction == ACTION_ATK) {
+			Attack();
+		}
+		else if (m_Chase.fLength >= CHASE_NEARLENGTH) {	// 適性距離より遠い
 			fSpeed = SPEED::MOVE_FAR;
 			m_nAction = ACTION_WALK;
-			Attack(FRONT_RANDRANGE);
 		}
 		else if (m_Chase.fLength <= CHASE_MINLENGTH) {	// 適性距離より近い
 			fSpeed = SPEED::MOVE_NEAR;
 			m_nAction = ACTION_WALK;
-			Attack(BACK_RANDRANGE);
 		}
 		else {
 			m_nAction = ACTION_ATK;
-			Attack(ATK_RANDRANGE);
+			Attack();
 		}
 
 		D3DXVECTOR3 move = GetMove();
@@ -562,7 +561,7 @@ void CEnemyGun::SetMotion(void)
 	}
 
 	// ダメージ状態
-	if (m_StateInfo.state == STATE_DAMAGE) {
+	if (m_StateInfo.state == STATE_DAMAGE && m_nAction != ACTION_ATK) {
 
 		m_nAction = ACTION_DAMAGE;
 		m_pBody->GetMotion()->BlendSet(m_nAction);
@@ -599,11 +598,11 @@ void CEnemyGun::SetMotion(void)
 
 	case ACTION_ATK:
 	{
-		m_pBody->GetMotion()->Set(m_nAction);
-		m_pLeg->GetMotion()->Set(m_nAction);
+		m_pBody->GetMotion()->BlendSet(m_nAction);
+		m_pLeg->GetMotion()->BlendSet(m_nAction);
 
 		if (m_pBody->GetMotion()->GetEnd())
-		{// モーション終了
+		{// モーション終了	
 			m_nAction = ACTION_NEUTRAL;
 		}
 	}
@@ -648,26 +647,27 @@ void CEnemyGun::Gravity(void)
 //===============================================
 // 攻撃
 //===============================================
-void CEnemyGun::Attack(const int nRandRange)
+void CEnemyGun::Attack(void)
 {
 	if (!BodyCheck(m_pBody)) {
 		return;
 	}
 
-	SInfo* pInfo = GetInfo();
-	float CMinusCnter = static_cast<float>(rand() % nRandRange);
-	m_fAtkCnter -= CMinusCnter * CManager::GetInstance()->GetSlow()->Get();
+	if (m_pBody->GetMotion()->GetNowMotion() != ACTION_ATK) {
+		return;
+	}
 
-	if (m_fAtkCnter <= 0.0f) {	// 攻撃できる
-		m_fAtkCnter = INTERVAL::ATTACK;
+	CModel* pModel = m_pBody->GetParts(m_pBody->GetNumParts() - 1);
+	if (pModel == nullptr) { return; }	// モデル使われていない
 
-		CModel* pModel = m_pBody->GetParts(m_pBody->GetNumParts() - 1);
-		if (pModel == nullptr) { return; }	// モデル使われていない
+	// 銃口を取得
+	D3DXVECTOR3 pos = { pModel->GetMtx()->_41, pModel->GetMtx()->_42, pModel->GetMtx()->_43 };
 
-		D3DXVECTOR3 pos = { pModel->GetMtx()->_41, pModel->GetMtx()->_42, pModel->GetMtx()->_43 };
-		CBullet::Create(pos, 
-			D3DXVECTOR3(0.0f, 0.0f, 0.0f), 
-			m_Chase.nor * SPEED::BULLET,
-			CBullet::TYPE_ENEMY);
+	if (m_pBody->GetMotion()->GetNowFrame() == 0 && m_pBody->GetMotion()->GetNowKey() == 2) {	// 射撃タイミング
+
+		CBullet::Create(pos, D3DXVECTOR3(0.0f, 0.0f, 0.0f), m_Chase.nor * SPEED::BULLET, CBullet::TYPE_ENEMY);
+	}
+	else if(m_pBody->GetMotion()->GetNowKey() < 2) {	// チャージ時間
+		CParticle::Create(pos, CEffect::TYPE_GUNCHARGE);
 	}
 }

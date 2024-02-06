@@ -20,6 +20,7 @@
 //===============================================
 namespace {
 	const float LIFE = (30.0f); // Žõ–½
+	const float GUNCHARGE = (0.1f);
 
 	const D3DXCOLOR COLINFO[CEffect::TYPE_MAX] = {	// Ží—Þ•Ê‰ŠúF‚ÌÝ’è
 		{1.0f, 1.0f, 1.0f, 1.0f},
@@ -162,25 +163,6 @@ void CEffect::Update(void)
 
 		break;
 
-	case TYPE_SPEAR:	// ‰Œ
-
-		m_Info.col.a -= 0.005f * CManager::GetInstance()->GetSlow()->Get();
-		m_Info.move.y += -0.5f * CManager::GetInstance()->GetSlow()->Get();
-		m_Info.fRadius -= 0.1f * CManager::GetInstance()->GetSlow()->Get();
-
-		if (m_Info.pos.y <= 0.0f)
-		{
-			m_Info.move.y = 0.0f;
-			return;
-		}
-		else
-		{
-			D3DXVECTOR3 rot = m_pObjectBilBoard->GetRotation();
-			rot.z += D3DX_PI * 0.2f;
-			m_pObjectBilBoard->SetRotation(rot);
-		}
-		break;
-
 	case TYPE_BLACKSMAKE:	// ‰Œ
 
 		m_Info.col.a -= 0.05f * CManager::GetInstance()->GetSlow()->Get();
@@ -212,111 +194,7 @@ void CEffect::Update(void)
 		m_Info.fRadius += 0.4f * CManager::GetInstance()->GetSlow()->Get();
 		break;
 
-	case TYPE_BUTTON:	// ‰Œ
-
-		m_Info.col.a -= 0.05f * CManager::GetInstance()->GetSlow()->Get();
-		m_Info.fRadius += (rand() % 10 - 5) * 1.0f * CManager::GetInstance()->GetSlow()->Get();
-		break;
-
-	case TYPE_ROTATEDOOR:	// ‰Œ
-
-		m_Info.col.a -= 0.02f * CManager::GetInstance()->GetSlow()->Get();
-		m_Info.move.x -= m_Info.move.x * 0.045f * CManager::GetInstance()->GetSlow()->Get();
-		m_Info.move.y -= m_Info.move.y * 0.025f * CManager::GetInstance()->GetSlow()->Get();
-		m_Info.move.z -= m_Info.move.z * 0.045f * CManager::GetInstance()->GetSlow()->Get();
-		m_Info.fRadius += 0.45f * CManager::GetInstance()->GetSlow()->Get();
-
-		{
-			D3DXVECTOR3 rot = m_pObjectBilBoard->GetRotation();
-			rot.z += D3DX_PI * 0.1f;
-			m_pObjectBilBoard->SetRotation(rot);
-		}
-
-		break;
-
-	case TYPE_ITEMBOX:	// ‰Œ
-
-		m_Info.col.a -= 0.02f * CManager::GetInstance()->GetSlow()->Get();
-		m_Info.move.x -= m_Info.move.x * 0.05f * CManager::GetInstance()->GetSlow()->Get();
-		m_Info.move.y -= m_Info.move.y * 0.025f * CManager::GetInstance()->GetSlow()->Get();
-		m_Info.move.z -= m_Info.move.z * 0.05f * CManager::GetInstance()->GetSlow()->Get();
-
-		{
-			D3DXVECTOR3 rot = m_pObjectBilBoard->GetRotation();
-			rot.z += D3DX_PI * 0.1f;
-			m_pObjectBilBoard->SetRotation(rot);
-		}
-
-		break;
-
-	case TYPE_ITEMBOXSTAR:	// ‰Œ
-
-		m_Info.col.a -= 0.02f * CManager::GetInstance()->GetSlow()->Get();
-		m_Info.move.x -= m_Info.move.x * 0.025f * CManager::GetInstance()->GetSlow()->Get();
-		m_Info.move.y -= m_Info.move.y * 0.025f * CManager::GetInstance()->GetSlow()->Get();
-		m_Info.move.z -= m_Info.move.z * 0.025f * CManager::GetInstance()->GetSlow()->Get();
-
-		{
-			D3DXVECTOR3 rot = m_pObjectBilBoard->GetRotation();
-			rot.z += D3DX_PI * 0.05f;
-			m_pObjectBilBoard->SetRotation(rot);
-		}
-
-		break;
-
-	case TYPE_RESULTZITABATA:	// ‰Œ
-
-		m_Info.col.a -= 0.015f * CManager::GetInstance()->GetSlow()->Get();
-		m_Info.fRadius += 0.1f * CManager::GetInstance()->GetSlow()->Get();
-		m_Info.move.y += 0.025f * CManager::GetInstance()->GetSlow()->Get();
-
-		break;
-
-	case TYPE_PULLSTAR:	// ‰Œ
-
-		m_Info.col.a -= 0.02f * CManager::GetInstance()->GetSlow()->Get();
-		m_Info.move.x -= m_Info.move.x * 0.025f * CManager::GetInstance()->GetSlow()->Get();
-		m_Info.move.y -= m_Info.move.y * 0.025f * CManager::GetInstance()->GetSlow()->Get();
-		m_Info.move.z -= m_Info.move.z * 0.025f * CManager::GetInstance()->GetSlow()->Get();
-		m_Info.fRadius -= 0.75f * CManager::GetInstance()->GetSlow()->Get();
-
-		{
-			D3DXVECTOR3 rot = m_pObjectBilBoard->GetRotation();
-			rot.z += D3DX_PI * 0.005f;
-			m_pObjectBilBoard->SetRotation(rot);
-		}
-
-		break;
-
-	case TYPE_PULLNOW:	// ‰Œ
-
-		m_Info.col.a -= 0.025f * CManager::GetInstance()->GetSlow()->Get();
-		m_Info.fRadius += 0.5f * CManager::GetInstance()->GetSlow()->Get();
-
-		break;
-
 	case TYPE_AIR:	// ‰Œ
-
-		m_Info.col.a -= 0.005f * CManager::GetInstance()->GetSlow()->Get();
-		m_Info.move.x += m_Info.move.x * 0.005f * CManager::GetInstance()->GetSlow()->Get();
-		m_Info.move.y += -0.1f * CManager::GetInstance()->GetSlow()->Get();
-		m_Info.move.z += m_Info.move.z * 0.005f * CManager::GetInstance()->GetSlow()->Get();
-		m_Info.fRadius -= 0.1f * CManager::GetInstance()->GetSlow()->Get();
-
-		if (m_Info.pos.y <= 0.0f)
-		{
-			m_Info.move = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-		}
-		else
-		{
-			D3DXVECTOR3 rot = m_pObjectBilBoard->GetRotation();
-			rot.z += D3DX_PI * 0.05f;
-			m_pObjectBilBoard->SetRotation(rot);
-		}
-
-		break;
-
-	case TYPE_CATCH:	// ‰Œ
 
 		m_Info.col.a -= 0.005f * CManager::GetInstance()->GetSlow()->Get();
 		m_Info.move.x += m_Info.move.x * 0.005f * CManager::GetInstance()->GetSlow()->Get();
@@ -406,6 +284,12 @@ void CEffect::Update(void)
 			rot.z += D3DX_PI * (rand() % 50 * 0.0001f + 0.065f);
 			m_pObjectBilBoard->SetRotation(rot);
 		}
+
+		break;
+
+	case TYPE_GUNCHARGE:	// ‰Œ
+		m_Info.move -= (m_Info.move * GUNCHARGE) * CManager::GetInstance()->GetSlow()->Get();
+		m_Info.fRadius += 0.1f * CManager::GetInstance()->GetSlow()->Get();
 
 		break;
 	}
@@ -610,12 +494,6 @@ CTexture::TYPE CEffect::SetTex(TYPE type)
 		return CTexture::TYPE_ITEMGET_EF;
 	}
 	break;
-		
-	case TYPE_SPEAR:
-	{
-		return CTexture::TYPE_WOODPOW;
-	}
-	break;
 
 	case TYPE_WALK:
 	{
@@ -625,55 +503,13 @@ CTexture::TYPE CEffect::SetTex(TYPE type)
 
 	case TYPE_KUNAI:
 	{
-		return CTexture::TYPE_ITEMGET_EF;
-	}
-	break;
-
-	case TYPE_ROTATEDOOR:
-	{
-		return CTexture::TYPE_ITEMGET_EF;
-	}
-	break;
-
-	case TYPE_ITEMBOX:
-	{
 		return CTexture::TYPE_EFFECT;
-	}
-	break;
-
-	case TYPE_ITEMBOXSTAR:
-	{
-		return CTexture::TYPE_ITEMGET_EF;
-	}
-	break;
-
-	case TYPE_RESULTZITABATA:
-	{
-		return CTexture::TYPE_SMOOK;
-	}
-	break;
-
-	case TYPE_PULLSTAR:
-	{
-		return CTexture::TYPE_ITEMGET_EF;
-	}
-	break;
-
-	case TYPE_PULLNOW:
-	{
-		return CTexture::TYPE_SMOOK;
 	}
 	break;
 
 	case TYPE_AIR:
 	{
 		return CTexture::TYPE_AIRWOOD;
-	}
-	break;
-
-	case TYPE_CATCH:
-	{
-		return CTexture::TYPE_EFFECT;
 	}
 	break;
 
@@ -708,6 +544,12 @@ CTexture::TYPE CEffect::SetTex(TYPE type)
 	break;
 
 	case TYPE_DUST:
+	{
+		return CTexture::TYPE_EFFECT;
+	}
+	break;
+
+	case TYPE_GUNCHARGE:
 	{
 		return CTexture::TYPE_EFFECT;
 	}
@@ -779,15 +621,6 @@ void CEffect::DrawSet(void)
 	}
 	break;
 
-	case TYPE_SPEAR:
-	{
-		m_pObjectBilBoard->SetAlphaText(true);
-		m_pObjectBilBoard->SetZTest(false);
-		m_pObjectBilBoard->SetLighting(true);
-		m_pObjectBilBoard->SetFusion(CObjectBillboard::FUSION_NORMAL);
-	}
-	break;
-
 	case TYPE_BLACKSMAKE:
 	{
 		m_pObjectBilBoard->SetAlphaText(true);
@@ -809,63 +642,9 @@ void CEffect::DrawSet(void)
 	case TYPE_KUNAI:
 	{
 		m_pObjectBilBoard->SetAlphaText(true);
-		m_pObjectBilBoard->SetZTest(false);
-		m_pObjectBilBoard->SetLighting(true);
-		m_pObjectBilBoard->SetFusion(CObjectBillboard::FUSION_NORMAL);
-	}
-	break;
-
-	case TYPE_ROTATEDOOR:
-	{
-		m_pObjectBilBoard->SetAlphaText(true);
-		m_pObjectBilBoard->SetZTest(false);
-		m_pObjectBilBoard->SetLighting(true);
-		m_pObjectBilBoard->SetFusion(CObjectBillboard::FUSION_NORMAL);
-	}
-	break;
-
-	case TYPE_ITEMBOX:
-	{
-		m_pObjectBilBoard->SetAlphaText(true);
-		m_pObjectBilBoard->SetZTest(false);
-		m_pObjectBilBoard->SetLighting(true);
-		m_pObjectBilBoard->SetFusion(CObjectBillboard::FUSION_ADD);
-	}
-	break;
-
-	case TYPE_ITEMBOXSTAR:
-	{
-		m_pObjectBilBoard->SetAlphaText(true);
-		m_pObjectBilBoard->SetZTest(false);
-		m_pObjectBilBoard->SetLighting(true);
-		m_pObjectBilBoard->SetFusion(CObjectBillboard::FUSION_NORMAL);
-	}
-	break;
-
-	case TYPE_RESULTZITABATA:
-	{
-		m_pObjectBilBoard->SetAlphaText(true);
 		m_pObjectBilBoard->SetZTest(true);
 		m_pObjectBilBoard->SetLighting(true);
 		m_pObjectBilBoard->SetFusion(CObjectBillboard::FUSION_ADD);
-	}
-	break;
-
-	case TYPE_PULLSTAR:
-	{
-		m_pObjectBilBoard->SetAlphaText(true);
-		m_pObjectBilBoard->SetZTest(false);
-		m_pObjectBilBoard->SetLighting(true);
-		m_pObjectBilBoard->SetFusion(CObjectBillboard::FUSION_ADD);
-	}
-	break;
-
-	case TYPE_PULLNOW:
-	{
-		m_pObjectBilBoard->SetAlphaText(true);
-		m_pObjectBilBoard->SetZTest(false);
-		m_pObjectBilBoard->SetLighting(true);
-		m_pObjectBilBoard->SetFusion(CObjectBillboard::FUSION_NORMAL);
 	}
 	break;
 
@@ -875,15 +654,6 @@ void CEffect::DrawSet(void)
 		m_pObjectBilBoard->SetZTest(false);
 		m_pObjectBilBoard->SetLighting(true);
 		m_pObjectBilBoard->SetFusion(CObjectBillboard::FUSION_NORMAL);
-	}
-	break;
-
-	case TYPE_CATCH:
-	{
-		m_pObjectBilBoard->SetAlphaText(true);
-		m_pObjectBilBoard->SetZTest(false);
-		m_pObjectBilBoard->SetLighting(true);
-		m_pObjectBilBoard->SetFusion(CObjectBillboard::FUSION_ADD);
 	}
 	break;
 
@@ -934,6 +704,15 @@ void CEffect::DrawSet(void)
 	break;
 
 	case TYPE_DUST:
+	{
+		m_pObjectBilBoard->SetAlphaText(true);
+		m_pObjectBilBoard->SetZTest(true);
+		m_pObjectBilBoard->SetLighting(true);
+		m_pObjectBilBoard->SetFusion(CObjectBillboard::FUSION_ADD);
+	}
+	break;
+
+	case TYPE_GUNCHARGE:
 	{
 		m_pObjectBilBoard->SetAlphaText(true);
 		m_pObjectBilBoard->SetZTest(true);

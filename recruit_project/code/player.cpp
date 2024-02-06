@@ -77,8 +77,8 @@ namespace {
 	const float SLIDINNG_ROTZ = (D3DX_PI * 0.51f);	// スライディングカメラ角度
 	const float SLIDING_LENGTH = (200.0f);			//スライディングカメラ距離
 	const float KICKUP_SPEED = (1.5f);			// 蹴りあがり移動速度
-	const float KICKUP_JUMP = (21.0f);			// 蹴りあがりジャンプ力
-	const float KICKUP_QUICKJUMP = (20.0f);		// ライダーキックからのジャンプ力
+	const float KICKUP_JUMP = (18.0f);			// 蹴りあがりジャンプ力
+	const float KICKUP_QUICKJUMP = (13.0f);		// ライダーキックからのジャンプ力
 	const float AXEKICK_ROTZ = (D3DX_PI * 0.21f);	// かかと落としカメラ
 	const float RIDERKICK_ROTZ = (D3DX_PI * 0.31f);	// ライダーキックカメラ向き
 	const float AXEKICK_CAMERALENGTH = (400.0f);	// かかと落としカメラ距離
@@ -1703,7 +1703,6 @@ void CPlayer::SetFailedParticle(void)
 	}
 
 	D3DXVECTOR3 pos = D3DXVECTOR3(pModel->GetMtx()->_41, pModel->GetMtx()->_42, pModel->GetMtx()->_43);
-	CParticle::Create(pos, CEffect::TYPE_RESULTZITABATA);
 }
 
 //===============================================

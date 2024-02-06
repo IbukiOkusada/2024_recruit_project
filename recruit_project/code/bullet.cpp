@@ -49,8 +49,8 @@ CBullet::~CBullet()
 HRESULT CBullet::Init(void)
 {
 	// オブジェクトの生成
-	m_pObject = CObjectBillboard::Create(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
-	m_pObject->SetCurrent(&m_Info.mtxWorld);
+	//m_pObject = CObjectBillboard::Create(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+	//m_pObject->SetCurrent(&m_Info.mtxWorld);
 
 	// 寿命の設定
 	m_fLife = SETLIFE;

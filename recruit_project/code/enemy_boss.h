@@ -46,6 +46,7 @@ private:
 	enum ACTION {
 		ACTION_NEUTRAL = 0,		// 待機
 		ACTION_WALK,			// 歩行
+		ACTION_DUSH,			// 歩行
 		ACTION_ATK,				// 攻撃
 		ACTION_DAMAGE,			// ダメージ
 		ACTION_DEATH,			// 死亡
@@ -104,10 +105,12 @@ private:	// 自分だけがアクセス可能
 	void SetState(void);
 	void SetMotion(void);
 	void Gravity(void);
-	void AttackCheck(void);
-	void Attack(const int nRandRange = 3);
+	void ArmAttackCheck(void);
+	void ArmAttack(const int nRandRange = 3);
+	void Attack(void);
 	void FootCheck(void);
 	void ArmDamage(void);
+	void Move(void);
 
 	// メンバ変数
 	CWaist* m_pWaist;		// 腰

@@ -40,29 +40,34 @@ namespace
 	const float CHASE_NEARLENGTH = (700.0f);	// í«ê’ãﬂãóó£
 	const float CHASE_MINLENGTH = (400.0f);		// í«ê’0ãóó£
 	const float SEARCH_HEIGHT = (180.0f);		// íTçıçÇÇ≥êßå¿
-	const float MOVE_INER = (0.3f);			// à⁄ìÆäµê´
-	const int ATK_RANDRANGE = (6);			// çUåÇíÜÉâÉìÉ_ÉÄîÕàÕ
-	const int BACK_RANDRANGE = (2);
-	const int FRONT_RANDRANGE = (3);
+	const float MOVE_INER = (0.3f);				// à⁄ìÆäµê´
+	const float ROTATE_ATKINER = (0.04f);		// 
+	const int ATK_RANDRANGE = (6);				// çUåÇíÜÉâÉìÉ_ÉÄîÕàÕ
+	const int BACK_RANDRANGE = (2);				// 
+	const int FRONT_RANDRANGE = (3);			
 	const float ROTDIFF_INER = (0.05f);
 }
 
 // à⁄ìÆë¨ìxñºëOãÛä‘
 namespace SPEED
 {
-	const float MOVE_FAR = (2.0f);	// âìãóó£à⁄ìÆ
+	const float MOVE_FAR = (2.0f);		// âìãóó£à⁄ìÆ
 	const float MOVE_NEAR = (-1.0f);	// ãﬂãóó£à⁄ìÆ
-	const float MOVE_MIN = (0.15f);	// à⁄ìÆó à⁄ìÆ
-	const float GRAVITY = (-0.9f);	// èdóÕ
+	const float MOVE_MIN = (0.15f);		// à⁄ìÆó à⁄ìÆ
+	const float GRAVITY = (-0.9f);		// èdóÕ
+	const float ROTATEATK = (0.8f);
 	const float DAMAGE_MOVE = (2.0f);	// à⁄ìÆó 
-	const float BULLET = (-6.0f);	// íeë¨
+	const float BULLET = (-6.0f);		// íeë¨
 }
 
 // ÉCÉìÉ^Å[ÉoÉã
 namespace INTERVAL
 {
 	const float DAMAGE = (20.0f);	// É_ÉÅÅ[ÉW
-	const float ATTACK = (500.0f);	// çUåÇ
+	const float ARMATTACK = (500.0f);	// òrçUåÇ
+	const float ATTACK[1] = {
+		480.0f,
+	};
 }
 
 //==========================================================
@@ -255,7 +260,7 @@ void CEnemyBoss::MethodLine(void)
 {
 	SInfo* pInfo = GetInfo();
 
-	if (m_StateInfo.state != STATE_DEATH || m_StateInfo.state != STATE_DAMAGE) {
+	if (m_StateInfo.state != STATE_DEATH) {
 
 		// ë{çı
 		m_Chase.pTarget = Search(m_Chase.fLength);
@@ -264,18 +269,24 @@ void CEnemyBoss::MethodLine(void)
 		LockOn();
 
 		// à⁄ìÆ
-		AddMove();
+		Move();
 
-		// çUåÇ
-		Attack();
+		// à⁄ìÆ
+		AddMove();
 	}
 
 	// èdóÕ
 	if (m_NowArm >= PARTS_MAX) {
 		Gravity();
+
+		// çUåÇ
+		Attack();
 	}
 	else {
 		FootCheck();
+
+		// çUåÇ
+		ArmAttack();
 	}
 
 	// ìñÇΩÇËîªíËämîF
@@ -315,7 +326,6 @@ CEnemyBoss *CEnemyBoss::Create(D3DXVECTOR3& pos, D3DXVECTOR3& rot)
 		pEnemyBoss->SetPosition(pos);
 		pEnemyBoss->SetRotation(rot);
 		pEnemyBoss->SetRotDiff(rot.y);
-		pEnemyBoss->SetIner(MOVE_INER);
 	}
 
 	return pEnemyBoss;
@@ -514,7 +524,7 @@ void CEnemyBoss::LockOn(void)
 	D3DXVECTOR3 pos = m_Chase.pTarget->GetPosition();
 	{
 		float fDiff = GetRotDiff();
-		if (m_nArmAction != ARM_ATTACK && m_NowArm < ARM_MAX || m_NowArm >= ARM_MAX) {
+		if (m_nArmAction < ARM_ATTACK && m_NowArm < ARM_MAX || m_NowArm >= ARM_MAX) {
 			fDiff = atan2f(pos.x - MyPos.x, pos.z - MyPos.z) + D3DX_PI;
 			if (fDiff < -D3DX_PI) {
 				fDiff += D3DX_PI * 2;
@@ -523,7 +533,7 @@ void CEnemyBoss::LockOn(void)
 				fDiff += -D3DX_PI * 2;
 			}
 		}
-		else if (m_nArmAction == ARM_ATTACK && m_NowArm < ARM_MAX) {
+		else if (m_nArmAction >= ARM_ATTACK && m_NowArm < ARM_MAX) {
 			fDiff = 0.0f;
 		}
 
@@ -651,11 +661,6 @@ void CEnemyBoss::SetMotion(void)
 	{
 		m_pBody->GetMotion()->Set(m_nAction);
 		m_pLeg->GetMotion()->Set(m_nAction);
-
-		if (m_pBody->GetMotion()->GetEnd())
-		{// ÉÇÅ[ÉVÉáÉìèIóπ
-			m_nAction = ACTION_NEUTRAL;
-		}
 	}
 		break;
 
@@ -696,15 +701,15 @@ void CEnemyBoss::Gravity(void)
 }
 
 //===============================================
-// çUåÇ
+// òrçUåÇ
 //===============================================
-void CEnemyBoss::Attack(const int nRandRange)
+void CEnemyBoss::ArmAttack(const int nRandRange)
 {
 	float CMinusCnter = static_cast<float>(rand() % nRandRange);
 	m_fAtkCnter -= (CMinusCnter) * CManager::GetInstance()->GetSlow()->Get();
 
 	if (m_fAtkCnter > 0.0f) {	// çUåÇÇ≈Ç´Ç»Ç¢
-		AttackCheck();
+		ArmAttackCheck();
 		return;
 	}
 
@@ -715,15 +720,30 @@ void CEnemyBoss::Attack(const int nRandRange)
 	if (!BodyCheck(m_apArm[m_NowArm])) {
 		return;
 	}
-	m_fAtkCnter = INTERVAL::ATTACK;
-	m_apArm[m_NowArm]->GetMotion()->BlendSet(ARM_ATTACK);
-	m_nArmAction = ARM_ATTACK;
+	m_fAtkCnter = INTERVAL::ARMATTACK;
+
+	// çUåÇï˚ñ@ÇÉâÉìÉ_ÉÄÇ≈åàÇﬂÇÈ
+	int nRand = rand() % 2 + 1;
+	ARM arm = ARM_MAX;
+
+	if (nRand == ARM_ATTACK) {
+		arm = ARM_ATTACK;
+	}
+	else if (nRand == ARM_ROWLING) {
+		arm = ARM_ROWLING;
+	}
+	else {
+		return;
+	}
+
+	m_apArm[m_NowArm]->GetMotion()->BlendSet(arm);
+	m_nArmAction = arm;
 }
 
 //===============================================
-// çUåÇämîF
+// òrçUåÇämîF
 //===============================================
-void CEnemyBoss::AttackCheck(void)
+void CEnemyBoss::ArmAttackCheck(void)
 {
 	if (m_NowArm >= PARTS_MAX) {
 		return;
@@ -733,7 +753,16 @@ void CEnemyBoss::AttackCheck(void)
 		return;
 	}
 
-	if (m_apArm[m_NowArm]->GetMotion()->GetNowMotion() != ARM_ATTACK) {	// åªç›çUåÇíÜÇ≈ÇÕÇ»Ç¢
+	if (m_apArm[m_NowArm]->GetMotion()->GetNowMotion() == ARM_NEUTRAL) {	// åªç›çUåÇíÜÇ≈ÇÕÇ»Ç¢
+		return;
+	}
+
+	if (m_apArm[m_NowArm]->GetMotion()->GetEnd()) {	// ÉÇÅ[ÉVÉáÉìèIóπ
+		m_apArm[m_NowArm]->GetMotion()->BlendSet(ARM_NEUTRAL);
+		m_nArmAction = ARM_NEUTRAL;
+	}
+
+	if (m_apArm[m_NowArm]->GetMotion()->GetNowMotion() != ARM_ATTACK) {
 		return;
 	}
 
@@ -742,13 +771,8 @@ void CEnemyBoss::AttackCheck(void)
 	{
 		D3DXVECTOR3 pos = D3DXVECTOR3(m_apArm[m_NowArm]->GetParts(1)->GetMtx()->_41,
 			m_apArm[m_NowArm]->GetParts(1)->GetMtx()->_42,
-			m_apArm[m_NowArm]->GetParts(1)->GetMtx()->_43);
-		CWave::Create(pos, 0);
-	}
-
-	if (m_apArm[m_NowArm]->GetMotion()->GetEnd()) {	// ÉÇÅ[ÉVÉáÉìèIóπ
-		m_apArm[m_NowArm]->GetMotion()->BlendSet(ARM_NEUTRAL);
-		m_nArmAction = ARM_NEUTRAL;
+			m_apArm[m_NowArm]->GetParts(1)->GetMtx()->_43 - 1400.0f);
+		CWave::Create(pos, 0, 1000.0f);
 	}
 }
 
@@ -876,5 +900,58 @@ void CEnemyBoss::ArmDamage(void)
 
 	if (m_NowArm >= PARTS_MAX) {
 		m_nArmAction = ARM_NEUTRAL;
+	}
+}
+
+//===============================================
+// çUåÇ
+//===============================================
+void CEnemyBoss::Attack(void)
+{
+	m_fAtkCnter -= CManager::GetInstance()->GetSlow()->Get();
+
+	if (m_fAtkCnter > 0.0f) {
+
+		if (m_fAtkCnter <= INTERVAL::ATTACK[m_nAction - ACTION_ATK] * 0.1f) {
+			m_nAction = ACTION_NEUTRAL;
+		}
+		return;
+	}
+
+	int nRand = rand() % 1 + ACTION_ATK;
+
+	switch (nRand) {
+
+	case ACTION_ATK:
+		m_nAction = ACTION_ATK;
+		m_fAtkCnter = INTERVAL::ATTACK[nRand - ACTION_ATK];
+		break;
+	}
+}
+
+//===============================================
+// à⁄ìÆ
+//===============================================
+void CEnemyBoss::Move(void)
+{
+	if (m_NowArm < PARTS_MAX) {
+		return;
+	}
+
+	if (m_Chase.pTarget == nullptr) {
+		return;
+	}
+
+	if (m_nAction == ACTION_ATK) {
+		D3DXVECTOR3 move = m_Chase.pTarget->GetPosition() - GetPosition();
+		move.y = 0.0f;
+		D3DXVec3Normalize(&move, &move);
+		move *= SPEED::ROTATEATK;
+		move += GetMove();
+		SetMove(move);
+		SetIner(ROTATE_ATKINER);
+	}
+	else {
+		SetIner(MOVE_INER);
 	}
 }

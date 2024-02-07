@@ -16,7 +16,6 @@
 
 // 無名名前空間
 namespace {
-	const float MAX_LENGTH = (500.0f);	// 最大の範囲
 	const float RANGE_UPSPEED = (15.0f);	// 1フレーム間の範囲増加量
 	const float FLYAWAY_SPEED = (100.0f);	// 吹っ飛ぶ速度(かっけえ変数名)
 	const float ITEMAWAY_SPEED = (18.0f);	// アイテムの吹っ飛ぶ速度
@@ -41,6 +40,7 @@ CWave::CWave()
 		m_apObject[nCnt] = nullptr;
 	}
 	m_Info.fRange = 0.0f;
+	m_fLength = 0.0f;
 	m_Info.pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	m_Info.rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	D3DXMatrixIdentity(&m_Info.mtxWorld);
@@ -88,10 +88,10 @@ void CWave::Uninit(void)
 //==========================================================
 void CWave::Update(void)
 {
-	float fRate = m_Info.fRange / MAX_LENGTH;
+	float fRate = m_Info.fRange / m_fLength;
 	m_Info.fRange += RANGE_UPSPEED;
 
-	if (m_Info.fRange > MAX_LENGTH) {	// 最大範囲を超えた
+	if (m_Info.fRange > m_fLength) {	// 最大範囲を超えた
 		Uninit();
 	}
 	else
@@ -135,7 +135,7 @@ void CWave::Update(void)
 //==========================================================
 // 生成
 //==========================================================
-CWave *CWave::Create(const D3DXVECTOR3& pos, const int nId)
+CWave *CWave::Create(const D3DXVECTOR3& pos, const int nId, const float fLength)
 {
 	CWave *pWave = nullptr;
 
@@ -151,6 +151,8 @@ CWave *CWave::Create(const D3DXVECTOR3& pos, const int nId)
 
 		// IDの設定
 		pWave->BindId(nId);
+
+		pWave->m_fLength = fLength;
 	}
 
 	return pWave;

@@ -46,7 +46,7 @@ public:	// 誰でもアクセス可能
 	HRESULT Init(void);
 	void Uninit(void);
 	void Update(void);
-	static CWave *Create(const D3DXVECTOR3& pos, const int nId);
+	static CWave *Create(const D3DXVECTOR3& pos, const int nId, const float fLength = 500.0f);
 
 	// メンバ関数(取得)
 	D3DXVECTOR3 GetPosition(void) { return m_Info.pos; }
@@ -64,6 +64,7 @@ private:	// 自分だけがアクセス可能
 	// メンバ変数
 	int m_nId;	// 使用者ID
 	SInfo m_Info;	// 情報
+	float m_fLength;
 	int m_nParticleCounter;	// パーティクルカウンター
 	CMeshCylinder *m_apObject[TYPE_MAX];	// オブジェクト
 };

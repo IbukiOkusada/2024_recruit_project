@@ -42,6 +42,7 @@ public:	// 誰でもアクセス可能な定義
 		TYPE_GUNCHARGE,			// 弾チャージ
 		TYPE_BOSSGUN,			// ボス弾
 		TYPE_BOSSKNUCKLECHARGE,		// ボスの拳溜め
+		TYPE_BOSSKNIFECHARGE,		// ボスのナイフ溜め
 		TYPE_MAX
 	}TYPE;
 

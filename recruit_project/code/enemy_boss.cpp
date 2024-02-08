@@ -24,6 +24,7 @@
 #include "bridge.h"
 #include "wave.h"
 #include "particle.h"
+#include "knifewave.h"
 
 // 無名名前空間
 namespace
@@ -40,7 +41,7 @@ namespace
 	const float CHASE_MAXLENGTH = (1400.0f);	// 追跡最長距離
 	const float CHASE_NEARLENGTH = (700.0f);	// 追跡近距離
 	const float CHASE_MINLENGTH = (400.0f);		// 追跡0距離
-	const float SEARCH_HEIGHT = (180.0f);		// 探索高さ制限
+	const float SEARCH_HEIGHT = (400.0f);		// 探索高さ制限
 	const float MOVE_INER = (0.3f);				// 移動慣性
 	const float ROTATE_ATKINER = (0.0f);		// 
 	const int ATK_RANDRANGE = (6);				// 攻撃中ランダム範囲
@@ -60,7 +61,8 @@ namespace SPEED
 	const float ROTATEATK_FIST = (20.0f);
 	const float ROTATEATK_SLOW = (0.5f);
 	const float DAMAGE_MOVE = (2.0f);	// 移動量
-	const float BULLET = (20.0f);		// 弾速
+	const float BULLET = (3.0f);		// 弾速
+	const float KNIFE = (15.0f);		// knife
 }
 
 // インターバル
@@ -73,6 +75,7 @@ namespace INTERVAL
 		680.0f,
 		480.0f,
 		480.0f,
+		680.0f,
 	};
 }
 
@@ -762,6 +765,34 @@ void CEnemyBoss::SetMotion(void)
 	}
 	break;
 
+	case ACTION_KNIFECHARGE:
+	{
+		m_pBody->GetMotion()->BlendSet(m_nAction);
+		m_pLeg->GetMotion()->BlendSet(m_nAction);
+
+		CModel* pModel = m_pLeg->GetParts(3);
+		D3DXVECTOR3 MyPos = { pModel->GetMtx()->_41, pModel->GetMtx()->_42, pModel->GetMtx()->_43 };
+		CParticle::Create(MyPos, CEffect::TYPE_BOSSKNIFECHARGE);
+
+		if (m_pBody->GetMotion()->GetEnd())
+		{// モーション終了	
+			m_nAction = ACTION_KNIFEATK;
+		}
+	}
+	break;
+
+	case ACTION_KNIFEATK:
+	{
+		m_pBody->GetMotion()->Set(m_nAction);
+		m_pLeg->GetMotion()->Set(m_nAction);
+
+		if (m_pBody->GetMotion()->GetEnd())
+		{// モーション終了
+			m_nAction = ACTION_NEUTRAL;	// 保持状態に変更
+		}
+	}
+	break;
+
 	case ACTION_DAMAGE:
 	{
 		m_pBody->GetMotion()->BlendSet(m_nAction);
@@ -1037,7 +1068,12 @@ void CEnemyBoss::Attack(void)
 	case ATTACK_SHOT:
 		m_nAction = ACTION_SHOT;
 		break;
+
+	case ATTACK_KNIFE:
+		m_nAction = ACTION_KNIFECHARGE;
+		break;
 	}
+	m_nAction = ACTION_KNIFECHARGE;
 
 	m_fAtkCnter = INTERVAL::ATTACK[nRand];
 }
@@ -1097,12 +1133,23 @@ void CEnemyBoss::AttackChance(void)
 
 	case ACTION_WAVEATK:
 	{
-		if (m_pBody->GetMotion()->GetNowKey() != 4 || m_pBody->GetMotion()->GetNowFrame() != 0.0f || m_pBody->GetMotion()->GetOldMotion() != ACTION_WAVEATK) {
+		if (m_pBody->GetMotion()->GetOldMotion() != ACTION_WAVEATK) {
 			return;
 		}
+
+		if (m_pBody->GetMotion()->GetNowKey() < 4) {
+			CModel* pModel = m_pBody->GetParts(m_pBody->GetNumParts() - 1);
+			D3DXVECTOR3 pos = { pModel->GetMtx()->_41, pModel->GetMtx()->_42, pModel->GetMtx()->_43 };
+			CParticle::Create(pos, CEffect::TYPE_BOSSKNUCKLECHARGE);
+		}
+
+		if (m_pBody->GetMotion()->GetNowKey() != 4 || m_pBody->GetMotion()->GetNowFrame() != 0.0f) {
+			return;
+		}
+
 		CModel* pModel = m_pBody->GetParts(m_pBody->GetNumParts() - 1);
 		D3DXVECTOR3 pos = { pModel->GetMtx()->_41, pModel->GetMtx()->_42, pModel->GetMtx()->_43 };
-		CWave::Create(pos, 0, 4000.0f);
+		CWave::Create(pos, 0, 1000.0f);
 	}
 		break;
 
@@ -1120,13 +1167,39 @@ void CEnemyBoss::AttackChance(void)
 		D3DXVECTOR3 MyPos = { pModel->GetMtx()->_41, pModel->GetMtx()->_42, pModel->GetMtx()->_43 };
 		D3DXVECTOR3 pos = m_Chase.pTarget->GetPosition();
 		pos.y += 50.0f;
+		pos.x += static_cast<float>(rand() % 300 - 150);
+		pos.z += static_cast<float>(rand() % 300 - 150);
 		D3DXVECTOR3 nor = pos - MyPos;
 		D3DXVec3Normalize(&nor, &nor);
 
-		if (static_cast<int>(m_pBody->GetMotion()->GetNowFrame()) % 2 == 0) {
+		if (static_cast<int>(m_pBody->GetMotion()->GetNowFrame()) % 3 == 0) {
 			CBullet::Create(MyPos, D3DXVECTOR3(0.0f, 0.0f, 0.0f), nor * SPEED::BULLET, CBullet::TYPE_BOSS);
 		}
 	}
 		break;
+
+	case ACTION_KNIFEATK:
+	{
+		if (m_Chase.pTarget == nullptr) {
+			return;
+		}
+
+		if (m_pBody->GetMotion()->GetOldMotion() != ACTION_KNIFEATK) {
+			return;
+		}
+
+		if (m_pBody->GetMotion()->GetNowKey() != 1 || m_pBody->GetMotion()->GetNowFrame() != 0.0f) {
+			return;
+		}
+
+		CModel* pModel = m_pLeg->GetParts(3);
+		D3DXVECTOR3 MyPos = { pModel->GetMtx()->_41, GetPosition().y, pModel->GetMtx()->_43 };
+		D3DXVECTOR3 pos = m_Chase.pTarget->GetPosition();
+		pos.y += 30.0f;
+		D3DXVECTOR3 nor = pos - MyPos;
+		D3DXVec3Normalize(&nor, &nor);
+		CKnifeWave::Create(MyPos, GetInfo()->rot, nor * SPEED::KNIFE, CKnifeWave::TYPE_ENEMY);
+	}
+	break;
 	}
 }

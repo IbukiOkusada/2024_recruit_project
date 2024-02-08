@@ -189,12 +189,18 @@ void CObject3D::Draw(void)
 		pDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
 	}
 
+	// カリング設定
+	pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
+
 	//ポリゴンの描画
 	pDevice->DrawPrimitive(
 		D3DPT_TRIANGLESTRIP,	//プリミティブの種類
 		0,
 		2	//頂点情報構造体のサイズ
 		);
+
+	// カリング設定直す
+	pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
 
 	if (m_bLighting) {
 		//ライティングをオンにする

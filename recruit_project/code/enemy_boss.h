@@ -34,6 +34,7 @@ public:
 		ATTACK_ROTATE = 0,	// 回転
 		ATTACK_WAVE,		// 衝撃波
 		ATTACK_SHOT,		// 射撃
+		ATTACK_KNIFE,		// ナイフ
 		ATTACK_MAX
 	};
 
@@ -61,6 +62,8 @@ private:
 		ACTION_WAVECHARGE,		// 衝撃波攻撃溜め
 		ACTION_WAVEATK,			// 衝撃波攻撃
 		ACTION_SHOT,			// 射撃攻撃
+		ACTION_KNIFECHARGE,		// とりこのナイフ攻撃溜め
+		ACTION_KNIFEATK,		// トリコのナイフ攻撃
 		ACTION_DAMAGE,			// ダメージ
 		ACTION_DEATH,			// 死亡
 		ACTION_MAX

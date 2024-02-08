@@ -119,7 +119,7 @@ void CWave::Update(void)
 			float fAdd = 0.1f;
 			float fMulti = 0.15f;
 
-			if (nCnt == TYPE_ANOTHER) {
+			if (nCnt == TYPE_NORMAL) {
 				fAdd *= -1.0f;
 				fMulti *= -1.0f;
 			}

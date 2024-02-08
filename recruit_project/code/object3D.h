@@ -58,9 +58,9 @@ private:	// 自分だけがアクセス可能
 	D3DXVECTOR3 m_pos;		//位置
 	D3DXVECTOR3 m_rot;		//向き
 	int m_nIdxTexture;		// テクスチャ番号
-	bool m_bLighting;			// ライティング設定
-	float m_fWidth;		// 幅
-	float m_fHeight;	// 高さ
+	bool m_bLighting;		// ライティング設定
+	float m_fWidth;			// 幅
+	float m_fHeight;		// 高さ
 };
 
 #endif

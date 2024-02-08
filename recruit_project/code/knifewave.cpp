@@ -4,10 +4,10 @@
 // Author : Ibuki Okusada
 //
 //==========================================================
-#include "bullet.h"
+#include "knifewave.h"
 #include "enemy.h"
 #include "player.h"
-#include "billboard.h"
+#include "objectX.h"
 #include "particle.h"
 #include "enemy_manager.h"
 #include "player_manager.h"
@@ -26,7 +26,7 @@ namespace {
 //==========================================================
 // コンストラクタ
 //==========================================================
-CBullet::CBullet()
+CKnifeWave::CKnifeWave()
 {
 	// 値のクリア
 	m_pObject = nullptr;
@@ -40,7 +40,7 @@ CBullet::CBullet()
 //==========================================================
 // デストラクタ
 //==========================================================
-CBullet::~CBullet()
+CKnifeWave::~CKnifeWave()
 {
 
 }
@@ -48,10 +48,10 @@ CBullet::~CBullet()
 //==========================================================
 // 初期化処理
 //==========================================================
-HRESULT CBullet::Init(void)
+HRESULT CKnifeWave::Init(void)
 {
 	// オブジェクトの生成
-	//m_pObject = CObjectBillboard::Create(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+	m_pObject = CObjectX::Create(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), "data\\MODEL\\knifewave.x");
 	//m_pObject->SetCurrent(&m_Info.mtxWorld);
 
 	// 寿命の設定
@@ -63,7 +63,7 @@ HRESULT CBullet::Init(void)
 //==========================================================
 // 終了処理
 //==========================================================
-void CBullet::Uninit(void)
+void CKnifeWave::Uninit(void)
 {
 	// オブジェクトの終了
 	if (m_pObject != nullptr) {
@@ -78,7 +78,7 @@ void CBullet::Uninit(void)
 //==========================================================
 // 更新処理
 //==========================================================
-void CBullet::Update(void)
+void CKnifeWave::Update(void)
 {
 	m_Info.posOld = m_Info.pos;
 
@@ -87,6 +87,9 @@ void CBullet::Update(void)
 
 	// マトリックス反映
 	SetMatrix();
+
+	m_pObject->SetPosition(m_Info.pos);
+	m_pObject->SetRotation(m_Info.rot);
 
 	// 寿命確認
 	if (m_fLife <= 0) {	// 寿命がなくなった
@@ -98,55 +101,43 @@ void CBullet::Update(void)
 
 		// 当たり判定
 		Hit();
-
-		// 移動している
-		if (m_type == TYPE_ENEMY) {
-			CParticle::Create(m_Info.pos, CEffect::TYPE_KUNAI);
-		}
-		else {
-			CEffect::Create(m_Info.pos, m_Info.move, D3DXCOLOR(0.0f, 0.5f, 0.5f, 0.5f), 20.0f, 10.0f, CEffect::TYPE_BOSSGUN);
-		}
 	}
 }
 
 //==========================================================
 // 生成
 //==========================================================
-CBullet *CBullet::Create(const D3DXVECTOR3 &pos, const D3DXVECTOR3 &rot, const D3DXVECTOR3 &move, const TYPE type)
+CKnifeWave *CKnifeWave::Create(const D3DXVECTOR3 &pos, const D3DXVECTOR3 &rot, const D3DXVECTOR3 &move, const TYPE type)
 {
-	CBullet *pBullet = nullptr;
+	CKnifeWave *pKnifeWave = nullptr;
 
-	pBullet = new CBullet;
+	pKnifeWave = new CKnifeWave;
 
-	if (pBullet != nullptr)
+	if (pKnifeWave != nullptr)
 	{
 		// 初期化処理
-		pBullet->Init();
+		pKnifeWave->Init();
 
 		// 座標反映
-		pBullet->SetPosition(pos);
+		pKnifeWave->SetPosition(pos);
 
 		// 向き反映
-		pBullet->SetRotation(rot);
+		pKnifeWave->SetRotation(rot);
 
 		// 移動量反映
-		pBullet->SetMove(move);
+		pKnifeWave->SetMove(move);
 
 		// 種類反映
-		pBullet->SetType(type);
-
-		if (type == TYPE_BOSS) {
-			pBullet->m_fLife = SETBOSSLIFE;
-		}
+		pKnifeWave->SetType(type);
 	}
 
-	return pBullet;
+	return pKnifeWave;
 }
 
 //==========================================================
 // マトリックス設定
 //==========================================================
-void CBullet::SetMatrix(void)
+void CKnifeWave::SetMatrix(void)
 {
 	D3DXMATRIX mtxRot, mtxTrans;	// 計算用マトリックス
 
@@ -165,7 +156,7 @@ void CBullet::SetMatrix(void)
 //==========================================================
 // 操作関連
 //==========================================================
-void CBullet::Controller(void)
+void CKnifeWave::Controller(void)
 {
 	// 移動
 	m_Info.pos += m_Info.move * CManager::GetInstance()->GetSlow()->Get();
@@ -174,7 +165,7 @@ void CBullet::Controller(void)
 //==========================================================
 // ヒット処理
 //==========================================================
-void CBullet::Hit(void)
+void CKnifeWave::Hit(void)
 {
 	bool bHit = false;
 	

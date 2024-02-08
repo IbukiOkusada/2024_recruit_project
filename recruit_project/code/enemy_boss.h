@@ -28,6 +28,15 @@ public:
 		PARTS_MAX
 	};
 
+	// 攻撃方法列挙型
+	enum ATTACK
+	{
+		ATTACK_ROTATE = 0,	// 回転
+		ATTACK_WAVE,		// 衝撃波
+		ATTACK_SHOT,		// 射撃
+		ATTACK_MAX
+	};
+
 private:
 
 	// 状態列挙型
@@ -47,7 +56,11 @@ private:
 		ACTION_NEUTRAL = 0,		// 待機
 		ACTION_WALK,			// 歩行
 		ACTION_DUSH,			// 歩行
+		ACTION_ATKCHARGE,		// 攻撃溜め
 		ACTION_ATK,				// 攻撃
+		ACTION_WAVECHARGE,		// 衝撃波攻撃溜め
+		ACTION_WAVEATK,			// 衝撃波攻撃
+		ACTION_SHOT,			// 射撃攻撃
 		ACTION_DAMAGE,			// ダメージ
 		ACTION_DEATH,			// 死亡
 		ACTION_MAX
@@ -73,6 +86,14 @@ private:
 	{
 		STATE state;	// 状態
 		float fCounter;	// 管理カウンター
+	};
+
+	// 移動速度管理用
+	struct SMoveInfo 
+	{
+		SMoveInfo() { fSpeed = 0.0f; fCounter = 0.0f; }
+		float fSpeed;	// 移動量
+		float fCounter;	// カウント
 	};
 
 public:	// 誰でもアクセス可能
@@ -108,6 +129,7 @@ private:	// 自分だけがアクセス可能
 	void ArmAttackCheck(void);
 	void ArmAttack(const int nRandRange = 3);
 	void Attack(void);
+	void AttackChance(void);
 	void FootCheck(void);
 	void ArmDamage(void);
 	void Move(void);
@@ -125,6 +147,7 @@ private:	// 自分だけがアクセス可能
 	float m_fInterVal;		// ダメージインターバル
 	float m_fAtkCnter;		// 攻撃カウンター
 	CBridge* m_pBridge;		// 橋
+	SMoveInfo m_MoveInfo;	// 移動量管理用
 };
 
 #endif

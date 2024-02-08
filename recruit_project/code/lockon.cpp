@@ -259,14 +259,20 @@ void CLockOn::LockOn(void)
 
 		CEnemy* pObjectNext = pObj->GetNext();	// 次のオブジェクトへのポインタを取得
 
-		if (pObj == NULL)
+		if (pObj == nullptr)
 		{// 使用されていない場合
 			pObj = pObjectNext;	// 次のオブジェクトに移動
 			continue;
 		}
 
-		if (pObj->GetDeath() == true)
+		if (pObj->GetDeath())
 		{
+			pObj = pObjectNext;	// 次のオブジェクトに移動
+			continue;
+		}
+
+		if (!pObj->GetLockon()) {
+
 			pObj = pObjectNext;	// 次のオブジェクトに移動
 			continue;
 		}

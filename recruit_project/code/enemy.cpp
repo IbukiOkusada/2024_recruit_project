@@ -29,6 +29,7 @@ CEnemy::CEnemy()
 	m_fRotDiff = 0.0f;
 	m_fMoveIner = 0.0f;
 	m_fRotMulti = ROT_MULTI;
+	m_bLockOn = true;
 
 	// ƒŠƒXƒg‚É‘}“ü
 	CEnemyManager::GetInstance()->ListIn(this);

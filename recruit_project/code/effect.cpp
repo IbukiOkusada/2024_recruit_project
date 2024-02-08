@@ -292,6 +292,18 @@ void CEffect::Update(void)
 		m_Info.fRadius += 0.1f * CManager::GetInstance()->GetSlow()->Get();
 
 		break;
+
+	case TYPE_BOSSGUN:	// ‰Œ
+
+		m_Info.col.a -= 0.05f * CManager::GetInstance()->GetSlow()->Get();
+		m_Info.fRadius += 0.4f * CManager::GetInstance()->GetSlow()->Get();
+		break;
+
+	case TYPE_BOSSKNUCKLECHARGE:	// ‰Œ
+		m_Info.move -= (m_Info.move * GUNCHARGE) * CManager::GetInstance()->GetSlow()->Get();
+		m_Info.fRadius += 0.1f * CManager::GetInstance()->GetSlow()->Get();
+
+		break;
 	}
 
 	if (m_Info.col.a < 0.0f || m_Info.fRadius < 0.0f)
@@ -554,6 +566,12 @@ CTexture::TYPE CEffect::SetTex(TYPE type)
 		return CTexture::TYPE_EFFECT;
 	}
 	break;
+
+	case TYPE_BOSSGUN:
+	{
+		return CTexture::TYPE_EFFECT;
+	}
+	break;
 	}
 
 	return CTexture::TYPE();
@@ -718,6 +736,24 @@ void CEffect::DrawSet(void)
 		m_pObjectBilBoard->SetZTest(true);
 		m_pObjectBilBoard->SetLighting(true);
 		m_pObjectBilBoard->SetFusion(CObjectBillboard::FUSION_ADD);
+	}
+	break;
+
+	case TYPE_BOSSGUN:
+	{
+		m_pObjectBilBoard->SetAlphaText(true);
+		m_pObjectBilBoard->SetZTest(true);
+		m_pObjectBilBoard->SetLighting(true);
+		m_pObjectBilBoard->SetFusion(CObjectBillboard::FUSION_MINUS);
+	}
+	break;
+
+	case TYPE_BOSSKNUCKLECHARGE:
+	{
+		m_pObjectBilBoard->SetAlphaText(true);
+		m_pObjectBilBoard->SetZTest(true);
+		m_pObjectBilBoard->SetLighting(true);
+		m_pObjectBilBoard->SetFusion(CObjectBillboard::FUSION_MINUS);
 	}
 	break;
 

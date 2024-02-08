@@ -21,8 +21,8 @@ public:
 
 	// Ží—Þ—ñ‹“Œ^
 	enum TYPE {
-		TYPE_PLAYER = 0,	// ƒvƒŒƒCƒ„[
-		TYPE_ENEMY,			// “G
+		TYPE_ENEMY = 0,			// “G
+		TYPE_BOSS,
 		TYPE_MAX
 	};
 

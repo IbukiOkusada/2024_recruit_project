@@ -23,6 +23,7 @@
 #include "Xfile.h"
 #include "bridge.h"
 #include "wave.h"
+#include "particle.h"
 
 // 無名名前空間
 namespace
@@ -36,16 +37,17 @@ namespace
 	const D3DXVECTOR3 COLLIMAX = { 20.0f, 120.0f, 20.0f };	// 当たり判定最大
 	const D3DXVECTOR3 COLLIMIN = { -20.0f, 0.0f, -20.0f };	// 当たり判定最小
 	const int DAMAGEINTERVAL = (60);	// ダメージインターバル
-	const float CHASE_MAXLENGTH = (1000.0f);	// 追跡最長距離
+	const float CHASE_MAXLENGTH = (1400.0f);	// 追跡最長距離
 	const float CHASE_NEARLENGTH = (700.0f);	// 追跡近距離
 	const float CHASE_MINLENGTH = (400.0f);		// 追跡0距離
 	const float SEARCH_HEIGHT = (180.0f);		// 探索高さ制限
 	const float MOVE_INER = (0.3f);				// 移動慣性
-	const float ROTATE_ATKINER = (0.04f);		// 
+	const float ROTATE_ATKINER = (0.0f);		// 
 	const int ATK_RANDRANGE = (6);				// 攻撃中ランダム範囲
 	const int BACK_RANDRANGE = (2);				// 
 	const int FRONT_RANDRANGE = (3);			
 	const float ROTDIFF_INER = (0.05f);
+	const float WAVEATK_JUMP = (35.0f);
 }
 
 // 移動速度名前空間
@@ -55,9 +57,10 @@ namespace SPEED
 	const float MOVE_NEAR = (-1.0f);	// 近距離移動
 	const float MOVE_MIN = (0.15f);		// 移動量移動
 	const float GRAVITY = (-0.9f);		// 重力
-	const float ROTATEATK = (0.8f);
+	const float ROTATEATK_FIST = (20.0f);
+	const float ROTATEATK_SLOW = (0.5f);
 	const float DAMAGE_MOVE = (2.0f);	// 移動量
-	const float BULLET = (-6.0f);		// 弾速
+	const float BULLET = (20.0f);		// 弾速
 }
 
 // インターバル
@@ -65,7 +68,10 @@ namespace INTERVAL
 {
 	const float DAMAGE = (20.0f);	// ダメージ
 	const float ARMATTACK = (500.0f);	// 腕攻撃
-	const float ATTACK[1] = {
+	const float ROTATEATKCHANGE = (60.0f);
+	const float ATTACK[CEnemyBoss::ATTACK_MAX] = {
+		680.0f,
+		480.0f,
 		480.0f,
 	};
 }
@@ -186,6 +192,9 @@ HRESULT CEnemyBoss::Init(void)
 	// 動作する橋を生成
 	m_pBridge = CBridge::Create(D3DXVECTOR3(-2700.0f, 1010.0f, 3750.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 
+	// ロックオンできない状態に設定
+	SetLockOn(false);
+
 	return S_OK;
 }
 
@@ -291,11 +300,33 @@ void CEnemyBoss::MethodLine(void)
 
 	// 当たり判定確認
 	CObjectX::COLLISION_AXIS axis = CObjectX::TYPE_MAX;
+	D3DXVECTOR3 moveOld = pInfo->move;
 	CMeshWall::Collision(pInfo->pos, pInfo->posOld, pInfo->move, COLLIMAX, COLLIMIN, axis);
 	float fHeight = CMeshField::GetHeight(pInfo->pos);
 	if (pInfo->pos.y < fHeight && pInfo->posOld.y >= fHeight) {
 		pInfo->pos.y = fHeight;
 		pInfo->move.y = 0.0f;
+	}
+
+	if (m_nAction == ACTION_ATK) {
+		bool bUse = false;
+		if (pInfo->move.x != moveOld.x) {
+			moveOld.x *= -1.0f;
+			bUse = true;
+			int nRand = rand() % 10 - 5;
+			moveOld.z += static_cast<float>(nRand);
+		}
+		if (pInfo->move.z != moveOld.z) {
+			moveOld.z *= -1.0f;
+			bUse = true;
+
+			int nRand = rand() % 10 - 5;
+			moveOld.x += static_cast<float>(nRand);
+		}
+
+		if (bUse) {
+			SetMove(moveOld);
+		}
 	}
 
 	// アクション設定
@@ -657,12 +688,79 @@ void CEnemyBoss::SetMotion(void)
 	}
 		break;
 
+	case ACTION_ATKCHARGE:
+	{
+		m_pBody->GetMotion()->BlendSet(m_nAction);
+		m_pLeg->GetMotion()->BlendSet(m_nAction);
+
+		if (m_pBody->GetMotion()->GetEnd())
+		{// モーション終了	
+			m_nAction = ACTION_ATK;
+			m_MoveInfo.fCounter = INTERVAL::ROTATEATKCHANGE;
+			m_MoveInfo.fSpeed = SPEED::ROTATEATK_FIST;
+
+			if (m_Chase.pTarget != nullptr) {
+				D3DXVECTOR3 move = m_Chase.pTarget->GetPosition() - GetPosition();
+				move.y = 0.0f;
+				D3DXVec3Normalize(&move, &move);
+				move *= m_MoveInfo.fSpeed;
+				move += GetMove();
+				SetMove(move);
+			}
+			SetIner(ROTATE_ATKINER);
+		}
+	}
+	break;
+
 	case ACTION_ATK:
 	{
 		m_pBody->GetMotion()->Set(m_nAction);
 		m_pLeg->GetMotion()->Set(m_nAction);
 	}
 		break;
+
+	case ACTION_WAVECHARGE:
+	{
+		m_pBody->GetMotion()->BlendSet(m_nAction);
+		m_pLeg->GetMotion()->BlendSet(m_nAction);
+
+		CModel* pModel = m_pBody->GetParts(m_pBody->GetNumParts() - 1);
+		D3DXVECTOR3 pos = { pModel->GetMtx()->_41, pModel->GetMtx()->_42, pModel->GetMtx()->_43 };
+		CParticle::Create(pos, CEffect::TYPE_BOSSKNUCKLECHARGE);
+
+		if (m_pBody->GetMotion()->GetEnd())
+		{// モーション終了	
+			m_nAction = ACTION_WAVEATK;
+			D3DXVECTOR3 move = GetMove();
+			move.y = WAVEATK_JUMP;
+			SetMove(move);
+		}
+	}
+	break;
+
+	case ACTION_WAVEATK:
+	{
+		m_pBody->GetMotion()->Set(m_nAction);
+		m_pLeg->GetMotion()->Set(m_nAction);
+
+		if (m_pBody->GetMotion()->GetEnd())
+		{// モーション終了
+			m_nAction = ACTION_NEUTRAL;	// 保持状態に変更
+		}
+	}
+	break;
+
+	case ACTION_SHOT:
+	{
+		m_pBody->GetMotion()->BlendSet(m_nAction);
+		m_pLeg->GetMotion()->BlendSet(m_nAction);
+
+		if (m_pBody->GetMotion()->GetEnd())
+		{// モーション終了
+			m_nAction = ACTION_NEUTRAL;	// 保持状態に変更
+		}
+	}
+	break;
 
 	case ACTION_DAMAGE:
 	{
@@ -900,6 +998,8 @@ void CEnemyBoss::ArmDamage(void)
 
 	if (m_NowArm >= PARTS_MAX) {
 		m_nArmAction = ARM_NEUTRAL;
+		// ロックオンできる状態に設定
+		SetLockOn(true);
 	}
 }
 
@@ -910,23 +1010,36 @@ void CEnemyBoss::Attack(void)
 {
 	m_fAtkCnter -= CManager::GetInstance()->GetSlow()->Get();
 
-	if (m_fAtkCnter > 0.0f) {
+	if (m_fAtkCnter > 0.0f) {	// 攻撃変更前
 
-		if (m_fAtkCnter <= INTERVAL::ATTACK[m_nAction - ACTION_ATK] * 0.1f) {
+		if (m_fAtkCnter <= INTERVAL::ATTACK[m_nAction - ACTION_ATK] * 0.15f) {
 			m_nAction = ACTION_NEUTRAL;
+		}
+		else {
+			AttackChance();
 		}
 		return;
 	}
 
-	int nRand = rand() % 1 + ACTION_ATK;
+	int nRand = rand() % ATTACK_MAX;
 
+	// 攻撃方法を選択
 	switch (nRand) {
 
-	case ACTION_ATK:
-		m_nAction = ACTION_ATK;
-		m_fAtkCnter = INTERVAL::ATTACK[nRand - ACTION_ATK];
+	case ATTACK_ROTATE:
+		m_nAction = ACTION_ATKCHARGE;
+		break;
+
+	case ATTACK_WAVE:
+		m_nAction = ACTION_WAVECHARGE;
+		break;
+
+	case ATTACK_SHOT:
+		m_nAction = ACTION_SHOT;
 		break;
 	}
+
+	m_fAtkCnter = INTERVAL::ATTACK[nRand];
 }
 
 //===============================================
@@ -943,15 +1056,77 @@ void CEnemyBoss::Move(void)
 	}
 
 	if (m_nAction == ACTION_ATK) {
-		D3DXVECTOR3 move = m_Chase.pTarget->GetPosition() - GetPosition();
-		move.y = 0.0f;
-		D3DXVec3Normalize(&move, &move);
-		move *= SPEED::ROTATEATK;
-		move += GetMove();
-		SetMove(move);
-		SetIner(ROTATE_ATKINER);
+
+		m_MoveInfo.fCounter -= CManager::GetInstance()->GetSlow()->Get();
+
+		if (m_MoveInfo.fCounter <= 0.0f) {
+			m_MoveInfo.fCounter = INTERVAL::ROTATEATKCHANGE;
+
+			if (m_MoveInfo.fSpeed == SPEED::ROTATEATK_FIST) {
+				m_MoveInfo.fSpeed = SPEED::ROTATEATK_SLOW;
+			}
+			else {
+				m_MoveInfo.fSpeed = SPEED::ROTATEATK_FIST;
+			}
+		}
 	}
 	else {
 		SetIner(MOVE_INER);
+	}
+}
+
+//===============================================
+// 攻撃チャンス
+//===============================================
+void CEnemyBoss::AttackChance(void)
+{
+	if (!BodyCheck(m_pBody)) {// 胴体確認失敗
+		return;
+	}
+
+	if (!BodyCheck(m_pLeg)) {// 下半身確認失敗
+		return;
+	}
+
+	switch (m_nAction) {
+	case ACTION_ATK:
+	{
+
+	}
+		break;
+
+	case ACTION_WAVEATK:
+	{
+		if (m_pBody->GetMotion()->GetNowKey() != 4 || m_pBody->GetMotion()->GetNowFrame() != 0.0f || m_pBody->GetMotion()->GetOldMotion() != ACTION_WAVEATK) {
+			return;
+		}
+		CModel* pModel = m_pBody->GetParts(m_pBody->GetNumParts() - 1);
+		D3DXVECTOR3 pos = { pModel->GetMtx()->_41, pModel->GetMtx()->_42, pModel->GetMtx()->_43 };
+		CWave::Create(pos, 0, 4000.0f);
+	}
+		break;
+
+	case ACTION_SHOT:
+	{
+		if (m_Chase.pTarget == nullptr) {
+			return;
+		}
+
+		if (m_pBody->GetMotion()->GetNowKey() < 3 || m_pBody->GetMotion()->GetOldMotion() != ACTION_SHOT) {
+			return;
+		}
+
+		CModel* pModel = m_pBody->GetParts(m_pBody->GetNumParts() - 1);
+		D3DXVECTOR3 MyPos = { pModel->GetMtx()->_41, pModel->GetMtx()->_42, pModel->GetMtx()->_43 };
+		D3DXVECTOR3 pos = m_Chase.pTarget->GetPosition();
+		pos.y += 50.0f;
+		D3DXVECTOR3 nor = pos - MyPos;
+		D3DXVec3Normalize(&nor, &nor);
+
+		if (static_cast<int>(m_pBody->GetMotion()->GetNowFrame()) % 2 == 0) {
+			CBullet::Create(MyPos, D3DXVECTOR3(0.0f, 0.0f, 0.0f), nor * SPEED::BULLET, CBullet::TYPE_BOSS);
+		}
+	}
+		break;
 	}
 }

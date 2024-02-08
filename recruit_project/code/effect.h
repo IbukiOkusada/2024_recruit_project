@@ -40,6 +40,8 @@ public:	// 誰でもアクセス可能な定義
 		TYPE_PULLSMAKE,			// 引き中の手
 		TYPE_DUST,				// 埃
 		TYPE_GUNCHARGE,			// 弾チャージ
+		TYPE_BOSSGUN,			// ボス弾
+		TYPE_BOSSKNUCKLECHARGE,		// ボスの拳溜め
 		TYPE_MAX
 	}TYPE;
 

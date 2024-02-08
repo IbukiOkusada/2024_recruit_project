@@ -1855,7 +1855,12 @@ void CPlayer::NearLockOn(void)
 		float fLength = sqrtf((EnemPos.x - MyPos.x) * (EnemPos.x - MyPos.x)	// ‹——£‚ğæ“¾
 			+ (EnemPos.z - MyPos.z) * (EnemPos.z - MyPos.z));
 
-		if (fLength > KICK_LENGTH) {
+		if (fLength > KICK_LENGTH) {	// ”ÍˆÍŠO
+			pEnemy = pEnemyNext;
+			continue;
+		}
+
+		if (!pEnemy->GetLockon()) {	// ‘ÎÛŠO
 			pEnemy = pEnemyNext;
 			continue;
 		}

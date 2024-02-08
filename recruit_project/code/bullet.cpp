@@ -18,6 +18,7 @@
 namespace {
 	const char* FILENAME = "data\\MODEL\\bullet.x";	// ƒtƒ@ƒCƒ‹–¼
 	const int SETLIFE = (240);	// ’e‚ÌÝ’èŽõ–½
+	const int SETBOSSLIGE = (60);
 	const float COLLRANGE = (25.0f);
 }
 
@@ -98,7 +99,12 @@ void CBullet::Update(void)
 		Hit();
 
 		// ˆÚ“®‚µ‚Ä‚¢‚é
-		CParticle::Create(m_Info.pos, CEffect::TYPE_KUNAI);
+		if (m_type == TYPE_ENEMY) {
+			CParticle::Create(m_Info.pos, CEffect::TYPE_KUNAI);
+		}
+		else {
+			CEffect::Create(m_Info.pos, m_Info.move, D3DXCOLOR(0.0f, 0.5f, 0.5f, 0.5f), 20.0f, 10.0f, CEffect::TYPE_BOSSGUN);
+		}
 	}
 }
 
@@ -127,6 +133,10 @@ CBullet *CBullet::Create(const D3DXVECTOR3 &pos, const D3DXVECTOR3 &rot, const D
 
 		// Ží—Þ”½‰f
 		pBullet->SetType(type);
+
+		if (type == TYPE_BOSS) {
+			pBullet->m_fLife = SETBOSSLIGE;
+		}
 	}
 
 	return pBullet;
@@ -166,22 +176,9 @@ void CBullet::Controller(void)
 void CBullet::Hit(void)
 {
 	bool bHit = false;
-
-	// “G‚Æ‚Ì”»’è
-	if (m_type == TYPE_PLAYER) {
-		CEnemy* pEnem = CEnemyManager::GetInstance()->GetTop();
-		while (pEnem != nullptr) {
-			CEnemy* pEnemNext = pEnem->GetNext();
-
-			if (pEnem->Hit(m_Info.pos, COLLRANGE, 1)) {	// “–‚½‚Á‚Ä‚¢‚é
-				bHit = true;
-			}
-
-			pEnem = pEnemNext;
-		}
-	}
+	
 	// ƒvƒŒƒCƒ„[‚Æ‚Ì”»’è
-	else if (m_type == TYPE_ENEMY) {
+	if (m_type == TYPE_ENEMY) {
 		CPlayer* pPlay = CPlayerManager::GetInstance()->GetTop();
 
 		while (pPlay != nullptr) {

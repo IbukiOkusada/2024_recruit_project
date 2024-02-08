@@ -474,5 +474,38 @@ void CParticle::Set(const D3DXVECTOR3& Defpos, const D3DXVECTOR3& Defmove, CEffe
 		}
 	}
 	break;
+
+	case CEffect::TYPE_BOSSKNUCKLECHARGE:	// 煙
+	{
+		for (int nCnt = 0; nCnt < 1; nCnt++)
+		{
+			// 座標の設定
+			float fRot = static_cast<float>(rand() % 629 - 314) * 0.01f;
+			float fRotZ = static_cast<float>(rand() % 315) * 0.01f;
+
+			// 出現位置を設定
+			pos = D3DXVECTOR3(
+				Defpos.x + (sinf(fRotZ) * cosf(fRot)) * 100.0f,
+				Defpos.y + cosf(fRotZ) * 100.0f,
+				Defpos.z + (sinf(fRotZ) * sinf(fRot)) * 100.0f);
+
+			// 目標までの移動ベクトルを取得
+			D3DXVECTOR3 nor = Defpos - pos;
+			D3DXVec3Normalize(&nor, &nor);
+			move = nor * 10.0f;
+
+			//色の設定
+			float frand = rand() % 8 * 0.1f;
+			col = D3DXCOLOR(1.0f, frand, 1.0f, 0.32f);
+
+			//半径の設定
+			fRadius = 20.0f;
+
+			//寿命の設定
+			fLife = 30.0f;
+
+			CEffect::Create(pos, move, col, fRadius, fLife, type);
+		}
+	}
 	}
 }

@@ -397,7 +397,7 @@ void CPlayer::Update(void)
 	CManager::GetInstance()->GetDebugProc()->Print("体力 [ %d ], 向き [ %f ]\n", m_nLife, m_Info.rot.y);
 	CManager::GetInstance()->GetDebugProc()->Print("移動 [ %f, %f, %f ]\n", m_Info.pos.x, m_Info.pos.y, m_Info.pos.z);
 
-	if (m_Info.pos.x <= -3000.0f || (m_nLife == 0 && m_Info.state == STATE_APPEAR)) {
+	if (m_Info.pos.x <= -3000.0f) {
 		CManager::GetInstance()->GetFade()->Set(CScene::MODE_RESULT);
 	}
 }
@@ -597,7 +597,7 @@ void CPlayer::Controller(void)
 		m_bJump = false;
 	}
 
-	if (m_Info.pos.y <= -100.0f) {
+	if (m_Info.pos.y <= -100.0f && CManager::GetInstance()->GetMode() == CScene::MODE_GAME) {
 		m_Info.pos = PLAYERSTARTPOS;
 	}
 }
@@ -714,6 +714,10 @@ void CPlayer::MoveController(void)
 
 	case ACTION_KICKUP:
 		fSpeed = KICKUP_SPEED;
+		break;
+
+	case ACTION_NORMALATK:
+		fSpeed = 0.0f;
 		break;
 	}
 
@@ -1236,10 +1240,10 @@ void CPlayer::StateSet(void)
 				m_pLeg->SetDraw();
 			}
 
-			CModel *pModel = m_pLeg->GetParts(0);  // 腰のパーツ
+			m_Info.pos = PLAYERSTARTPOS;
 
 			// 煙のパーティクル生成
-			CParticle::Create(D3DXVECTOR3(pModel->GetMtx()->_41, pModel->GetMtx()->_42, pModel->GetMtx()->_43), CEffect::TYPE_SMAKE);
+			CParticle::Create(m_Info.pos, CEffect::TYPE_SMAKE);
 		}
 	}
 		break;
@@ -1738,9 +1742,7 @@ void CPlayer::BodySet(void)
 			m_pWaist->SetMatrix();
 		}
 
-		if (CManager::GetInstance()->GetMode() == CScene::MODE_GAME) {
-			m_pLeg->Update();
-		}
+		m_pLeg->Update();
 
 		
 		CModel* pModel = m_pLeg->GetParts(0);

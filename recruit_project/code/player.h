@@ -55,6 +55,7 @@ public:
 		ACTION_KICKUP,			// 蹴りあがり
 		ACTION_AXEKICK,			// かかと落とし
 		ACTION_RIDERKICK,		// ライダーキック
+		ACTION_TITLENEUTRAL,	// タイトル待機
 		ACTION_MAX
 	};
 
@@ -122,6 +123,7 @@ public:	// 誰でもアクセス可能
 	void SetNext(CPlayer* pNext) { m_pNext = pNext; }
 	void SetPrev(CPlayer* pPrev) { m_pPrev = pPrev; }
 	void SetJump(bool bJump) { m_bJump = bJump; }
+	void SetRotDiff(float fDiff) { m_fRotDest = fDiff; }
 
 	// メンバ関数(取得)
 	D3DXVECTOR3 GetMove(void) { return m_Info.move; }

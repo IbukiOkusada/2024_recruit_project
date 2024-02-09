@@ -14,13 +14,13 @@ NUM_MODEL = 7
 #------------------------------------------------------------------------------
 # モデルファイル名
 #------------------------------------------------------------------------------
-MODEL_FILENAME = data/MODEL/sample/waist.x				# [0]腰
-MODEL_FILENAME = data/MODEL/sample/righthigh.x			# [1]右腿
-MODEL_FILENAME = data/MODEL/sample/rightcalf.x			# [2]右脛
-MODEL_FILENAME = data/MODEL/sample/rightleg.x			# [3]右足
-MODEL_FILENAME = data/MODEL/sample/lefthigh.x			# [4]左腿
-MODEL_FILENAME = data/MODEL/sample/leftcalf.x			# [5]左脛
-MODEL_FILENAME = data/MODEL/sample/leftleg.x			# [6]左足
+MODEL_FILENAME = data/MODEL/player/waist.x				# [0]腰
+MODEL_FILENAME = data/MODEL/player/righthigh.x			# [1]右腿
+MODEL_FILENAME = data/MODEL/player/rightcalf.x			# [2]右脛
+MODEL_FILENAME = data/MODEL/player/rightleg.x			# [3]右足
+MODEL_FILENAME = data/MODEL/player/lefthigh.x			# [4]左腿
+MODEL_FILENAME = data/MODEL/player/leftcalf.x			# [5]左脛
+MODEL_FILENAME = data/MODEL/player/leftleg.x			# [6]左足
 
 #------------------------------------------------------------------------------
 # キャラクター情報
@@ -41,7 +41,7 @@ CHARACTERSET
 	PARTSSET
 		INDEX = 1					# 右腿
 		PARENT = 0					# (親)腰
-		POS = 5.0 -8.0 0.0
+		POS = 5.0 -6.0 0.0
 		ROT = 0.0 0.0 0.0
 	END_PARTSSET
 	
@@ -55,14 +55,14 @@ CHARACTERSET
 	PARTSSET
 		INDEX = 3					# 右足
 		PARENT = 2					# (親)右脛
-		POS = 0.0 -11.0 0.0
+		POS = 0.0 -12.0 0.0
 		ROT = 0.0 0.0 0.0
 	END_PARTSSET
 	
 	PARTSSET
 		INDEX = 4					# 左腿
 		PARENT = 0					# (親)腰
-		POS = -5.0 -8.0 0.0
+		POS = -5.0 -6.0 0.0
 		ROT = 0.0 0.0 0.0
 	END_PARTSSET
 	
@@ -76,7 +76,7 @@ CHARACTERSET
 	PARTSSET
 		INDEX = 6					# 左足
 		PARENT = 5					# (親)左脛
-		POS = -0.05 -11.0 0.0
+		POS = -0.05 -12.0 0.0
 		ROT = 0.0 0.0 0.0
 	END_PARTSSET
 	
@@ -1743,6 +1743,90 @@ MOTIONSET
 		KEY	# ----- [ 6 ] -----
 			POS = 0.00 0.00 0.00
 			ROT = 0.00 0.00 0.00
+		END_KEY
+	END_KEYSET
+END_MOTIONSET
+
+#---------------------------------------
+# タイトル待機モーション
+#---------------------------------------
+MOTIONSET
+	LOOP = 1		# ループするかどうか[0:ループしない / 1:ループする]
+	NUM_KEY = 2		# キー数
+
+	KEYSET			# --- << KEY : 0 / 2 >> ---
+		FRAME = 80
+		KEY	# ----- [ 0 ] -----
+			POS = 0.00 -6.90 0.00
+			ROT = -0.38 0.13 0.00
+		END_KEY
+
+		KEY	# ----- [ 1 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 1.60 0.00 0.00
+		END_KEY
+
+		KEY	# ----- [ 2 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -1.45 0.00 0.00
+		END_KEY
+
+		KEY	# ----- [ 3 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_KEY
+
+		KEY	# ----- [ 4 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.41 0.00 0.00
+		END_KEY
+
+		KEY	# ----- [ 5 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.19 0.00 0.00
+		END_KEY
+
+		KEY	# ----- [ 6 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_KEY
+	END_KEYSET
+
+	KEYSET			# --- << KEY : 1 / 2 >> ---
+		FRAME = 80
+		KEY	# ----- [ 0 ] -----
+			POS = 0.00 -12.70 0.00
+			ROT = -0.60 0.13 0.00
+		END_KEY
+
+		KEY	# ----- [ 1 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 2.07 0.00 0.00
+		END_KEY
+
+		KEY	# ----- [ 2 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -1.45 0.00 0.00
+		END_KEY
+
+		KEY	# ----- [ 3 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_KEY
+
+		KEY	# ----- [ 4 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.25 0.00 0.00
+		END_KEY
+
+		KEY	# ----- [ 5 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.60 0.00 0.00
+		END_KEY
+
+		KEY	# ----- [ 6 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.31 0.00 0.00
 		END_KEY
 	END_KEYSET
 END_MOTIONSET

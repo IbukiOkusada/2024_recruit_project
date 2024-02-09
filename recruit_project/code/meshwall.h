@@ -28,7 +28,7 @@ public:		// 誰でもアクセス可能
 	void Draw(void);
 	void SetVtxInfo(void);
 	static CMeshWall *Create(const D3DXVECTOR3 pos, const D3DXVECTOR3 rot,
-		float fWidth, float fHeight, const char *pFileName, const int nPriority = 3, const int nWidth = 1, const int nHeight = 1);
+		float fWidth, float fHeight, const char *pFileName, const int nPriority = 4, const int nWidth = 1, const int nHeight = 1);
 
 	// メンバ関数(取得)
 	float GetWidth(void) { return m_fWidth; }

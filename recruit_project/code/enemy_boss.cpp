@@ -1073,8 +1073,7 @@ void CEnemyBoss::Attack(void)
 		m_nAction = ACTION_KNIFECHARGE;
 		break;
 	}
-	m_nAction = ACTION_KNIFECHARGE;
-
+	
 	m_fAtkCnter = INTERVAL::ATTACK[nRand];
 }
 

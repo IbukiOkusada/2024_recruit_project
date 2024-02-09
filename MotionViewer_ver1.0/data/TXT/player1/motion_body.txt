@@ -14,16 +14,16 @@ NUM_MODEL = 10
 #------------------------------------------------------------------------------
 # モデルファイル名
 #------------------------------------------------------------------------------
-MODEL_FILENAME = data/MODEL/sample/body.x				# [0]体
-MODEL_FILENAME = data/MODEL/sample/head.x				# [1]頭
-MODEL_FILENAME = data/MODEL/sample/rightshoulder.x		# [2]右肩
-MODEL_FILENAME = data/MODEL/sample/rightupperarm.x		# [3]右上腕
-MODEL_FILENAME = data/MODEL/sample/rightforearm.x		# [4]右前腕
-MODEL_FILENAME = data/MODEL/sample/righthand.x			# [5]右手
-MODEL_FILENAME = data/MODEL/sample/leftshoulder.x		# [6]左肩
-MODEL_FILENAME = data/MODEL/sample/leftupperarm.x		# [7]左上腕
-MODEL_FILENAME = data/MODEL/sample/leftforearm.x		# [8]左前腕
-MODEL_FILENAME = data/MODEL/sample/lefthand.x			# [9]左手
+MODEL_FILENAME = data/MODEL/player/body.x				# [0]体
+MODEL_FILENAME = data/MODEL/player/head.x				# [1]頭
+MODEL_FILENAME = data/MODEL/player/rightshoulder.x		# [2]右肩
+MODEL_FILENAME = data/MODEL/player/rightupperarm.x		# [3]右上腕
+MODEL_FILENAME = data/MODEL/player/rightforearm.x		# [4]右前腕
+MODEL_FILENAME = data/MODEL/player/righthand.x			# [5]右手
+MODEL_FILENAME = data/MODEL/player/leftshoulder.x		# [6]左肩
+MODEL_FILENAME = data/MODEL/player/leftupperarm.x		# [7]左上腕
+MODEL_FILENAME = data/MODEL/player/leftforearm.x		# [8]左前腕
+MODEL_FILENAME = data/MODEL/player/lefthand.x			# [9]左手
 
 #------------------------------------------------------------------------------
 # キャラクター情報
@@ -41,28 +41,28 @@ CHARACTERSET
 	PARTSSET
 		INDEX = 1					# 頭
 		PARENT = 0					# (親)体
-		POS = 0.0 18.0 0.0
+		POS = 0.0 20.0 0.0
 		ROT = 0.0 0.0 0.0
 	END_PARTSSET
 	
 	PARTSSET
 		INDEX = 2					# 右肩
 		PARENT = 0					# (親)体
-		POS = 6.0 15.0 0.0
+		POS = 6.0 17.0 0.0
 		ROT = 0.0 0.0 0.0
 	END_PARTSSET
 	
 	PARTSSET
 		INDEX = 3					# 右上腕
 		PARENT = 2					# (親)右肩
-		POS = 6.0 -0.4 0.0
+		POS = 6.0 -0.0 0.0
 		ROT = 0.0 0.0 0.0
 	END_PARTSSET
 	
 	PARTSSET
 		INDEX = 4					# 右前腕
 		PARENT = 3					# (親)右上腕
-		POS = 7.5 0.0 0.0
+		POS = 7.5 0.5 0.0
 		ROT = 0.0 0.0 0.0
 	END_PARTSSET
 	
@@ -76,7 +76,7 @@ CHARACTERSET
 	PARTSSET
 		INDEX = 6					# 左肩
 		PARENT = 0					# (親)体
-		POS = -6.0 14.8 0.0
+		POS = -6.0 16.8 0.0
 		ROT = 0.0 0.0 0.0
 	END_PARTSSET
 	
@@ -97,7 +97,7 @@ CHARACTERSET
 	PARTSSET
 		INDEX = 9					# 左手
 		PARENT = 8					# (親)左前腕
-		POS = -10.0 0.0 0.0
+		POS = -8.0 0.0 0.0
 		ROT = 0.0 0.0 0.0
 	END_PARTSSET
 	
@@ -2374,6 +2374,120 @@ MOTIONSET
 		KEY	# ----- [ 8 ] -----
 			POS = 0.00 0.00 0.00
 			ROT = 0.00 -1.67 0.00
+		END_KEY
+
+		KEY	# ----- [ 9 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_KEY
+	END_KEYSET
+END_MOTIONSET
+
+#---------------------------------------
+# タイトル待機モーション
+#---------------------------------------
+MOTIONSET
+	LOOP = 1		# ループするかどうか[0:ループしない / 1:ループする]
+	NUM_KEY = 2		# キー数
+
+	KEYSET			# --- << KEY : 0 / 2 >> ---
+		FRAME = 80
+		KEY	# ----- [ 0 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.66 -0.56 0.00
+		END_KEY
+
+		KEY	# ----- [ 1 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.25 0.28 0.16
+		END_KEY
+
+		KEY	# ----- [ 2 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.88 -0.19 -0.90
+		END_KEY
+
+		KEY	# ----- [ 3 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_KEY
+
+		KEY	# ----- [ 4 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.75 -0.06
+		END_KEY
+
+		KEY	# ----- [ 5 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_KEY
+
+		KEY	# ----- [ 6 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.28 -0.26 0.71
+		END_KEY
+
+		KEY	# ----- [ 7 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 -0.69 0.31
+		END_KEY
+
+		KEY	# ----- [ 8 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 -0.85 0.06
+		END_KEY
+
+		KEY	# ----- [ 9 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_KEY
+	END_KEYSET
+
+	KEYSET			# --- << KEY : 1 / 2 >> ---
+		FRAME = 80
+		KEY	# ----- [ 0 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.79 -0.56 0.00
+		END_KEY
+
+		KEY	# ----- [ 1 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.25 0.28 0.16
+		END_KEY
+
+		KEY	# ----- [ 2 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.88 -0.19 -0.90
+		END_KEY
+
+		KEY	# ----- [ 3 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_KEY
+
+		KEY	# ----- [ 4 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.75 -0.06
+		END_KEY
+
+		KEY	# ----- [ 5 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_KEY
+
+		KEY	# ----- [ 6 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.28 -0.26 0.71
+		END_KEY
+
+		KEY	# ----- [ 7 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 -0.69 0.31
+		END_KEY
+
+		KEY	# ----- [ 8 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 -0.85 0.06
 		END_KEY
 
 		KEY	# ----- [ 9 ] -----

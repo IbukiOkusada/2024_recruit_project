@@ -28,8 +28,8 @@ namespace
 	const float ZOOMSTARTDOOR_COUNT = 300;          // スタートドアを見ている時間
 	const float CAMERA_MOVESPEED = (1.0f);			// 移動量
 	const float CAMERA_LENGTHMOVE = (0.8f);			// カメラ距離移動量
-	const float ROTATE_SPEED = (0.0125f);			// カメラの回転速度
-	const float PAD_ROTATE = (0.01f);		// 向き
+	const float ROTATE_SPEED = (0.00625f);			// カメラの回転速度
+	const float PAD_ROTATE = (0.02f);		// 向き
 	const float CAMERA_MAXLENGTH = (5000.0f);		// カメラ最大距離
 	const float CAMERA_MINLENGTH = (120.0f);			// カメラ最小距離
 	const float MOUSE_MOVESPEED = (0.9f);		// マウス移動速度
@@ -40,7 +40,7 @@ namespace
 	const float MESSAGERAND = (120);
 	const float SLOW_CAMERAROT = (0.7f);
 	const float TITLE_ROTATESPD = (0.0025f);	// タイトル回転量
-	const float CAMERA_PADMAX = (D3DX_PI * 0.5f);
+	const float CAMERA_PADMAX = (D3DX_PI * 0.76f);
 	const float CAMERA_LENGTHINER = (0.25f);
 }
 

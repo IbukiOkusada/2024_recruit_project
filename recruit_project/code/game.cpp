@@ -93,23 +93,12 @@ namespace {
 //===============================================
 #define START_TIME	(60 * 4)	// 制限時間
 #define START_SCORE	(0)		// 開始スコア
-#define MAP_SIZE	(100.0f)	// マップサイズ
 #define STARTSET_NUMENEMY	(3)	// 開始時に配置する敵の数
-#define MORNING_TIME	(60 * 6)	// 早朝終了時刻
-#define AM_COMRUSH	(60 * 9)	// 通勤ラッシュ
-#define RELAX_TIME	(60 * 11)	// リラックスタイム
-#define NOON_TIME	(60 * 12.5)	// 昼休み
-#define EVENT_RUSH	(60 * 15.5)	// イベント
-#define PM_RELAX_TIME	(60 * 16)	// 帰宅開始時間
-#define PM_GOHOME_RUSH	(60 * 19)	// 帰宅ラッシュ
 #define MAX_TIME	(60 * 20 + 10)	// 最大時間
 #define SPEED_UP	(30.0f)
 #define DEF_PORT	(22333)	// ポート番号
 #define MAX_STRING	(2048)
 #define ADDRESSFILE	"data\\TXT\\address.txt"
-#define WIDTH_NUM		(2)		// 横の分割数
-#define HEIGHT_NUM	(2)		// 縦の分割数
-#define STANDARDSCORE  (1000)   // ノルマの基準点
 
 //===============================================
 // 静的メンバ変数
@@ -188,8 +177,6 @@ HRESULT CGame::Init(void)
         {
             m_pFileLoad->Init();
             m_pFileLoad->OpenFile("data\\TXT\\model.txt");			//モデル類
-            m_pFileLoad->OpenFile("data\\TXT\\enemy_point.txt");	//敵周回ポイント
-			m_pFileLoad->OpenFile("data\\TXT\\setitem.txt");	    // アイテムの配置
         }
     }
 
@@ -249,11 +236,11 @@ HRESULT CGame::Init(void)
 
     CEnemyBoss::Create(D3DXVECTOR3(-1200.0f, 1000.0f, 3950.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
     CEnemyMelee::Create(D3DXVECTOR3(100.0f, 600.0f, 2250.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
-    //CEnemyMelee::Create(D3DXVECTOR3(300.0f, 600.0f, 2250.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
-    //CEnemyMelee::Create(D3DXVECTOR3(80.0f, 600.0f, 2250.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
-    //CEnemyMelee::Create(D3DXVECTOR3(-430.0f, 600.0f, 2250.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
-    //CEnemyGun::Create(D3DXVECTOR3(500.0f, 600.0f, 2350.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
-    //CEnemyGun::Create(D3DXVECTOR3(-500.0f, 600.0f, 2350.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+    CEnemyMelee::Create(D3DXVECTOR3(300.0f, 600.0f, 2250.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+    CEnemyMelee::Create(D3DXVECTOR3(80.0f, 600.0f, 2250.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+    CEnemyMelee::Create(D3DXVECTOR3(-430.0f, 600.0f, 2250.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+    CEnemyGun::Create(D3DXVECTOR3(500.0f, 600.0f, 2350.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+    CEnemyGun::Create(D3DXVECTOR3(-500.0f, 600.0f, 2350.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 
     //ドーム追加
     CMeshDome::Create(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), 9000.0f, 3000.0f, 3, 8, 8);

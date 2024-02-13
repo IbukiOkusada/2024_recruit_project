@@ -1,0 +1,2210 @@
+#==============================================================================
+#
+# マップ配置スクリプトファイル [model.txt]
+# Author : IBUKI OKUSADA
+#
+#==============================================================================
+SCRIPT			# この行は絶対消さないこと！
+
+#------------------------------------------------------------------------------
+# テクスチャ数
+#------------------------------------------------------------------------------
+NUM_TEXTURE = 3
+
+#------------------------------------------------------------------------------
+# テクスチャファイル名
+#------------------------------------------------------------------------------
+TEXTURE_FILENAME = data/TEXTURE/river000.jpg			# [0]川水(下)
+TEXTURE_FILENAME = data/TEXTURE/field000.jpg			# [1]川水(上)
+
+#------------------------------------------------------------------------------
+# モデル数
+#------------------------------------------------------------------------------
+NUM_MODEL = 15
+
+#------------------------------------------------------------------------------
+# モデルファイル名
+#------------------------------------------------------------------------------
+MODEL_FILENAME = data/MODEL/5mcube.x	  # [0]5mキューブ
+MODEL_FILENAME = data/MODEL/botan.x       # [1]ボタン
+MODEL_FILENAME = data/MODEL/camera000.x   # [2]監視カメラ
+MODEL_FILENAME = data/MODEL/desk.x        # [3]机
+MODEL_FILENAME = data/MODEL/gate.x        # [4]ドア
+MODEL_FILENAME = data/MODEL/gate001.x     # [5]ドア
+MODEL_FILENAME = data/MODEL/roundchair.x  # [6]丸椅子
+MODEL_FILENAME = data/MODEL/wall000.x     # [7]壁
+MODEL_FILENAME = data/MODEL/coin_mini.x   # [8]コイン
+MODEL_FILENAME = data/MODEL/house.x  	  # [9]家
+MODEL_FILENAME = data/MODEL/warehouse.x   # [10]倉庫
+MODEL_FILENAME = data/MODEL/fence.x		  # [11]壁みたいなフェンス
+MODEL_FILENAME = data/MODEL/fence_corner.x # [12]壁みたいなフェンスの角
+MODEL_FILENAME = data/MODEL/ido.x		   # [13]井戸
+MODEL_FILENAME = data/MODEL/tree_01.x	   # [14]木
+
+#------------------------------------------------------------------------------
+# カメラ情報
+#------------------------------------------------------------------------------
+CAMERASET
+	POS = -208.78 79.02 381.75			# 視点
+	REF = 53.42 -37.93 -75.02			# 注視点
+END_CAMERASET
+
+#------------------------------------------------------------------------------
+# ライト情報
+#------------------------------------------------------------------------------
+LIGHTSET
+	DIRECTION = 0.22 -0.87 0.44		# 方向
+	DIFFUSE = 1.0 1.0 1.0			# 拡散光
+END_LIGHTSET
+
+LIGHTSET
+	DIRECTION = 0.80 0.23 -0.55	# 方向
+	DIFFUSE = 0.65 0.65 0.65		# 拡散光
+END_LIGHTSET
+
+LIGHTSET
+	DIRECTION = 0.89 -0.11 0.44		# 方向
+	DIFFUSE = 0.15 0.15 0.15		# 拡散光
+END_LIGHTSET
+
+#------------------------------------------------------------------------------
+# 空情報
+#------------------------------------------------------------------------------
+SKYSET
+	TEXTYPE = 0
+	MOVE = 0.00000
+END_SKYSET
+
+#------------------------------------------------------------------------------
+# 山情報
+#------------------------------------------------------------------------------
+MOUNTAINSET
+	TEXTYPE = 1
+END_MOUNTAINSET
+
+# 床配置情報
+
+FIELDSET
+	TEXTYPE = 0
+	POS = 0.0 0.0 0.0
+	ROT = 0 0 0
+	BLOCK = 50 50
+	SIZE = 80 60
+	MOVE = -0.0025 0.0
+END_FIELDSET
+
+FIELDSET
+	TEXTYPE = 1
+	POS = 0.0 1.0 0.0
+	ROT = 0 0 0
+	BLOCK = 50 50
+	SIZE = 80 60
+	MOVE = -0.0005 0.0
+END_FIELDSET
+
+#------------------------------------------------------------------------------
+# アイテム情報
+#------------------------------------------------------------------------------
+
+# P
+
+ITEMSET
+	TYPE = 8
+	POS = -200.0 100.0 600.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -200.0 100.0 575.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -200.0 100.0 550.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -225.0 100.0 525.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -225.0 100.0 600.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -250.0 100.0 600.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -250.0 100.0 575.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -250.0 100.0 550.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -275.0 100.0 600.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -300.0 100.0 600.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+#R
+
+ITEMSET
+	TYPE = 8
+	POS = -200.0 100.0 475.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -200.0 100.0 450.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -200.0 100.0 425.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -225.0 100.0 475.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -225.0 100.0 400.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -250.0 100.0 475.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -250.0 100.0 450.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -250.0 100.0 425.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -275.0 100.0 475.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -275.0 100.0 400.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -300.0 100.0 475.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -300.0 100.0 400.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+#E
+
+ITEMSET
+	TYPE = 8
+	POS = -200.0 100.0 350.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -200.0 100.0 325.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -200.0 100.0 300.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -200.0 100.0 275.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -225.0 100.0 350.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -250.0 100.0 350.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -250.0 100.0 325.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -250.0 100.0 300.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -275.0 100.0 350.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -300.0 100.0 350.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -300.0 100.0 325.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -300.0 100.0 300.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -300.0 100.0 275.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+#S
+
+ITEMSET
+	TYPE = 8
+	POS = -200.0 100.0 200.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -200.0 100.0 175.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -200.0 100.0 150.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -225.0 100.0 225.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -250.0 100.0 200.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -250.0 100.0 175.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -250.0 100.0 150.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -275.0 100.0 125.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -300.0 100.0 200.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -300.0 100.0 175.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -300.0 100.0 150.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+#S
+
+ITEMSET
+	TYPE = 8
+	POS = -200.0 100.0 50.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -200.0 100.0 25.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -200.0 100.0 0.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -225.0 100.0 75.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -250.0 100.0 50.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -250.0 100.0 25.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -250.0 100.0 0.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -275.0 100.0 -25.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -300.0 100.0 50.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -300.0 100.0 25.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -300.0 100.0 0.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+#E
+
+ITEMSET
+	TYPE = 8
+	POS = -200.0 100.0 -75.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -200.0 100.0 -100.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -200.0 100.0 -125.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -200.0 100.0 -150.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -225.0 100.0 -75.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -250.0 100.0 -75.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -250.0 100.0 -100.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -250.0 100.0 -125.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -275.0 100.0 -75.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -300.0 100.0 -75.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -300.0 100.0 -100.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -300.0 100.0 -125.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -300.0 100.0 -150.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+#N
+
+ITEMSET
+	TYPE = 8
+	POS = -200.0 100.0 -200.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -200.0 100.0 -300.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -225.0 100.0 -200.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -225.0 100.0 -225.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -225.0 100.0 -300.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -250.0 100.0 -200.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -250.0 100.0 -250.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -250.0 100.0 -300.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -275.0 100.0 -200.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -275.0 100.0 -275.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -275.0 100.0 -300.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -300.0 100.0 -200.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -300.0 100.0 -300.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+#T
+
+ITEMSET
+	TYPE = 8
+	POS = -200.0 100.0 -350.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -200.0 100.0 -375.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -200.0 100.0 -400.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -200.0 100.0 -425.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -200.0 100.0 -450.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -225.0 100.0 -400.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -250.0 100.0 -400.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -275.0 100.0 -400.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -300.0 100.0 -400.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+#E
+
+ITEMSET
+	TYPE = 8
+	POS = -200.0 100.0 -500.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -200.0 100.0 -525.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -200.0 100.0 -550.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -200.0 100.0 -575.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -225.0 100.0 -500.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -250.0 100.0 -500.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -250.0 100.0 -525.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -250.0 100.0 -550.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -275.0 100.0 -500.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -300.0 100.0 -500.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -300.0 100.0 -525.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -300.0 100.0 -550.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -300.0 100.0 -575.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+#R
+
+ITEMSET
+	TYPE = 8
+	POS = -200.0 100.0 -625.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -200.0 100.0 -650.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -200.0 100.0 -675.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -225.0 100.0 -625.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -225.0 100.0 -700.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -250.0 100.0 -625.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -250.0 100.0 -650.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -250.0 100.0 -675.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -275.0 100.0 -625.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -275.0 100.0 -700.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -300.0 100.0 -625.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -300.0 100.0 -700.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+#O
+
+ITEMSET
+	TYPE = 8
+	POS = -350.0 100.0 100.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -350.0 100.0 75.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -375.0 100.0 125.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -375.0 100.0 50.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -400.0 100.0 125.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -400.0 100.0 50.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -425.0 100.0 125.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -425.0 100.0 50.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -450.0 100.0 100.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -450.0 100.0 75.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+#R
+
+ITEMSET
+	TYPE = 8
+	POS = -350.0 100.0 -25.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -350.0 100.0 -50.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -350.0 100.0 -75.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -375.0 100.0 -25.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -375.0 100.0 -100.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -400.0 100.0 -25.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -400.0 100.0 -50.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -400.0 100.0 -75.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -425.0 100.0 -25.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -425.0 100.0 -100.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -450.0 100.0 -25.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -450.0 100.0 -100.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+#S
+
+ITEMSET
+	TYPE = 8
+	POS = -500.0 100.0 725.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -500.0 100.0 700.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -500.0 100.0 675.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -525.0 100.0 750.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -550.0 100.0 725.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -550.0 100.0 700.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -550.0 100.0 675.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -575.0 100.0 650.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -600.0 100.0 725.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -600.0 100.0 700.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -600.0 100.0 675.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+#T
+
+ITEMSET
+	TYPE = 8
+	POS = -500.0 100.0 600.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -500.0 100.0 575.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -500.0 100.0 550.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -500.0 100.0 525.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -500.0 100.0 500.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -525.0 100.0 550.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -550.0 100.0 550.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -575.0 100.0 550.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -600.0 100.0 550.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+#A
+
+ITEMSET
+	TYPE = 8
+	POS = -500.0 100.0 425.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -525.0 100.0 450.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -525.0 100.0 400.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -550.0 100.0 450.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -550.0 100.0 425.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -550.0 100.0 400.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -575.0 100.0 475.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -575.0 100.0 375.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -600.0 100.0 475.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -600.0 100.0 375.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+#R
+
+ITEMSET
+	TYPE = 8
+	POS = -500.0 100.0 325.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -500.0 100.0 300.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -500.0 100.0 275.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -525.0 100.0 325.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -525.0 100.0 250.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -550.0 100.0 325.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -550.0 100.0 300.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -550.0 100.0 275.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -575.0 100.0 325.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -575.0 100.0 250.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -600.0 100.0 325.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -600.0 100.0 250.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+#T
+
+ITEMSET
+	TYPE = 8
+	POS = -500.0 100.0 200.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -500.0 100.0 175.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -500.0 100.0 150.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -500.0 100.0 125.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -500.0 100.0 100.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -525.0 100.0 150.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -550.0 100.0 150.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -575.0 100.0 150.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -600.0 100.0 150.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+#B
+
+ITEMSET
+	TYPE = 8
+	POS = -500.0 100.0 50.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -500.0 100.0 25.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -500.0 100.0 0.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -525.0 100.0 50.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -525.0 100.0 -25.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -550.0 100.0 50.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -550.0 100.0 25.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -550.0 100.0 0.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -575.0 100.0 50.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -575.0 100.0 -25.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -600.0 100.0 50.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -600.0 100.0 25.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -600.0 100.0 0.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+#U
+
+ITEMSET
+	TYPE = 8
+	POS = -500.0 100.0 -75.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -500.0 100.0 -150.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -525.0 100.0 -75.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -525.0 100.0 -150.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -550.0 100.0 -75.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -550.0 100.0 -150.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -575.0 100.0 -75.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -575.0 100.0 -150.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -600.0 100.0 -100.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -600.0 100.0 -125.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+#T
+
+ITEMSET
+	TYPE = 8
+	POS = -500.0 100.0 -200.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -500.0 100.0 -225.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -500.0 100.0 -250.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -500.0 100.0 -275.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -500.0 100.0 -300.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -525.0 100.0 -250.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -550.0 100.0 -250.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -575.0 100.0 -250.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -600.0 100.0 -250.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+#T
+
+ITEMSET
+	TYPE = 8
+	POS = -500.0 100.0 -350.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -500.0 100.0 -375.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -500.0 100.0 -400.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -500.0 100.0 -425.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -500.0 100.0 -450.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -525.0 100.0 -400.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -550.0 100.0 -400.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -575.0 100.0 -400.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -600.0 100.0 -400.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+#O
+
+ITEMSET
+	TYPE = 8
+	POS = -500.0 100.0 -525.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -500.0 100.0 -550.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -525.0 100.0 -500.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -525.0 100.0 -575.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -550.0 100.0 -500.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -550.0 100.0 -575.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -575.0 100.0 -575.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -575.0 100.0 -500.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -600.0 100.0 -525.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -600.0 100.0 -550.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+#N
+
+ITEMSET
+	TYPE = 8
+	POS = -500.0 100.0 -625.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -500.0 100.0 -725.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -525.0 100.0 -625.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -525.0 100.0 -650.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -525.0 100.0 -725.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -550.0 100.0 -725.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -550.0 100.0 -625.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -550.0 100.0 -675.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+
+ITEMSET
+	TYPE = 8
+	POS = -575.0 100.0 -725.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -575.0 100.0 -625.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -575.0 100.0 -700.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -600.0 100.0 -625.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -600.0 100.0 -725.0
+	ROT = 90.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+#------------------------------------------------------------------------------
+# モデル配置
+#------------------------------------------------------------------------------
+MODELSET
+	TYPE = 9
+	POS = 0 0 0
+	ROT = 0 0 0
+	SHADOW = 0
+END_MODELSET
+
+MODELSET
+	TYPE = 10
+	POS = -1083 0 -1123
+	ROT = 0 -90 0
+	SHADOW = 0
+END_MODELSET
+
+MODELSET
+	TYPE = 11
+	POS = 0 0 900
+	ROT = 0 0 0
+	SHADOW = 0
+END_MODELSET
+
+MODELSET
+	TYPE = 11
+	POS = -1000 0 900
+	ROT = 0 0 0
+	SHADOW = 0
+END_MODELSET
+
+MODELSET
+	TYPE = 11
+	POS = 1000 0 900
+	ROT = 0 0 0
+	SHADOW = 0
+END_MODELSET
+
+MODELSET
+	TYPE = 12
+	POS = -1950 0 900
+	ROT = 0 180 0
+	SHADOW = 0
+END_MODELSET
+
+MODELSET
+	TYPE = 11
+	POS = -1950 0 -50
+	ROT = 0 90 0
+	SHADOW = 0
+END_MODELSET
+
+MODELSET
+	TYPE = 14
+	POS = -2231 1 742
+	ROT = 0 0 0
+#	影設定はエディタ未実装のため手動で入力してください
+	SHADOW = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 14
+	POS = -2231 1 -304
+	ROT = 0 0 0
+#	影設定はエディタ未実装のため手動で入力してください
+	SHADOW = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 14
+	POS = -2231 1 30
+	ROT = 0 0 0
+#	影設定はエディタ未実装のため手動で入力してください
+	SHADOW = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 14
+	POS = -2231 1 384
+	ROT = 0 0 0
+#	影設定はエディタ未実装のため手動で入力してください
+	SHADOW = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 14
+	POS = -2435 1 -140
+	ROT = 0 0 0
+#	影設定はエディタ未実装のため手動で入力してください
+	SHADOW = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 14
+	POS = -2412 1 289
+	ROT = 0 0 0
+#	影設定はエディタ未実装のため手動で入力してください
+	SHADOW = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 14
+	POS = -2578 0 98
+	ROT = 0 0 0
+#	影設定はエディタ未実装のため手動で入力してください
+	SHADOW = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 14
+	POS = -2340 0 581
+	ROT = 0 0 0
+#	影設定はエディタ未実装のため手動で入力してください
+	SHADOW = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 14
+	POS = -2547 0 437
+	ROT = 0 0 0
+#	影設定はエディタ未実装のため手動で入力してください
+	SHADOW = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 14
+	POS = -2494 1 754
+	ROT = 0 0 0
+#	影設定はエディタ未実装のため手動で入力してください
+	SHADOW = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 14
+	POS = -2225 1 996
+	ROT = 0 0 0
+#	影設定はエディタ未実装のため手動で入力してください
+	SHADOW = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 14
+	POS = -2484 0 1031
+	ROT = 0 0 0
+#	影設定はエディタ未実装のため手動で入力してください
+	SHADOW = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 14
+	POS = -1972 0 1125
+	ROT = 0 0 0
+#	影設定はエディタ未実装のため手動で入力してください
+	SHADOW = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 14
+	POS = -1525 0 1147
+	ROT = 0 0 0
+#	影設定はエディタ未実装のため手動で入力してください
+	SHADOW = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 14
+	POS = -1692 0 1250
+	ROT = 0 0 0
+#	影設定はエディタ未実装のため手動で入力してください
+	SHADOW = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 14
+	POS = -1893 0 1393
+	ROT = 0 0 0
+#	影設定はエディタ未実装のため手動で入力してください
+	SHADOW = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 14
+	POS = -2206 1 1193
+	ROT = 0 0 0
+#	影設定はエディタ未実装のため手動で入力してください
+	SHADOW = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 14
+	POS = -2155 1 1431
+	ROT = 0 0 0
+#	影設定はエディタ未実装のため手動で入力してください
+	SHADOW = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 14
+	POS = -2454 0 1275
+	ROT = 0 0 0
+#	影設定はエディタ未実装のため手動で入力してください
+	SHADOW = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 14
+	POS = -1480 1 1347
+	ROT = 0 0 0
+#	影設定はエディタ未実装のため手動で入力してください
+	SHADOW = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 14
+	POS = -1641 0 1456
+	ROT = 0 0 0
+#	影設定はエディタ未実装のため手動で入力してください
+	SHADOW = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 13
+	POS = -938 0 -136
+	ROT = 0 0 0
+#	影設定はエディタ未実装のため手動で入力してください
+	SHADOW = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 14
+	POS = 929 -0 1068
+	ROT = 0 0 0
+#	影設定はエディタ未実装のため手動で入力してください
+	SHADOW = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 14
+	POS = 601 1 1058
+	ROT = 0 0 0
+#	影設定はエディタ未実装のため手動で入力してください
+	SHADOW = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 14
+	POS = 1180 1 1075
+	ROT = 0 0 0
+#	影設定はエディタ未実装のため手動で入力してください
+	SHADOW = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 14
+	POS = 650 0 1266
+	ROT = 0 0 0
+#	影設定はエディタ未実装のため手動で入力してください
+	SHADOW = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 14
+	POS = 856 0 1324
+	ROT = 0 0 0
+#	影設定はエディタ未実装のため手動で入力してください
+	SHADOW = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 14
+	POS = 1072 1 1361
+	ROT = 0 0 0
+#	影設定はエディタ未実装のため手動で入力してください
+	SHADOW = 1
+END_MODELSET
+
+END_SCRIPT		# この行は絶対消さないこと！

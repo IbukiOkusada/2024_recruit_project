@@ -1,0 +1,443 @@
+#==============================================================================
+#
+# マップ配置スクリプトファイル [model.txt]
+# Author : RYOSUKE OHARA
+#
+#==============================================================================
+SCRIPT			# この行は絶対消さないこと！
+
+ITEMSET
+	TYPE = 1
+	POS = 560.0 1.0 1800.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 1
+	POS = 660.0 1.0 1800.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 2
+	POS = 760.0 1.0 1800.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 3
+	POS = 860.0 1.0 1800.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 3
+	POS = -760.0 1.0 180.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 4
+	POS = -860.0 1.0 180.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 7
+	POS = -960.0 1.0 180.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 9
+	POS = -1060.0 1.0 180.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 6
+	POS = 1000.0 1.0 -680.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 7
+	POS = 900.0 1.0 -680.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = 800.0 1.0 -680.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 9
+	POS = 700.0 1.0 -680.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 9
+	POS = 600.0 1.0 -680.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 10
+	POS = 450.0 1.0 -2550.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 6
+	POS = 550.0 1.0 -2550.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 4
+	POS = 650.0 1.0 -2550.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 1
+	POS = 750.0 1.0 -2550.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 2
+	POS = -1000.0 1.0 -5000.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = -1000.0 1.0 -4900.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 3
+	POS = -1000.0 1.0 -4800.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 10
+	POS = -1000.0 1.0 -4700.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 9
+	POS = 1000.0 1.0 -5000.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 2
+	POS = 1000.0 1.0 -4900.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = 1000.0 1.0 -4800.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = 1000.0 1.0 -4700.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 10
+	POS = -1000.0 1.0 -3800.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 7
+	POS = -900.0 1.0 -3800.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 1
+	POS = -700.0 1.0 -3800.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 2 
+	POS = -1100.0 1.0 -3800.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 2
+	POS = -600.0 1.0 -3800.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 9
+	POS = -800.0 1.0 -3800.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 9
+	POS = 1000.0 1.0 -3900.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 1
+	POS = 1000.0 1.0 -3800.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 10
+	POS = 1000.0 1.0 -3700.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 8
+	POS = 1000.0 1.0 -3600.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 4
+	POS = 1000.0 1.0 -3500.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 4
+	POS = -1100.0 230.0 -3050.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 10
+	POS = -1100.0 230.0 -3360.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 10
+	POS = -1100.0 230.0 -3130.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 6
+	POS = -1100.0 230.0 -3440.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 10
+	POS = -1100.0 230.0 -2350.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 6
+	POS = -1100.0 230.0 -2260.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 5
+	POS = -1100.0 230.0 -2050.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 2
+	POS = -1100.0 230.0 -1970.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 2
+	POS = 200.0 230.0 1650.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 2
+	POS = 200.0 230.0 1570.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 0
+	POS = 400.0 1.0 -1900.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 0
+	POS = 400.0 1.0 -1970.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 0
+	POS = 450.0 1.0 -1900.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 0
+	POS = 450.0 1.0 -1970.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 0
+	POS = -1010.0 1.0 500.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 0
+	POS = -1010.0 1.0 400.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 0
+	POS = -910.0 1.0 400.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 0
+	POS = -910.0 1.0 500.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 0
+	POS = -810.0 1.0 400.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 0
+	POS = -810.0 1.0 500.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 4
+	POS = 4850.0 1.0 1900.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 5
+	POS = 4700.0 1.0 1900.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 6
+	POS = 4550.0 1.0 1900.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 7
+	POS = 4400.0 1.0 1900.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 9
+	POS = 4100.0 1.0 1900.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+ITEMSET
+	TYPE = 10
+	POS = 4250.0 1.0 1900.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 0		#使用しない場合は0
+END_ITEMSET
+
+END_SCRIPT		# この行は絶対消さないこと！

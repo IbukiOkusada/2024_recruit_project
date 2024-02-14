@@ -18,6 +18,7 @@ class CCharacter;
 class CCamera;
 class CEnemy;
 class CLockOn;
+class CLifeUI;
 
 // マクロ定義
 #define MAX_ITEM  (1280)  // 所持できるアイテムの最大数
@@ -184,6 +185,7 @@ private:	// 自分だけがアクセス可能
 	D3DXVECTOR3 m_ColiNorOld;	// 前回の移動ベクトル
 	CEnemy* m_pTarget;		// ロックオン対象
 	CLockOn* m_pLockOn;		// ロックオン
+	CLifeUI* m_pUI;			// 体力UI
 	float m_fRotMove;		// 現在の角度
 	float m_fRotDiff;		// 目的の角度
 	float m_fRotDest;		// 角度計算

@@ -183,7 +183,7 @@ HRESULT CGame::Init(void)
     // ƒJƒƒ‰‚Ì‰ŠúˆÊ’uÝ’è
     CManager::GetInstance()->GetCamera()->SetPositionV(D3DXVECTOR3(-874.3f, 1124.15f, 1717.2f));
     CManager::GetInstance()->GetCamera()->SetPositionR(D3DXVECTOR3(-320.3f, 1.0f, -91.6f));
-    CManager::GetInstance()->GetCamera()->SetLength(350.0f);
+    CManager::GetInstance()->GetCamera()->SetLength(300.0f);
     CManager::GetInstance()->GetCamera()->SetRotation(D3DXVECTOR3(0.0f, -D3DX_PI * 0.5f, D3DX_PI * 0.41f));
 
     switch (m_state)

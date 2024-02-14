@@ -35,6 +35,7 @@ CBullet::CBullet()
 	m_Info.move = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	m_fLife = 0;
 	m_nId = -1;
+	m_fInterVal = 0.0f;
 }
 
 //==========================================================
@@ -100,11 +101,15 @@ void CBullet::Update(void)
 		Hit();
 
 		// ˆÚ“®‚µ‚Ä‚¢‚é
-		if (m_type == TYPE_ENEMY) {
-			CParticle::Create(m_Info.pos, CEffect::TYPE_KUNAI);
-		}
-		else {
-			CEffect::Create(m_Info.pos, m_Info.move, D3DXCOLOR(0.0f, 0.5f, 0.5f, 0.5f), 20.0f, 10.0f, CEffect::TYPE_BOSSGUN);
+		m_fInterVal += CManager::GetInstance()->GetSlow()->Get();
+
+		if (m_fInterVal >= 2.0f) {
+			if (m_type == TYPE_ENEMY) {
+				CParticle::Create(m_Info.pos, CEffect::TYPE_KUNAI);
+			}
+			else {
+				CEffect::Create(m_Info.pos, m_Info.move, D3DXCOLOR(0.0f, 0.5f, 0.5f, 0.5f), 20.0f, 10.0f, CEffect::TYPE_BOSSGUN);
+			}
 		}
 	}
 }

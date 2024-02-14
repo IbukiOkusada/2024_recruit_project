@@ -39,6 +39,7 @@
 #include "enemy.h"
 #include "lockon.h"
 #include "fade.h"
+#include "life_ui.h"
 
 //===============================================
 // マクロ定義
@@ -92,8 +93,10 @@ namespace {
 	const float WALLKICK_GRAVITY = (-0.4f);
 	const float WALLKICK_JUMP = (11.0f);
 	const float AXEKICK_GRAVITY = (-2.5f);
-	const float AXEKICK_MOVE = (0.2f);
-	const int LIFE = (5);
+	const float AXEKICK_MOVE = (0.75f);
+	const int LIFE = (10);
+	const float KICK_STEPMOVE = (45.0f);
+	const D3DXVECTOR3 LIFEUI_POS = { SCREEN_WIDTH * 0.175f, SCREEN_HEIGHT * 0.9f, 0.0f };
 }
 
 // 前方宣言
@@ -133,6 +136,7 @@ CPlayer::CPlayer()
 	m_Info.fSlideMove = 0.0f;
 	m_pLockOn = nullptr;
 	m_pTarget = nullptr;
+	m_pUI = nullptr;
 	m_ColiNorOld = { 0.0f, 0.0f, 0.0f };
 
 	CPlayerManager::GetInstance()->ListIn(this);
@@ -265,18 +269,14 @@ HRESULT CPlayer::Init(const char *pBodyName, const char *pLegName)
 		}
 	}
 
-	/*if (m_pScore == nullptr)
-	{
-		m_pScore = CScore::Create(D3DXVECTOR3(50.0f + (m_nNumCount - 1) * 500.0f, 50.0f, 0.0f), 30.0f, 30.0f);
-	}*/
-
 	m_type = TYPE_NONE;
 	SetAction(ACTION_NEUTRAL);
 
 	// ロックオンの生成
 	m_pLockOn = CLockOn::Create(&m_Info.mtxWorld, CLockOn::TYPE_TARGET);
 
-	//m_pScore->AddScore(500 * m_nItemCnt);
+	// Uiの作成
+	m_pUI = CLifeUI::Create(LIFEUI_POS, m_nLife);
 
 	return S_OK;
 }
@@ -309,6 +309,11 @@ void CPlayer::Uninit(void)
 	if (m_pLockOn != nullptr) {
 		m_pLockOn->Uninit();
 		m_pLockOn = nullptr;
+	}
+
+	if (m_pUI != nullptr) {
+		m_pUI->Uninit();
+		m_pUI = nullptr;
 	}
 
 	CPlayerManager::GetInstance()->ListOut(this);
@@ -1278,6 +1283,10 @@ void CPlayer::StateSet(void)
 			m_Info.state = STATE_APPEAR;
 			m_nLife = LIFE;
 
+			if (m_pUI != nullptr) {
+				m_pUI->SetLife(m_nLife);
+			}
+
 			if (m_pBody != nullptr) {
 				m_pBody->SetDraw();
 			}
@@ -1300,6 +1309,10 @@ void CPlayer::StateSet(void)
 //===============================================
 void CPlayer::Damage(int nDamage) 
 { 
+	if (m_nAction == ACTION_RIDERKICK) {
+		return;
+	}
+
 	if (m_Info.state != STATE_NORMAL)
 	{// ダメージを食らわない
 		return;
@@ -1321,6 +1334,10 @@ void CPlayer::Damage(int nDamage)
 	if (m_nLife < 0)
 	{
 		m_nLife = 0;
+	}
+
+	if (m_pUI != nullptr) {
+		m_pUI->SetLife(m_nLife);
 	}
 	
 	if (m_nLife != nOldLife)
@@ -1377,21 +1394,21 @@ void CPlayer::MotionSet(void)
 
 	if (m_nAction > ACTION_JUMP) {	// 派生アクションの場合
 		// 派生モーション設定
-		
+
 		switch (m_nAction) {
 		case ACTION_SLIDING:
 		{
 			m_pBody->GetMotion()->BlendSet(m_nAction);
 			m_pLeg->GetMotion()->BlendSet(m_nAction);
 		}
-			break;
+		break;
 
 		case ACTION_WALLSTAND:
 		{
 			m_pBody->GetMotion()->BlendSet(m_nAction);
 			m_pLeg->GetMotion()->BlendSet(m_nAction);
 		}
-			break;
+		break;
 
 		case ACTION_WALLKICK:
 		{
@@ -1403,18 +1420,17 @@ void CPlayer::MotionSet(void)
 			m_pBody->GetMotion()->BlendSet(m_nAction);
 			m_pLeg->GetMotion()->BlendSet(m_nAction);
 		}
-			break;
+		break;
 
 		case ACTION_NORMALATK:
+
+			m_pBody->GetMotion()->Set(m_nAction);
+			m_pLeg->GetMotion()->Set(m_nAction);
 
 			if (m_pBody->GetMotion()->GetEnd())
 			{// モーション終了
 				SetAction(ACTION_NEUTRAL);
 			}
-		{
-			m_pBody->GetMotion()->BlendSet(m_nAction);
-			m_pLeg->GetMotion()->BlendSet(m_nAction);
-		}
 			break;
 
 		case ACTION_WALLDUSH:
@@ -1426,39 +1442,45 @@ void CPlayer::MotionSet(void)
 
 		case ACTION_CEILINGDUSH:
 
-			{
-				m_pBody->GetMotion()->BlendSet(m_nAction);
-				m_pLeg->GetMotion()->BlendSet(m_nAction);
-			}
-			break;
+		{
+			m_pBody->GetMotion()->BlendSet(m_nAction);
+			m_pLeg->GetMotion()->BlendSet(m_nAction);
+		}
+		break;
 
 		case ACTION_KICKUP:
 		{
 			m_pBody->GetMotion()->Set(m_nAction);
 			m_pLeg->GetMotion()->Set(m_nAction);
+
+			if (m_pBody->GetMotion()->GetEnd())
+			{// モーション終了
+				SetAction(ACTION_JUMP);
+			}
 		}
+		break;
 
 		case ACTION_AXEKICK:
 		{
+			m_pBody->GetMotion()->Set(m_nAction);
+			m_pLeg->GetMotion()->Set(m_nAction);
+
 			if (m_pBody->GetMotion()->GetEnd() && !m_bJump)
 			{// モーション終了
 				SetAction(ACTION_NEUTRAL);
 			}
-
-			m_pBody->GetMotion()->Set(m_nAction);
-			m_pLeg->GetMotion()->Set(m_nAction);
 		}
 		break;
 
 		case ACTION_RIDERKICK:
 		{
+			m_pBody->GetMotion()->Set(m_nAction);
+			m_pLeg->GetMotion()->Set(m_nAction);
+
 			if (m_pBody->GetMotion()->GetEnd() && !m_bJump)
 			{// モーション終了
 				SetAction(ACTION_NEUTRAL);
 			}
-
-			m_pBody->GetMotion()->Set(m_nAction);
-			m_pLeg->GetMotion()->Set(m_nAction);
 		}
 		break;
 
@@ -1817,8 +1839,36 @@ void CPlayer::Hit(void)
 		return;
 	}
 
-	if (m_nAction != ACTION_NORMALATK && m_nAction != ACTION_RIDERKICK && m_nAction != ACTION_AXEKICK) {	// 攻撃中ではない場合
+	if (m_pLeg->GetMotion()->GetNowMotion() != m_nAction) {
 		return;
+	}
+
+	// 攻撃方法
+	switch (m_nAction) {
+	case ACTION_NORMALATK:
+		if (m_pLeg->GetMotion()->GetNowKey() < m_pLeg->GetMotion()->GetNowNumKey() - 2) {
+			if (m_pLeg->GetMotion()->GetNowKey() == 1 && m_pLeg->GetMotion()->GetNowFrame() == 0) {
+				m_Info.move += D3DXVECTOR3(-sinf(m_Info.rot.y) * KICK_STEPMOVE, 0.0f, -cosf(m_Info.rot.y) * KICK_STEPMOVE);
+			}
+			return;
+		}
+		break;
+
+	case ACTION_AXEKICK:
+		if (m_pLeg->GetMotion()->GetNowKey() < m_pLeg->GetMotion()->GetNowNumKey() - 1) {
+			return;
+		}
+		break;
+
+	case ACTION_RIDERKICK:
+		if (m_pLeg->GetMotion()->GetNowKey() < m_pLeg->GetMotion()->GetNowNumKey() - 1) {
+			return;
+		}
+		break;
+
+	default:
+		return;
+		break;
 	}
 
 	// 判定を取る場所を取得
@@ -1834,7 +1884,6 @@ void CPlayer::Hit(void)
 			m_Info.move.y = KICKUP_JUMP;
 		}
 		else if (m_nAction == ACTION_RIDERKICK) {
-			//m_nAction = ACTION_NEUTRAL;
 			m_nAction = ACTION_KICKUP;
 			m_Info.move = { 0.0f, 0.0f, 0.0f };	// 移動量リセット
 			m_Info.move.y = KICKUP_JUMP;

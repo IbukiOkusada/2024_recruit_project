@@ -1,44 +1,51 @@
 //==========================================================
 //
-// 体力UI [life.h]
+// 体力UI管理 [life_ui.h]
 // Author : Ibuki Okusada
 //
 //==========================================================
-#ifndef _LIFE_H_		// このマクロが定義されていない場合
-#define _LIFE_H_		// 二重インクルード防止用マクロを定義
+#ifndef _LIFEUI_H_		// このマクロが定義されていない場合
+#define _LIFEUI_H_		// 二重インクルード防止用マクロを定義
 
 #include "task.h"	// これでファイルインクルードできます
 
 // 前方宣言
+class CLife;
 class CObject2D;
 
 //==========================================================
 // サンプルのクラス定義
 //==========================================================
-class CLife : public CTask
+class CLifeUI : public CTask
 {
 
 public:	// 誰でもアクセス可能
 
-	CLife();	// コンストラクタ(オーバーロード)
-	~CLife();	// デストラクタ
+	CLifeUI();	// コンストラクタ(オーバーロード)
+	~CLifeUI();	// デストラクタ
 
 	// メンバ関数
 	HRESULT Init(void);
 	void Uninit(void);
 	void Update(void);
-	static CLife *Create(const D3DXVECTOR3& pos, const float fWidth, const float fHeight);
-	void Lost(void);
+	static CLifeUI *Create(const D3DXVECTOR3& pos, const int nMax);
+	void SetLife(const int nNum);
+
 	// メンバ関数(取得)
 
 	// メンバ関数(設定)
 
 private:	// 自分だけがアクセス可能
 
-	CObject2D* m_pObj;	// オブジェクトのポインタ
-	float m_fTimer;		// タイマー
-	float m_fMoveY;		// 移動量
-	bool m_bEnd;		// 終了フラグ
+	// メンバ関数
+	void SetPosition(const D3DXVECTOR3& pos);
+	void SetMaxLife(const int nMax);
+
+	// メンバ変数
+	int m_nMaxLife;	// 最大体力
+	D3DXVECTOR3 m_pos;	// 座標
+	CObject2D* m_pFrame;	// 枠組み
+	CLife** m_ppObj;		// 体力
 };
 
 #endif

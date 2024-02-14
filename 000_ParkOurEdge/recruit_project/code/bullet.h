@@ -72,6 +72,7 @@ private:	// 自分だけがアクセス可能
 	SInfo m_Info;			// 基本情報
 	int m_nId;				// ID
 	CObjectBillboard *m_pObject;	// オブジェクトのポインタ
+	float m_fInterVal;		// インターバル
 	float m_fLife;			// 寿命
 	TYPE m_type;
 };

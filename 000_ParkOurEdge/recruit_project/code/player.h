@@ -56,6 +56,8 @@ public:
 		ACTION_AXEKICK,			// かかと落とし
 		ACTION_RIDERKICK,		// ライダーキック
 		ACTION_TITLENEUTRAL,	// タイトル待機
+		ACTION_DAMAGE,			// ダメージ
+		ACTION_DEATH,			// ダウン
 		ACTION_MAX
 	};
 

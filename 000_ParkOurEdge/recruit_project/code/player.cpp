@@ -43,7 +43,7 @@
 //===============================================
 // マクロ定義
 //===============================================
-#define MOVE	(4.0f)		// 移動量
+#define MOVE	(3.5f)		// 移動量
 #define GRAVITY	(-0.6f)		//プレイヤー重力
 #define ROT_MULTI	(0.1f)	// 向き補正倍率
 #define WIDTH	(20.0f)		// 幅
@@ -91,6 +91,9 @@ namespace {
 	const float RIDERKICK_CAMERALENGTH = (600.0f);	// ライダーキックカメラ距離
 	const float WALLKICK_GRAVITY = (-0.4f);
 	const float WALLKICK_JUMP = (11.0f);
+	const float AXEKICK_GRAVITY = (-2.5f);
+	const float AXEKICK_MOVE = (0.2f);
+	const int LIFE = (5);
 }
 
 // 前方宣言
@@ -126,7 +129,7 @@ CPlayer::CPlayer()
 	m_bJump = false;
 	m_nId = -1;
 	m_bMove = false;
-	m_nLife = 5;
+	m_nLife = LIFE;
 	m_Info.fSlideMove = 0.0f;
 	m_pLockOn = nullptr;
 	m_pTarget = nullptr;
@@ -719,6 +722,10 @@ void CPlayer::MoveController(void)
 	case ACTION_NORMALATK:
 		fSpeed = 0.0f;
 		break;
+
+	case ACTION_AXEKICK:
+		fSpeed = AXEKICK_MOVE;
+		break;
 	}
 
 	// 入力確認
@@ -1100,6 +1107,20 @@ void CPlayer::Gravity(void)
 		}
 		break;
 
+	case ACTION_AXEKICK:	
+
+		if (BodyCheck(m_pLeg)) {	// 脚が使用されている
+			if (m_pLeg->GetMotion()->GetNowKey() < 2 && m_Info.move.y <= 0.0f){
+				fGravity = 0.0f;
+				m_Info.move.y = 0.0f;
+			}
+			else if (m_pLeg->GetMotion()->GetNowKey() >= 2){
+				fGravity = AXEKICK_GRAVITY;
+			}
+		}
+
+		break;
+
 	case ACTION_RIDERKICK:
 
 		fGravity = 0.0f;
@@ -1229,21 +1250,20 @@ void CPlayer::StateSet(void)
 
 		if (m_Info.fStateCounter <= 0.0f)
 		{
+			if (BodyCheck(m_pBody)) {
+				if (!m_pBody->GetMotion()->GetEnd()) {
+					return;
+				}
+			}
 			m_Info.fStateCounter = DAMAGE_APPEAR;
 			m_Info.state = STATE_SPAWN;
 
-			if (m_pBody != nullptr) {
-				m_pBody->SetDraw();
-			}
-
-			if (m_pLeg != nullptr) {
-				m_pLeg->SetDraw();
-			}
-
 			m_Info.pos = PLAYERSTARTPOS;
 
+			CModel* pModel = m_pLeg->GetParts(0);  // 腰のパーツ
+
 			// 煙のパーティクル生成
-			CParticle::Create(m_Info.pos, CEffect::TYPE_SMAKE);
+			CParticle::Create(D3DXVECTOR3(pModel->GetMtx()->_41, pModel->GetMtx()->_42, pModel->GetMtx()->_43), CEffect::TYPE_BLACKSMAKE);
 		}
 	}
 		break;
@@ -1256,6 +1276,18 @@ void CPlayer::StateSet(void)
 		{
 			m_Info.fStateCounter = SPAWN_INTERVAL;
 			m_Info.state = STATE_APPEAR;
+			m_nLife = LIFE;
+
+			if (m_pBody != nullptr) {
+				m_pBody->SetDraw();
+			}
+
+			if (m_pLeg != nullptr) {
+				m_pLeg->SetDraw();
+			}
+
+			// 煙のパーティクル生成
+			CParticle::Create(m_Info.pos, CEffect::TYPE_SMAKE);
 		}
 	}
 		break;
@@ -1296,6 +1328,7 @@ void CPlayer::Damage(int nDamage)
 		CManager::GetInstance()->GetSound()->Play(CSound::LABEL_SE_DAMAGE);
 		m_Info.fStateCounter = DAMAGE_INTERVAL;
 		m_Info.state = STATE_DAMAGE;
+		SetAction(ACTION_DAMAGE);
 
 		if (m_nLife <= 0)
 		{
@@ -1303,19 +1336,7 @@ void CPlayer::Damage(int nDamage)
 			m_nLife = 0;
 			m_Info.state = STATE_DEATH;
 			m_Info.fStateCounter = DAMAGE_APPEAR;
-
-			CModel *pModel = m_pLeg->GetParts(0);  // 腰のパーツ
-
-			// 煙のパーティクル生成
-			CParticle::Create(D3DXVECTOR3(pModel->GetMtx()->_41, pModel->GetMtx()->_42, pModel->GetMtx()->_43), CEffect::TYPE_BLACKSMAKE);
-
-			if (m_pBody != nullptr){
-				m_pBody->SetDraw(false);
-			}
-
-			if (m_pLeg != nullptr){
-				m_pLeg->SetDraw(false);
-			}
+			SetAction(ACTION_DEATH);
 		}
 	}
 }
@@ -1352,21 +1373,6 @@ void CPlayer::MotionSet(void)
 
 	if (!BodyCheck(m_pLeg)) {// 下半身確認失敗
 		return;
-	}
-
-	if (m_Info.state == STATE_DAMAGE)
-	{// ダメージ状態
-		m_pBody->GetMotion()->Set(m_nAction);
-		m_pLeg->GetMotion()->Set(m_nAction);
-
-		if (m_pBody->GetMotion()->GetEnd())
-		{// モーション終了
-			SetAction(ACTION_NEUTRAL);	// 保持状態に変更
-		}
-		else
-		{
-			return;
-		}
 	}
 
 	if (m_nAction > ACTION_JUMP) {	// 派生アクションの場合
@@ -1455,6 +1461,36 @@ void CPlayer::MotionSet(void)
 			m_pLeg->GetMotion()->Set(m_nAction);
 		}
 		break;
+
+		case ACTION_DAMAGE:
+
+			m_pBody->GetMotion()->Set(m_nAction);
+			m_pLeg->GetMotion()->Set(m_nAction);
+
+			if (m_pBody->GetMotion()->GetEnd())
+			{// モーション終了
+				SetAction(ACTION_NEUTRAL);	// 保持状態に変更
+			}
+			else
+			{
+				return;
+			}
+
+			break;
+
+		case ACTION_DEATH:
+
+			m_pBody->GetMotion()->Set(m_nAction);
+			m_pLeg->GetMotion()->Set(m_nAction);
+
+			if (m_pBody->GetMotion()->GetEnd())
+			{// モーション終了
+				SetAction(ACTION_NEUTRAL);	// 保持状態に変更
+				m_pBody->SetDraw(false);
+				m_pLeg->SetDraw(false);
+			}
+
+			break;
 
 		default:
 

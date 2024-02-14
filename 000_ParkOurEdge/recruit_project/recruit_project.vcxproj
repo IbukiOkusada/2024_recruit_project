@@ -172,6 +172,7 @@
     <ClCompile Include="code\game.cpp" />
     <ClCompile Include="code\input.cpp" />
     <ClCompile Include="code\knifewave.cpp" />
+    <ClCompile Include="code\life.cpp" />
     <ClCompile Include="code\light.cpp" />
     <ClCompile Include="code\lockon.cpp" />
     <ClCompile Include="code\main.cpp" />
@@ -237,6 +238,7 @@
     <ClInclude Include="code\game.h" />
     <ClInclude Include="code\input.h" />
     <ClInclude Include="code\knifewave.h" />
+    <ClInclude Include="code\life.h" />
     <ClInclude Include="code\light.h" />
     <ClInclude Include="code\lockon.h" />
     <ClInclude Include="code\main.h" />

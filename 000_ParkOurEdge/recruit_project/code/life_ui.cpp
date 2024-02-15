@@ -16,6 +16,7 @@ namespace {
 	const char* TEXTURENAME = "data\\TEXTURE\\lifeframe000.png";	// テクスチャファイル名
 	const float FRAME_WIDTH = (200.0f);
 	const float FRAME_HEIGHT = (40.0f);
+	const char* TEXTUREFONTNAME = "data\\TEXTURE\\lifefont.png";	
 }
 
 //==========================================================
@@ -26,6 +27,7 @@ CLifeUI::CLifeUI()
 	// 値のクリア
 	m_ppObj = nullptr;
 	m_pFrame = nullptr;
+	m_pFont = nullptr;
 }
 
 //==========================================================
@@ -43,6 +45,8 @@ HRESULT CLifeUI::Init(void)
 {
 	m_pFrame = CObject2D::Create(NUM_PRIORITY);
 	m_pFrame->BindTexture(CManager::GetInstance()->GetTexture()->Regist(TEXTURENAME));
+	m_pFont = CObject2D::Create(NUM_PRIORITY);
+	m_pFont->BindTexture(CManager::GetInstance()->GetTexture()->Regist(TEXTUREFONTNAME));
 
 	return S_OK;
 }
@@ -55,6 +59,11 @@ void CLifeUI::Uninit(void)
 	if (m_pFrame != nullptr) {
 		m_pFrame->Uninit();
 		m_pFrame = nullptr;
+	}
+
+	if (m_pFont != nullptr) {
+		m_pFont->Uninit();
+		m_pFont = nullptr;
 	}
 
 	if (m_ppObj != nullptr) {
@@ -111,6 +120,16 @@ void CLifeUI::SetPosition(const D3DXVECTOR3& pos)
 	if (m_pFrame != nullptr) {
 		m_pFrame->SetPosition(pos);
 		m_pFrame->SetSize(FRAME_WIDTH, FRAME_HEIGHT);
+	}
+
+	if (m_pFont != nullptr) {
+		D3DXVECTOR3 FontPos = pos;
+		float fWidth = FRAME_WIDTH * 0.35f;
+		float fHeight = FRAME_HEIGHT * 0.5f;
+		FontPos.y -= FRAME_HEIGHT + fHeight;
+		FontPos.x -= FRAME_WIDTH - fWidth;
+		m_pFont->SetPosition(FontPos);
+		m_pFont->SetSize(fWidth, fHeight);
 	}
 }
 

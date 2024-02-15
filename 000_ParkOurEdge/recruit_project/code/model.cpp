@@ -180,7 +180,7 @@ void CModel::Draw(void)
 	// •Û‘¶‚µ‚Ä‚¢‚½ƒ}ƒeƒŠƒAƒ‹‚ð–ß‚·
 	pDevice->SetMaterial(&matDef);
 
-	if(m_bShadow == false)
+	if(m_bShadow == true)
 	{
 		D3DXMATRIX mtxShadow;
 		D3DLIGHT9 light;

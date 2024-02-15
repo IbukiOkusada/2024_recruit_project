@@ -21,6 +21,13 @@ public:		// 誰でもアクセス可能
 	CMeshWall();	// コンストラクタ
 	~CMeshWall();	// デストラクタ
 
+	// 壁種類列挙型
+	enum TYPE {
+		TYPE_NORMAL = 0,	// 通常
+		TYPE_DUSH,			// 壁走り可能
+		TYPE_MAX
+	};
+
 	// メンバ関数
 	HRESULT Init(void);
 	void Uninit(void);
@@ -36,6 +43,7 @@ public:		// 誰でもアクセス可能
 
 	// メンバ関数(設定)
 	void SetSize(float fWidth, float fHeight);
+	void SetType(const int type);
 	static D3DXVECTOR3 Collision(D3DXVECTOR3 &pos, D3DXVECTOR3 &posOld, D3DXVECTOR3& move, const D3DXVECTOR3& vtxMax, const D3DXVECTOR3& vtxMin, CObjectX::COLLISION_AXIS &axis);
 
 private:	// 自分だけがアクセス可能
@@ -47,6 +55,7 @@ private:	// 自分だけがアクセス可能
 	CMeshWall *m_pNext;	// 次のオブジェクトへのポインタ
 	float m_fWidth;		// 幅
 	float m_fHeight;	// 高さ
+	int m_type;		// 種類
 };
 
 #endif

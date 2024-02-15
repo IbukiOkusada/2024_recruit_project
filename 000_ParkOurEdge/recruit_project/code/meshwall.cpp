@@ -9,7 +9,6 @@
 #include "manager.h"
 
 // マクロ定義
-#define TEXTUREFILE_DATA	"data\\TEXTURE\\welltile.png"		//テクスチャデータ
 
 // 静的メンバ変数宣言
 CMeshWall *CMeshWall::m_pTop = NULL;	// 先頭のオブジェクトへのポインタ
@@ -22,6 +21,7 @@ CMeshWall::CMeshWall()
 {
 	m_pNext = NULL;
 	m_pPrev = NULL;
+	m_type = TYPE_NORMAL;
 
 	// 自分自身をリストに追加
 	if (m_pTop != NULL)
@@ -276,4 +276,12 @@ D3DXVECTOR3 CMeshWall::Collision(D3DXVECTOR3 &pos, D3DXVECTOR3 &posOld, D3DXVECT
 	D3DXVec3Normalize(&nor, &nor);
 
 	return nor;
+}
+
+//==========================================================
+// 種類設定
+//==========================================================
+void CMeshWall::SetType(const int type)
+{
+	m_type = type;
 }

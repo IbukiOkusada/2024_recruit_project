@@ -43,7 +43,8 @@ private:	// 自分だけがアクセス可能
 
 	// メンバ変数
 	int m_nMaxLife;	// 最大体力
-	D3DXVECTOR3 m_pos;	// 座標
+	D3DXVECTOR3 m_pos;		// 座標
+	CObject2D* m_pFont;		// 文字
 	CObject2D* m_pFrame;	// 枠組み
 	CLife** m_ppObj;		// 体力
 };

@@ -55,6 +55,7 @@
 #define LOAD_ROT		"ROT"				// 向き
 #define LOAD_TEXTYPE	"TEXTYPE"			// テクスチャ番号
 #define LOAD_MODELTYPE	"TYPE"				// モデル番号
+#define LOAD_WALLTYPE	"WALLTYPE"			// 壁種類
 #define LOAD_BLOCK		"BLOCK"			// 枚数
 #define LOAD_SIZE		"SIZE"				// サイズ
 #define LOAD_SHADOW		"SHADOW"			// 影

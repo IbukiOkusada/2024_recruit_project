@@ -38,7 +38,7 @@ namespace
 	const D3DXVECTOR3 COLLIMAX = { 20.0f, 120.0f, 20.0f };	// 当たり判定最大
 	const D3DXVECTOR3 COLLIMIN = { -20.0f, 0.0f, -20.0f };	// 当たり判定最小
 	const int DAMAGEINTERVAL = (60);	// ダメージインターバル
-	const float CHASE_MAXLENGTH = (1400.0f);	// 追跡最長距離
+	const float CHASE_MAXLENGTH = (3400.0f);	// 追跡最長距離
 	const float CHASE_NEARLENGTH = (700.0f);	// 追跡近距離
 	const float CHASE_MINLENGTH = (400.0f);		// 追跡0距離
 	const float SEARCH_HEIGHT = (400.0f);		// 探索高さ制限

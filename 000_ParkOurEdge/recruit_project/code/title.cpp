@@ -73,10 +73,12 @@ HRESULT CTitle::Init(void)
 	}
 
 	// カメラの初期位置設定
-	CManager::GetInstance()->GetCamera()->SetPositionV(D3DXVECTOR3(-874.3f, 1124.15f, 1717.2f));
-	CManager::GetInstance()->GetCamera()->SetPositionR(D3DXVECTOR3(80.0f, 95.0f, 220.0f));
-	CManager::GetInstance()->GetCamera()->SetLength(350.0f);
-	CManager::GetInstance()->GetCamera()->SetRotation(D3DXVECTOR3(0.0f, -2.1f, 1.79f));
+	CCamera* pCamera = CManager::GetInstance()->GetCamera();
+	pCamera->SetPositionV(D3DXVECTOR3(-874.3f, 1124.15f, 1717.2f));
+	pCamera->SetPositionR(D3DXVECTOR3(80.0f, 95.0f, 220.0f));
+	pCamera->SetLength(350.0f);
+	pCamera->SetRotation(D3DXVECTOR3(0.0f, -2.1f, 1.79f));
+	pCamera->SetActive(false);
 
 	// プレイヤーの生成
 	char aBodyPass[FILEPASS_SIZE] = "";		// 胴体パス
@@ -112,6 +114,9 @@ void CTitle::Uninit(void)
 		delete m_pFileLoad;		// メモリの開放
 		m_pFileLoad = nullptr;
 	}
+
+	CCamera* pCamera = CManager::GetInstance()->GetCamera();
+	pCamera->SetActive(true);
 }
 
 //===============================================

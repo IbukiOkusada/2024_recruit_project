@@ -131,11 +131,13 @@ private:	// 自分だけがアクセス可能
 	void Gravity(void);
 	void ArmAttackCheck(void);
 	void ArmAttack(const int nRandRange = 3);
+	void ArmRowlingAttack(void);
 	void Attack(void);
 	void AttackChance(void);
 	void FootCheck(void);
 	void ArmDamage(void);
 	void Move(void);
+	D3DXMATRIX AtkMtxMix(const D3DXVECTOR3& pos, D3DXMATRIX* pParent);
 
 	// メンバ変数
 	CWaist* m_pWaist;		// 腰

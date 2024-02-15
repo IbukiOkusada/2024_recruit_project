@@ -35,6 +35,7 @@ private:
 		D3DXVECTOR3 rot;	// 向き
 		D3DXMATRIX mtxWorld;	// ワールドマトリックス
 		float fRange;		// 半径
+		float fRangeOld;	// 前回の半径
 	};
 
 public:	// 誰でもアクセス可能
@@ -64,7 +65,7 @@ private:	// 自分だけがアクセス可能
 	// メンバ変数
 	int m_nId;	// 使用者ID
 	SInfo m_Info;	// 情報
-	float m_fLength;
+	float m_fLength;	// 距離
 	int m_nParticleCounter;	// パーティクルカウンター
 	CMeshCylinder *m_apObject[TYPE_MAX];	// オブジェクト
 };

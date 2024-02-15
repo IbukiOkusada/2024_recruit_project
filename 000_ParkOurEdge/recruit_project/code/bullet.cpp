@@ -191,7 +191,7 @@ void CBullet::Hit(void)
 			CPlayer* pPlayNext = pPlay->GetNext();
 
 			if (m_nId != pPlay->GetId()) {	// Ž©•ª‚Ì‚Å‚Í‚È‚¢
-				if (pPlay->HitCheck(m_Info.pos, COLLRANGE, 1)) {	// “–‚½‚Á‚Ä‚¢‚é
+				if (pPlay->HitCheck(m_Info.pos, COLLRANGE, COLLRANGE, 1)) {	// “–‚½‚Á‚Ä‚¢‚é
 					bHit = true;
 				}
 			}

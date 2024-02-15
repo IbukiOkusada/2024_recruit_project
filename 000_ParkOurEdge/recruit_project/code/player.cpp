@@ -53,7 +53,7 @@
 #define JUMP	(16.0f)
 
 namespace {
-	const D3DXVECTOR3 PLAYERSTARTPOS = { 0.0f, 0.0f, -2300.0f };  // プレイヤーのスタート位置
+	const D3DXVECTOR3 PLAYERSTARTPOS = { 10.0f, 0.0f, -2300.0f };  // プレイヤーのスタート位置
 	const int HEADPARTS_IDX = (1);	// 頭のパーツインデックス
 	const float DAMAGE_INTERVAL = (10.0f);	// ダメージインターバル
 	const float DAMAGE_APPEAR = (110.0f);	// 無敵時間インターバル
@@ -84,8 +84,6 @@ namespace {
 	const float RIDERKICK_ROTZ = (D3DX_PI * 0.31f);	// ライダーキックカメラ向き
 	const float AXEKICK_CAMERALENGTH = (400.0f);	// かかと落としカメラ距離
 	const float SLOW_KICKCHARGE = (15.0f);			// スローまでのチャージ時間
-	const D3DXVECTOR3 COLLIMAX = { 20.0f, 70.0f, 20.0f };	// 最大当たり判定
-	const D3DXVECTOR3 COLLIMIN = { -20.0f, 0.0f, -20.0f };	// 最小当たり判定
 	const float KICK_LENGTH = (1000.0f);	// 攻撃範囲
 	const float RIDERKICK_SPEED = (24.0f);	// ライダーキック速度
 	const float RIDERKICK_HIGHSPEED = (60.0f);	// ライダーキック最速
@@ -276,7 +274,9 @@ HRESULT CPlayer::Init(const char *pBodyName, const char *pLegName)
 	m_pLockOn = CLockOn::Create(&m_Info.mtxWorld, CLockOn::TYPE_TARGET);
 
 	// Uiの作成
-	m_pUI = CLifeUI::Create(LIFEUI_POS, m_nLife);
+	if (CManager::GetInstance()->GetMode() == CScene::MODE_GAME) {	// ゲーム画面の場合
+		m_pUI = CLifeUI::Create(LIFEUI_POS, m_nLife);
+	}
 
 	return S_OK;
 }
@@ -407,6 +407,13 @@ void CPlayer::Update(void)
 
 	if (m_Info.pos.x <= -3000.0f) {
 		CManager::GetInstance()->GetFade()->Set(CScene::MODE_RESULT);
+	}
+
+	{
+		CInputKeyboard* pInputKey = CManager::GetInstance()->GetInputKeyboard();	// キーボードのポインタ
+		if (pInputKey->GetTrigger(DIK_BACKSPACE)) {
+			m_Info.pos = { -1200.0f, 1000.0f, 2400.0f };
+		}
 	}
 }
 
@@ -547,8 +554,8 @@ void CPlayer::Controller(void)
 	}
 
 	// オブジェクトとの当たり判定
-	D3DXVECTOR3 vtxMax = COLLIMAX;
-	D3DXVECTOR3 vtxMin = COLLIMIN;
+	D3DXVECTOR3 vtxMax = PLAYER::COLLIMAX;
+	D3DXVECTOR3 vtxMin = PLAYER::COLLIMIN;
 	D3DXVECTOR3 vtxMaxOld = vtxMax;
 	D3DXVECTOR3 vtxMinOld = vtxMin;
 
@@ -1664,7 +1671,7 @@ void CPlayer::SetMatrix(void)
 //===============================================
 // 攻撃のヒット確認
 //===============================================
-bool CPlayer::HitCheck(D3DXVECTOR3 pos, float fRange, int nDamage)
+bool CPlayer::HitCheck(D3DXVECTOR3 pos, float fRange, float fHeight, int nDamage)
 {
 	bool m_bValue = false;
 	if (m_Info.state != STATE_NORMAL) {
@@ -1675,20 +1682,20 @@ bool CPlayer::HitCheck(D3DXVECTOR3 pos, float fRange, int nDamage)
 		return m_bValue;
 	}
 
-	if (pos.x + fRange < m_Info.pos.x + COLLIMIN.x ||
-		pos.x - fRange > m_Info.pos.x + COLLIMAX.x)
+	if (pos.x + fRange < m_Info.pos.x + PLAYER::COLLIMIN.x ||
+		pos.x - fRange > m_Info.pos.x + PLAYER::COLLIMAX.x)
 	{// X範囲外
 		return m_bValue;
 	}
 
-	if (pos.z + fRange < m_Info.pos.z + COLLIMIN.z ||
-		pos.z - fRange > m_Info.pos.z + COLLIMAX.z)
+	if (pos.z + fRange < m_Info.pos.z + PLAYER::COLLIMIN.z ||
+		pos.z - fRange > m_Info.pos.z + PLAYER::COLLIMAX.z)
 	{// Z範囲外
 		return m_bValue;
 	}
 
-	if (pos.y + fRange < m_Info.pos.y + COLLIMIN.y ||
-		pos.y - fRange > m_Info.pos.y + COLLIMAX.y)
+	if (pos.y + fHeight < m_Info.pos.y + PLAYER::COLLIMIN.y ||
+		pos.y - fHeight > m_Info.pos.y + PLAYER::COLLIMAX.y)
 	{// Y範囲外
 		return m_bValue;
 	}
@@ -2047,5 +2054,5 @@ void CPlayer::KickChance(void)
 //===============================================
 D3DXVECTOR3 CPlayer::GetColliMax(void)
 {
-	return COLLIMAX;
+	return PLAYER::COLLIMAX;
 }

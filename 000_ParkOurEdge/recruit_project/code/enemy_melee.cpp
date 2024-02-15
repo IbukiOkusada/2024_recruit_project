@@ -408,7 +408,7 @@ void CEnemyMelee::AttackCheck(void)
 	float fRange = 50.0f;
 	int nDamage = 1;
 	D3DXVECTOR3 pos = { pModel->GetMtx()->_41, pModel->GetMtx()->_42, pModel->GetMtx()->_43 };
-	CPlayerManager::GetInstance()->Hit(pos, fRange, nDamage);
+	CPlayerManager::GetInstance()->Hit(pos, fRange, fRange, nDamage);
 }
 
 //===============================================

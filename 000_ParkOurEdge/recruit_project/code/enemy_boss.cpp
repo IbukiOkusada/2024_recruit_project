@@ -49,6 +49,10 @@ namespace
 	const int FRONT_RANDRANGE = (3);			
 	const float ROTDIFF_INER = (0.05f);
 	const float WAVEATK_JUMP = (35.0f);
+	const int NUM_ARMCOLLISION = (4);
+	const float ARM_COLLSIONSIZE = (175.0f);
+	const float BEYBLADE_COLLSIONSIZE = (50.0f);
+	const float ARM_HEIGHT = (10.0f);
 }
 
 // 移動速度名前空間
@@ -874,11 +878,11 @@ void CEnemyBoss::ArmAttack(const int nRandRange)
 //===============================================
 void CEnemyBoss::ArmAttackCheck(void)
 {
-	if (m_NowArm >= PARTS_MAX) {
+	if (m_NowArm >= PARTS_MAX) {	// 腕の上限を超えている
 		return;
 	}
 
-	if (!BodyCheck(m_apArm[m_NowArm])) {
+	if (!BodyCheck(m_apArm[m_NowArm])) {	// 腕が使用されている
 		return;
 	}
 
@@ -891,16 +895,27 @@ void CEnemyBoss::ArmAttackCheck(void)
 		m_nArmAction = ARM_NEUTRAL;
 	}
 
-	if (m_apArm[m_NowArm]->GetMotion()->GetNowMotion() != ARM_ATTACK) {
+	// モーション情報の値を取り出す
+	int nNowMotion = m_apArm[m_NowArm]->GetMotion()->GetNowMotion();
+	int nNowKey = m_apArm[m_NowArm]->GetMotion()->GetNowKey();
+	int nNowNumKey = m_apArm[m_NowArm]->GetMotion()->GetNowNumKey();
+	float fNowFrame = m_apArm[m_NowArm]->GetMotion()->GetNowFrame();
+
+	if (nNowMotion != ARM_ATTACK) {	// 攻撃中ではない
+
+		if (nNowMotion == ARM_ROWLING && nNowKey > 2) {	// 回転中
+			ArmRowlingAttack();	// 回転攻撃を行う
+		}
 		return;
 	}
 
-	if (m_apArm[m_NowArm]->GetMotion()->GetNowKey() == m_apArm[m_NowArm]->GetMotion()->GetNowNumKey() - 2
-		&& m_apArm[m_NowArm]->GetMotion()->GetNowFrame() == 0)
+	if (nNowKey == nNowNumKey - 2
+		&& fNowFrame == 0.0f)
 	{
-		D3DXVECTOR3 pos = D3DXVECTOR3(m_apArm[m_NowArm]->GetParts(1)->GetMtx()->_41,
-			m_apArm[m_NowArm]->GetParts(1)->GetMtx()->_42,
-			m_apArm[m_NowArm]->GetParts(1)->GetMtx()->_43 - 1400.0f);
+		CModel* pModel = m_apArm[m_NowArm]->GetParts(1);
+		D3DXVECTOR3 pos = D3DXVECTOR3(pModel->GetMtx()->_41,
+			pModel->GetMtx()->_42,
+			pModel->GetMtx()->_43 - 1400.0f);
 		CWave::Create(pos, 0, 1000.0f);
 	}
 }
@@ -1126,7 +1141,8 @@ void CEnemyBoss::AttackChance(void)
 	switch (m_nAction) {
 	case ACTION_ATK:
 	{
-
+		// プレイヤーとのヒット判定を取る
+		CPlayerManager::GetInstance()->Hit(GetPosition(), BEYBLADE_COLLSIONSIZE, 1000.0f, 1);
 	}
 		break;
 
@@ -1171,7 +1187,7 @@ void CEnemyBoss::AttackChance(void)
 		D3DXVECTOR3 nor = pos - MyPos;
 		D3DXVec3Normalize(&nor, &nor);
 
-		if (static_cast<int>(m_pBody->GetMotion()->GetNowFrame()) % 3 == 0) {
+		if (static_cast<int>(m_pBody->GetMotion()->GetNowFrame()) % 4 == 0) {
 			CBullet::Create(MyPos, D3DXVECTOR3(0.0f, 0.0f, 0.0f), nor * SPEED::BULLET, CBullet::TYPE_BOSS);
 		}
 	}
@@ -1200,5 +1216,93 @@ void CEnemyBoss::AttackChance(void)
 		CKnifeWave::Create(MyPos, GetInfo()->rot, nor * SPEED::KNIFE, CKnifeWave::TYPE_ENEMY);
 	}
 	break;
+	}
+}
+
+//===============================================
+// マトリックスを合成
+//===============================================
+D3DXMATRIX CEnemyBoss::AtkMtxMix(const D3DXVECTOR3& pos, D3DXMATRIX* pParent)
+{
+	D3DXMATRIX returnMtx;
+	D3DXMATRIX* pParentMtx = pParent;
+	if (pParentMtx == nullptr) {	// 親が見つからなかった
+		pParentMtx = GetMtx();
+	}
+
+	D3DXMATRIX mtxTrans;	// 計算用マトリックス
+	CXFile* pModelFile = CManager::GetInstance()->GetModelFile();	// Xファイル情報のポインタ
+
+	//ワールドマトリックスの初期化
+	D3DXMatrixIdentity(&returnMtx);
+
+	//位置を反映
+	D3DXMatrixTranslation(&mtxTrans, pos.x, pos.y, pos.z);
+	D3DXMatrixMultiply(&returnMtx, &returnMtx, &mtxTrans);
+
+	if (pParentMtx != nullptr)
+	{// 覚えている場合
+
+		// パーツのマトリックスと親のマトリックスをかけ合わせる
+		D3DXMatrixMultiply(&returnMtx,
+			&returnMtx, pParentMtx);
+	}
+
+	return returnMtx;
+}
+
+//===============================================
+// 腕の回転攻撃
+//===============================================
+void CEnemyBoss::ArmRowlingAttack(void)
+{
+	// 腕の上限を超えている
+	if (m_NowArm >= PARTS_MAX) { return; }
+
+	// 腕が使用されている
+	if (!BodyCheck(m_apArm[m_NowArm])) { return; }
+
+	CPlayer* pPlayer = CPlayerManager::GetInstance()->GetTop();
+
+	// プレイヤーが存在しなかった場合
+	if (pPlayer == nullptr) { return; }
+
+	// 当たり判定を回す
+	for (int i = 0; i < NUM_ARMCOLLISION; i++) {
+
+		// 当たり判定の相対位置を割り出す
+		D3DXVECTOR3 pos = { 0.0f, 0.0f, 0.0f };
+		pos.z -= ARM_COLLSIONSIZE + (ARM_COLLSIONSIZE * i * 2);
+		CModel* pModel = m_apArm[m_NowArm]->GetParts(1);
+
+		// マトリックスを合成する
+		D3DXMATRIX ColMtx = AtkMtxMix(pos, pModel->GetMtx());
+		pos = { ColMtx._41, ColMtx._42, ColMtx._43 };	// 座標を取り出す
+
+		// プレイヤーとのヒット判定を取る
+		pPlayer = CPlayerManager::GetInstance()->GetTop();
+		while (pPlayer != nullptr) {
+			CPlayer* pPlayerNext = pPlayer->GetNext();	// 次を取得
+			// スライディング中なら判定を取らない
+			if (pPlayer->GetAction() == CPlayer::ACTION_SLIDING) {
+				pPlayer = pPlayerNext;	// 移動
+				continue;
+			}
+
+			D3DXVECTOR3 ObjPos = pPlayer->GetPosition();
+			if (ObjPos.y + PLAYER::COLLIMAX.y <= pos.y - ARM_HEIGHT) {
+				pPlayer = pPlayerNext;	// 移動
+				continue;
+			}
+
+			// 距離を取って判定
+			float fLength = sqrtf((pos.x - ObjPos.x) * (pos.x - ObjPos.x)
+				+ (pos.z - ObjPos.z) * (pos.z - ObjPos.z));
+			if (fLength <= ARM_COLLSIONSIZE) {
+				pPlayer->Damage(1);
+			}
+
+			pPlayer = pPlayerNext;	// 移動
+		}
 	}
 }

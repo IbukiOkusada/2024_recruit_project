@@ -9,7 +9,7 @@ SCRIPT			# この行は絶対消さないこと！
 #------------------------------------------------------------------------------
 # モデル数
 #------------------------------------------------------------------------------
-NUM_MODEL = 3
+NUM_MODEL = 4
 
 #------------------------------------------------------------------------------
 # モデルファイル名
@@ -17,6 +17,7 @@ NUM_MODEL = 3
 MODEL_FILENAME = data/MODEL/enemy_boss/boss_arm/leftshoulder.x	# [0]体
 MODEL_FILENAME = data/MODEL/enemy_boss/boss_arm/arm.x			# [1]頭
 MODEL_FILENAME = data/MODEL/enemy_boss/boss_arm/button.x		# [2]頭
+MODEL_FILENAME = data/MODEL/enemy_boss/boss_arm/arm.x			# [1]頭
 
 #------------------------------------------------------------------------------
 # キャラクター情報
@@ -42,6 +43,13 @@ CHARACTERSET
 		INDEX = 2					# 頭
 		PARENT = 0					# (親)体
 		POS = -85.0 25.0 0.0
+		ROT = 0.0 0.0 0.0
+	END_PARTSSET
+	
+	PARTSSET
+		INDEX = 3					# 頭
+		PARENT = 1					# (親)体
+		POS = 0.0 0.0 -1400.0
 		ROT = 0.0 0.0 0.0
 	END_PARTSSET
 	

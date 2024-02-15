@@ -89,6 +89,7 @@ void CWave::Uninit(void)
 void CWave::Update(void)
 {
 	float fRate = m_Info.fRange / m_fLength;
+	m_Info.fRangeOld = m_Info.fRange;
 	m_Info.fRange += RANGE_UPSPEED;
 
 	if (m_Info.fRange > m_fLength) {	// 最大範囲を超えた
@@ -171,34 +172,30 @@ void CWave::Collision(void)
 		{
 			CPlayer *pPlayerNext = pPlayer->GetNext();	// 次を保持
 
-			if (pPlayer->GetId() == m_nId) {	// 出した本人
-				pPlayer = pPlayerNext;
-				continue;
-			}
-
 			// 距離を取る
 			D3DXVECTOR3 ObjPos = pPlayer->GetPosition();
+			D3DXVECTOR3 ObjPosOld = pPlayer->GetOldPosition();
 			float fLength = sqrtf((m_Info.pos.x - ObjPos.x) * (m_Info.pos.x - ObjPos.x)
 				+ (m_Info.pos.z - ObjPos.z) * (m_Info.pos.z - ObjPos.z));
+			float fLengthOld = sqrtf((m_Info.pos.x - ObjPosOld.x) * (m_Info.pos.x - ObjPosOld.x)
+				+ (m_Info.pos.z - ObjPosOld.z) * (m_Info.pos.z - ObjPosOld.z));
 
 			if (fLength > m_Info.fRange) {	// 風の範囲内ではない場合
 				pPlayer = pPlayerNext;
 				continue;
 			}
 
-			D3DXVECTOR3 move = pPlayer->GetMove();
-			float fRot = atan2f(ObjPos.x - m_Info.pos.x, ObjPos.z - m_Info.pos.z);	//目標までの移動差分
-
-			// 移動方向を設定
-			move.x = sinf(fRot) * FLYAWAY_SPEED;
-			if (move.y <= 0.0f)
-			{
-				move.y = FLYAWAY_JUMP;
+			// 高さが当たらない場合
+			if (ObjPos.y + PLAYER::COLLIMIN.y > m_Info.pos.y + AIROBJ_HEIGHT * 2
+				|| ObjPos.y + PLAYER::COLLIMAX.y < m_Info.pos.y) {
+				pPlayer = pPlayerNext;
+				continue;
 			}
-			move.z = cosf(fRot) * FLYAWAY_SPEED;
 
-			// 移動量を反映
-			pPlayer->SetMove(move);
+			if (fLengthOld >= m_Info.fRangeOld && fLength <= m_Info.fRange) {	// 風を跨いだ
+				pPlayer->Damage(1);
+			}
+
 			pPlayer = pPlayerNext;	// 次に移動
 		}
 	}

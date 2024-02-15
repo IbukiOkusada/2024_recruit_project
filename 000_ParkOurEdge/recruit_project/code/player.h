@@ -20,6 +20,12 @@ class CEnemy;
 class CLockOn;
 class CLifeUI;
 
+namespace PLAYER
+{
+	const D3DXVECTOR3 COLLIMAX = { 20.0f, 70.0f, 20.0f };	// 最大当たり判定
+	const D3DXVECTOR3 COLLIMIN = { -20.0f, 0.0f, -20.0f };	// 最小当たり判定
+}
+
 // マクロ定義
 #define MAX_ITEM  (1280)  // 所持できるアイテムの最大数
 
@@ -111,7 +117,7 @@ public:	// 誰でもアクセス可能
 	void Update(void);
 	static CPlayer *Create(const D3DXVECTOR3 pos, const D3DXVECTOR3 rot, const D3DXVECTOR3 move,
 		const char *pBodyName, const char *pLegName);
-	bool HitCheck(D3DXVECTOR3 pos, float fRange, int nDamage);
+	bool HitCheck(D3DXVECTOR3 pos, float fRange, float fHeight, int nDamage);
 
 	// メンバ関数(設定)
 	void SetMove(const D3DXVECTOR3 move) { m_Info.move = move; }
@@ -140,6 +146,7 @@ public:	// 誰でもアクセス可能
 	void SetLife(int nLife);
 	STATE GetState(void) { return m_Info.state; }
 	int GetMotion(void);
+	int GetAction(void) { return m_nAction; }
 	int GetId(void) { return m_nId; }
 	void SetFailedParticle(void);
 	TYPE GetType(void) { return m_type; }

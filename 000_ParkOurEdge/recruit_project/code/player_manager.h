@@ -33,7 +33,7 @@ public:	// 誰でもアクセス可能
 	void ListIn(CPlayer* pPlayer);
 	void ListOut(CPlayer* pPlayer);
 	int GetNum(void) { return m_nNum; }
-	void Hit(D3DXVECTOR3& pos, const float fRange, const int nDamage);
+	void Hit(D3DXVECTOR3& pos, const float fRange, const float fHeight, const int nDamage);
 
 private:	// 自分だけがアクセス可能
 

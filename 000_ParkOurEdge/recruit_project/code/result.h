@@ -44,11 +44,9 @@ public:
 	void Uninit(void);
 	void Update(void);
 	void Draw(void);
+	static void SetScore(const int nScore) { m_nScore = nScore; }
 
 private:
-
-	// メンバ関数
-	int SumScore(void);
 
 	// メンバ変数
 	CFileLoad *m_pFileLoad;	// ファイル読み込みのポインタ
@@ -56,6 +54,7 @@ private:
 	CTime *m_pTime;			// タイマー
 	CObject2D *m_pObjClear;	// clearしたかどうか
 	CPlayer *m_ppPlayer;	// プレイヤーのポインタ
+	static int m_nScore;
 };
 
 #endif

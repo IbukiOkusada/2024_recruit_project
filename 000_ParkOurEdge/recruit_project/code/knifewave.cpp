@@ -194,7 +194,8 @@ void CKnifeWave::Hit(void)
 	D3DXVECTOR3 posOld = m_Info.pos;
 	CObjectX::COLLISION_AXIS axis = CObjectX::TYPE_X;
 	CObjectX::Touch(m_Info.pos, m_Info.posOld, m_Info.move, vtxMin, vtxMax);
-	CMeshWall::Collision(m_Info.pos, m_Info.posOld, m_Info.move, vtxMax, vtxMin, axis);
+	int nType = 0;
+	CMeshWall::Collision(m_Info.pos, m_Info.posOld, m_Info.move, vtxMax, vtxMin, axis, nType);
 
 	if (m_Info.pos.x != posOld.x || m_Info.pos.z != posOld.z) {	// “–‚½‚Á‚ÄˆÚ“®—Ê‚ª‚È‚­‚È‚Á‚½
 		bHit = true;

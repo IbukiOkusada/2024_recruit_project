@@ -83,8 +83,8 @@ void CObjectManager::Draw(void)
 		if (pCamera->GetDraw()) {	// •`‰æ‚·‚éê‡
 
 			// ƒŠƒXƒg‚Ì‘S•`‰æ
-			//DrawAll();
-			DrawOneDimension(TYPE_3D);
+			DrawAll();
+			//DrawOneDimension(TYPE_3D);
 		}
 
 		pCamera = pCameraNext;

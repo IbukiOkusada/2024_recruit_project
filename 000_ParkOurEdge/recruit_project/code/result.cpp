@@ -72,6 +72,7 @@ namespace {
 }
 
 // 静的メンバ変数
+int CResult::m_nScore = 0;
 
 //===============================================
 // コンストラクタ
@@ -114,8 +115,8 @@ HRESULT CResult::Init(void)
 		CManager::GetInstance()->GetCamera()->SetLength(300.0f);
 		CManager::GetInstance()->GetCamera()->SetRotation(D3DXVECTOR3(1.0f, -D3DX_PI * 0.5f, 2.63f));
 		CManager::GetInstance()->GetCamera()->SetPositionR(D3DXVECTOR3(0.0f, 137.77f, -301.94f));
-
 		D3DVIEWPORT9 viewport;
+
 		//プレイヤー追従カメラの画面位置設定
 		viewport.X = 0;
 		viewport.Y = 0;
@@ -147,6 +148,8 @@ void CResult::Uninit(void)
 		m_pFileLoad = nullptr;
 	}
 
+	CRanking::SetScore(m_nScore);
+	m_nScore = 0;
 	CManager::GetInstance()->GetCamera()->SetActive(true);
 }
 

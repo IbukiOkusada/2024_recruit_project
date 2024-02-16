@@ -193,6 +193,7 @@ private:	// 自分だけがアクセス可能
 	CEnemy* m_pTarget;		// ロックオン対象
 	CLockOn* m_pLockOn;		// ロックオン
 	CLifeUI* m_pUI;			// 体力UI
+	int m_nWallType;		// 触れた壁の種類
 	float m_fRotMove;		// 現在の角度
 	float m_fRotDiff;		// 目的の角度
 	float m_fRotDest;		// 角度計算

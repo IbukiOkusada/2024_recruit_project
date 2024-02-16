@@ -135,6 +135,7 @@ CPlayer::CPlayer()
 	m_pLockOn = nullptr;
 	m_pTarget = nullptr;
 	m_pUI = nullptr;
+	m_nWallType = 0;
 	m_ColiNorOld = { 0.0f, 0.0f, 0.0f };
 
 	CPlayerManager::GetInstance()->ListIn(this);
@@ -405,10 +406,6 @@ void CPlayer::Update(void)
 	CManager::GetInstance()->GetDebugProc()->Print("体力 [ %d ], 向き [ %f ]\n", m_nLife, m_Info.rot.y);
 	CManager::GetInstance()->GetDebugProc()->Print("移動 [ %f, %f, %f ]\n", m_Info.pos.x, m_Info.pos.y, m_Info.pos.z);
 
-	if (m_Info.pos.x <= -3000.0f) {
-		CManager::GetInstance()->GetFade()->Set(CScene::MODE_RESULT);
-	}
-
 	{
 		CInputKeyboard* pInputKey = CManager::GetInstance()->GetInputKeyboard();	// キーボードのポインタ
 		if (pInputKey->GetTrigger(DIK_BACKSPACE)) {
@@ -592,7 +589,10 @@ void CPlayer::Controller(void)
 		}
 	}
 
-	D3DXVECTOR3 nor = CMeshWall::Collision(m_Info.pos, m_Info.posOld, m_Info.move, vtxMax, vtxMin, ColiAxis);
+	m_nWallType = 0;
+	D3DXVECTOR3 nor = CMeshWall::Collision(m_Info.pos, m_Info.posOld, m_Info.move, vtxMax, vtxMin, ColiAxis, m_nWallType);
+
+	CManager::GetInstance()->GetDebugProc()->Print("今触れている壁の種類 [ %d ]\n", m_nWallType);
 
 	if (nor.x != 0.0f || nor.z != 0.0f) {
 		m_ColiNor = nor;
@@ -732,6 +732,10 @@ void CPlayer::MoveController(void)
 		break;
 
 	case ACTION_NORMALATK:
+		fSpeed = 0.0f;
+		break;
+
+	case ACTION_DAMAGE:
 		fSpeed = 0.0f;
 		break;
 
@@ -1036,6 +1040,10 @@ void CPlayer::WallDush(void)
 	}
 
 	if (!m_bJump) {
+		return;
+	}
+
+	if (m_nWallType != CMeshWall::TYPE_DUSH) {
 		return;
 	}
 
@@ -1419,13 +1427,14 @@ void CPlayer::MotionSet(void)
 
 		case ACTION_WALLKICK:
 		{
+
+			m_pBody->GetMotion()->BlendSet(m_nAction);
+			m_pLeg->GetMotion()->BlendSet(m_nAction);
+
 			if (m_pBody->GetMotion()->GetEnd())
 			{// モーション終了
 				SetAction(ACTION_JUMP);
 			}
-
-			m_pBody->GetMotion()->BlendSet(m_nAction);
-			m_pLeg->GetMotion()->BlendSet(m_nAction);
 		}
 		break;
 

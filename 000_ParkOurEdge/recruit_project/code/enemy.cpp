@@ -73,7 +73,7 @@ void CEnemy::Update(void)
 	// マトリックス設定
 	SetMatrix();
 
-	if (m_Info.pos.y <= 0.0f) {
+	if (m_Info.pos.y <= -100.0f) {
 		Uninit();
 	}
 }

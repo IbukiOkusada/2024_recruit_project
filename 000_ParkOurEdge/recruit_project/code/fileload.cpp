@@ -382,6 +382,7 @@ void CFileLoad::LoadMeshWallData(FILE *pFile)
 	D3DXVECTOR3 rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	int nWidth = 0;			// 幅枚数
 	int nHeight = 0;		// 高さ枚数
+	int nType = 0;
 	float fWidth = 0.0f;	// 幅
 	float fHeight = 0.0f;	// 高さ
 	int nIdx = -1;
@@ -396,6 +397,11 @@ void CFileLoad::LoadMeshWallData(FILE *pFile)
 		{//テクスチャ
 			fscanf(pFile, "%s", &aStr[0]);	//(=)読み込み
 			fscanf(pFile, "%d", &nIdx);	//テクスチャ名読み込み
+		}
+		else if (strcmp(&aStr[0], LOAD_WALLTYPE) == 0)
+		{//種類
+			fscanf(pFile, "%s", &aStr[0]);	//(=)読み込み
+			fscanf(pFile, "%d", &nType);	//テクスチャ名読み込み
 		}
 		else if (strcmp(&aStr[0], LOAD_POS) == 0)
 		{//座標
@@ -433,7 +439,8 @@ void CFileLoad::LoadMeshWallData(FILE *pFile)
 	}
 
 	//フィールドの配置
-	CMeshWall::Create(pos, D3DXToRadian(rot), fWidth, fHeight, GetTextureFileName(nIdx), nWidth, nHeight);
+	CMeshWall *pMesh = CMeshWall::Create(pos, D3DXToRadian(rot), fWidth, fHeight, GetTextureFileName(nIdx), nWidth, nHeight);
+	pMesh->SetType(nType);
 }
 
 //==========================================================

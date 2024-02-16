@@ -201,13 +201,14 @@ void CMeshWall::SetSize(float fWidth, float fHeight)
 //==========================================================
 // “–‚½‚è”»’è
 //==========================================================
-D3DXVECTOR3 CMeshWall::Collision(D3DXVECTOR3 &pos, D3DXVECTOR3 &posOld, D3DXVECTOR3& move, const D3DXVECTOR3& vtxMax, const D3DXVECTOR3& vtxMin, CObjectX::COLLISION_AXIS& axis)
+D3DXVECTOR3 CMeshWall::Collision(D3DXVECTOR3 &pos, D3DXVECTOR3 &posOld, D3DXVECTOR3& move, const D3DXVECTOR3& vtxMax, const D3DXVECTOR3& vtxMin, CObjectX::COLLISION_AXIS& axis, int& nType)
 {
 	CMeshWall *pObj = m_pTop;
 	D3DXVECTOR3 nor = { 0.0f, 0.0f, 0.0f };
 
 	while (pObj != NULL)
 	{
+		bool bHit = false;
 		CMeshWall *pObjNext = pObj->m_pNext;
 
 		if (pos.y - vtxMin.y > pObj->GetPosition().y + pObj->GetHeight() * 2 * pObj->GetNumHeight() || pos.y + vtxMax.y < pObj->GetPosition().y) {	// ‚‚³”ÍˆÍŠO
@@ -226,6 +227,7 @@ D3DXVECTOR3 CMeshWall::Collision(D3DXVECTOR3 &pos, D3DXVECTOR3 &posOld, D3DXVECT
 				pos.z = pObj->GetPosition().z - vtxMax.z;
 				nor.z = pos.z - pObj->GetPosition().z;
 				move.z = 0.0f;
+				bHit = true;
 			}
 		}
 		if (pObj->GetRotation().y == 0.5f * D3DX_PI)
@@ -240,6 +242,7 @@ D3DXVECTOR3 CMeshWall::Collision(D3DXVECTOR3 &pos, D3DXVECTOR3 &posOld, D3DXVECT
 				pos.x = pObj->GetPosition().x - vtxMax.x;
 				nor.x = pos.x - pObj->GetPosition().x;
 				move.x = 0.0f;
+				bHit = true;
 			}
 		}
 		if (pObj->GetRotation().y == -0.5f * D3DX_PI)
@@ -253,6 +256,7 @@ D3DXVECTOR3 CMeshWall::Collision(D3DXVECTOR3 &pos, D3DXVECTOR3 &posOld, D3DXVECT
 				pos.x = pObj->GetPosition().x - vtxMin.x;
 				nor.x = pos.x - pObj->GetPosition().x;
 				move.x = 0.0f;
+				bHit = true;
 			}
 
 		}
@@ -267,7 +271,12 @@ D3DXVECTOR3 CMeshWall::Collision(D3DXVECTOR3 &pos, D3DXVECTOR3 &posOld, D3DXVECT
 				pos.z = pObj->GetPosition().z - vtxMin.z;
 				nor.z = pos.z - pObj->GetPosition().z;
 				move.z = 0.0f;
+				bHit = true;
 			}
+		}
+
+		if (bHit) {	// “–‚½‚Á‚½
+			nType = pObj->m_type;
 		}
 
 		pObj = pObjNext;

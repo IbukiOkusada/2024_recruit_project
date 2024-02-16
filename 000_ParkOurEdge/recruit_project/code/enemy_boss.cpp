@@ -307,8 +307,9 @@ void CEnemyBoss::MethodLine(void)
 
 	// 当たり判定確認
 	CObjectX::COLLISION_AXIS axis = CObjectX::TYPE_MAX;
-	D3DXVECTOR3 moveOld = pInfo->move;
-	CMeshWall::Collision(pInfo->pos, pInfo->posOld, pInfo->move, COLLIMAX, COLLIMIN, axis);
+	D3DXVECTOR3 moveOld = pInfo->move; 
+	int nType = 0;
+	CMeshWall::Collision(pInfo->pos, pInfo->posOld, pInfo->move, COLLIMAX, COLLIMIN, axis, nType);
 	float fHeight = CMeshField::GetHeight(pInfo->pos);
 	if (pInfo->pos.y < fHeight && pInfo->posOld.y >= fHeight) {
 		pInfo->pos.y = fHeight;
@@ -604,7 +605,8 @@ void CEnemyBoss::SetState(void)
 	case STATE_DAMAGE:
 	{
 		if (m_StateInfo.fCounter <= 0.0f) {	// カウンター終了
-			m_StateInfo.fCounter = 0.0f;
+			m_StateInfo.fCounter = 50.0f;
+			m_StateInfo.state = STATE_APPEAR;
 		}
 		else {
 			// 座標を後ろに下げる
@@ -657,24 +659,6 @@ void CEnemyBoss::SetMotion(void)
 
 	if (!BodyCheck(m_pLeg)) {// 下半身確認失敗
 		return;
-	}
-
-	// ダメージ状態
-	if (m_StateInfo.state == STATE_DAMAGE) {
-
-		m_nAction = ACTION_DAMAGE;
-		m_pBody->GetMotion()->BlendSet(m_nAction);
-		m_pLeg->GetMotion()->BlendSet(m_nAction);
-
-		if (m_pBody->GetMotion()->GetEnd())
-		{// モーション終了
-			m_nAction = ACTION_NEUTRAL;	// 保持状態に変更
-			m_StateInfo.state = STATE_APPEAR;
-		}
-		else
-		{
-			return;
-		}
 	}
 
 	switch (m_nAction) {
@@ -733,7 +717,9 @@ void CEnemyBoss::SetMotion(void)
 
 		CModel* pModel = m_pBody->GetParts(m_pBody->GetNumParts() - 1);
 		D3DXVECTOR3 pos = { pModel->GetMtx()->_41, pModel->GetMtx()->_42, pModel->GetMtx()->_43 };
-		CParticle::Create(pos, CEffect::TYPE_BOSSKNUCKLECHARGE);
+		if (m_pBody->GetMotion()->GetNowKey() >= 3 && m_pBody->GetMotion()->GetOldMotion() == ACTION_WAVECHARGE) {
+			CParticle::Create(pos, CEffect::TYPE_BOSSKNUCKLECHARGE);
+		}
 
 		if (m_pBody->GetMotion()->GetEnd())
 		{// モーション終了	
@@ -1181,7 +1167,6 @@ void CEnemyBoss::AttackChance(void)
 		CModel* pModel = m_pBody->GetParts(m_pBody->GetNumParts() - 1);
 		D3DXVECTOR3 MyPos = { pModel->GetMtx()->_41, pModel->GetMtx()->_42, pModel->GetMtx()->_43 };
 		D3DXVECTOR3 pos = m_Chase.pTarget->GetPosition();
-		pos.y += 50.0f;
 		pos.x += static_cast<float>(rand() % 300 - 150);
 		pos.z += static_cast<float>(rand() % 300 - 150);
 		D3DXVECTOR3 nor = pos - MyPos;

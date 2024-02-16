@@ -251,7 +251,7 @@ HRESULT CGame::Init(void)
     // タイマー追加
     m_pTimer = CTime::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.4f, SCREEN_HEIGHT * 0.05f, 0.0f));
     m_pTimer->Set(6000 * 3);
-    m_pTimer->SetActive(true);
+    m_pTimer->SetActive(false);
 
     m_pPause = CPause::Create();
 
@@ -376,6 +376,10 @@ void CGame::Update(void)
         if (m_pTimer->GetNum() <= 0) {
             CManager::GetInstance()->GetFade()->Set(CScene::MODE_RESULT);
         }
+    }
+
+    if (CPlayerManager::GetInstance()->GetTop()->GetPosition().x <= -3000.0f) {
+        CManager::GetInstance()->GetFade()->Set(CScene::MODE_RANKING);
     }
 
     CScene::Update();

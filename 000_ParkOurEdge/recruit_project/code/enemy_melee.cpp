@@ -214,7 +214,8 @@ void CEnemyMelee::MethodLine(void)
 
 	// “–‚½‚è”»’èŠm”F
 	CObjectX::COLLISION_AXIS axis = CObjectX::TYPE_MAX;
-	CMeshWall::Collision(pInfo->pos, pInfo->posOld, pInfo->move, COLLIMAX, COLLIMIN, axis);
+	int nType = 0;
+	CMeshWall::Collision(pInfo->pos, pInfo->posOld, pInfo->move, COLLIMAX, COLLIMIN, axis, nType);
 	float fHeight = CMeshField::GetHeight(pInfo->pos);
 	if (pInfo->pos.y < fHeight && pInfo->posOld.y >= fHeight) {
 		pInfo->pos.y = fHeight;

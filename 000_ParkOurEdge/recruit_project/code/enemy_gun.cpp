@@ -216,8 +216,9 @@ void CEnemyGun::MethodLine(void)
 	Gravity();
 
 	// “–‚½‚è”»’èŠm”F
+	int nType = 0;
 	CObjectX::COLLISION_AXIS axis = CObjectX::TYPE_MAX;
-	CMeshWall::Collision(pInfo->pos, pInfo->posOld, pInfo->move, COLLIMAX, COLLIMIN, axis);
+	CMeshWall::Collision(pInfo->pos, pInfo->posOld, pInfo->move, COLLIMAX, COLLIMIN, axis, nType);
 	float fHeight = CMeshField::GetHeight(pInfo->pos);
 	if (pInfo->pos.y < fHeight && pInfo->posOld.y >= fHeight) {
 		pInfo->pos.y = fHeight;

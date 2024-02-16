@@ -204,11 +204,12 @@ void CBullet::Hit(void)
 	D3DXVECTOR3 vtxMax = D3DXVECTOR3(COLLRANGE * 0.5f, COLLRANGE * 0.15f, COLLRANGE * 0.5f);
 	D3DXVECTOR3 vtxMin = D3DXVECTOR3(-COLLRANGE * 0.5f, -COLLRANGE * 0.15f, -COLLRANGE * 0.5f);
 
+	int nType = 0;
 	D3DXVECTOR3 moveOld = m_Info.move;
 	D3DXVECTOR3 posOld = m_Info.pos;
 	CObjectX::COLLISION_AXIS axis = CObjectX::TYPE_X;
 	CObjectX::Touch(m_Info.pos, m_Info.posOld, m_Info.move, vtxMin, vtxMax);
-	CMeshWall::Collision(m_Info.pos, m_Info.posOld, m_Info.move, vtxMax, vtxMin, axis);
+	CMeshWall::Collision(m_Info.pos, m_Info.posOld, m_Info.move, vtxMax, vtxMin, axis, nType);
 
 	if (m_Info.pos.x != posOld.x || m_Info.pos.z != posOld.z) {	// “–‚½‚Á‚ÄˆÚ“®—Ê‚ª‚È‚­‚È‚Á‚½
 		bHit = true;

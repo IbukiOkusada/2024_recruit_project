@@ -147,14 +147,19 @@ void CPlayerManager::ListOut(CPlayer* pPlayer)
 //==========================================================
 // UŒ‚ƒqƒbƒgŠm”F
 //==========================================================
-void CPlayerManager::Hit(D3DXVECTOR3& pos, const float fRange, const float fHeight, const int nDamage)
+bool CPlayerManager::Hit(D3DXVECTOR3& pos, const float fRange, const float fHeight, const int nDamage)
 {
 	CPlayer* pPlayer = m_pTop;
+	bool bUse = false;
 
 	//ŒÂ•Ê”»’è
 	while (pPlayer != nullptr) {
 		CPlayer* pPlayerNext = pPlayer->GetNext();
-		pPlayer->HitCheck(pos, fRange, fHeight, nDamage);
+		if (pPlayer->HitCheck(pos, fRange, fHeight, nDamage)) {
+			bUse = true;
+		}
 		pPlayer = pPlayerNext;
 	}
+
+	return bUse;
 }

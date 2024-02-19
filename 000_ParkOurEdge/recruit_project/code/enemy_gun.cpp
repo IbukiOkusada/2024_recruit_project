@@ -20,6 +20,7 @@
 #include "meshfield.h"
 #include "bullet.h"
 #include "particle.h"
+#include "enemy_manager.h"
 
 // 無名名前空間
 namespace
@@ -214,6 +215,9 @@ void CEnemyGun::MethodLine(void)
 
 	// 重力
 	Gravity();
+
+	// 敵同士の当たり判定確認
+	CEnemyManager::GetInstance()->Bump(pInfo->pos, GetBumpSize(), this);
 
 	// 当たり判定確認
 	int nType = 0;

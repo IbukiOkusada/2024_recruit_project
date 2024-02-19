@@ -136,7 +136,7 @@ void CTime::Update(void)
 		else if (m_mode == MODE_MINUS)
 		{
 			
-			SetNum(m_nSetNum - ((int)((timeGetTime() - m_nStartDeltaTime) * 0.1f) - m_nPauseTimer));
+			SetNum(m_nSetNum + ((int)((timeGetTime() - m_nStartDeltaTime) * 0.1f) - m_nPauseTimer));
 		}
 	}
 }

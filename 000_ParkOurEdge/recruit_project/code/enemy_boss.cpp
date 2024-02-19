@@ -25,6 +25,7 @@
 #include "wave.h"
 #include "particle.h"
 #include "knifewave.h"
+#include "enemy_manager.h"
 
 // –³–¼–¼‘O‹óŠÔ
 namespace
@@ -304,6 +305,9 @@ void CEnemyBoss::MethodLine(void)
 		// UŒ‚
 		ArmAttack();
 	}
+
+	// “G“¯Žm‚Ì“–‚½‚è”»’èŠm”F
+	CEnemyManager::GetInstance()->Bump(pInfo->pos, GetBumpSize(), this);
 
 	// “–‚½‚è”»’èŠm”F
 	CObjectX::COLLISION_AXIS axis = CObjectX::TYPE_MAX;

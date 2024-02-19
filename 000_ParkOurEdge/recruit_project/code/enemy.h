@@ -57,6 +57,7 @@ public:	// 誰でもアクセス可能
 	D3DXMATRIX* GetMtx(void) { return &m_Info.mtxWorld; }
 	float GetRotDiff(void) { return m_fRotDiff; }
 	float GetRotMove(void) { return m_fRotMove; }
+	float GetBumpSize(void) { return m_fBumpSize; }
 	bool GetLockon(void) { return m_bLockOn; }
 
 	// メンバ関数(設定)
@@ -85,6 +86,7 @@ protected:
 	void SetIner(const float fIner) { m_fMoveIner = fIner; }
 	void SetRotMulti(const float fMulti) { m_fRotMulti = fMulti; }
 	void SetLockOn(const bool bUse) { m_bLockOn = bUse; }
+	void SetBumpSize(const float fSize) { m_fBumpSize = fSize; }
 
 private:	// 自分だけがアクセス可能
 
@@ -101,6 +103,7 @@ private:	// 自分だけがアクセス可能
 	float m_fRotDiff;	// 目的の角度
 	float m_fMoveIner;	// 移動量の慣性設定
 	float m_fRotMulti;	// 向きの補正速度
+	float m_fBumpSize;	// 衝突判定サイズ
 	bool m_bLockOn;		// ロックオンできるかどうか
 };
 

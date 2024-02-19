@@ -40,7 +40,7 @@
 // 無名名前空間を定義
 namespace {
     const D3DXVECTOR3 STARTDOORPOS = { -1160.0f, 0.0f, 950.0f };	// スタート地点ドア基本座標
-	const D3DXVECTOR3 PLAYERSTARTPOS = { 0.0f, 0.0f, -2300.0f };  // プレイヤーのスタート位置
+	const D3DXVECTOR3 PLAYERSTARTPOS = { 0.0f, 0.0f, -5500.0f };  // プレイヤーのスタート位置
     const D3DXVECTOR3 LEVERPOS[4] =
     {
         D3DXVECTOR3(130.0f, 100.0f, -5130.0f),
@@ -239,9 +239,11 @@ HRESULT CGame::Init(void)
     CEnemyBoss::Create(D3DXVECTOR3(-1200.0f, 1000.0f, 3950.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
     CEnemyMelee::Create(D3DXVECTOR3(100.0f, 600.0f, 2250.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
     CEnemyMelee::Create(D3DXVECTOR3(300.0f, 600.0f, 2250.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
-    CEnemyMelee::Create(D3DXVECTOR3(80.0f, 600.0f, 2250.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+    CEnemyGun::Create(D3DXVECTOR3(0.0f, 0.0f, 1150.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+    CEnemyMelee::Create(D3DXVECTOR3(80.0f, 0.0f, 2250.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
     CEnemyMelee::Create(D3DXVECTOR3(-430.0f, 600.0f, 2250.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
     CEnemyGun::Create(D3DXVECTOR3(500.0f, 600.0f, 2350.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+    CEnemyMelee::Create(D3DXVECTOR3(0.0f, 0.0f, -600.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
     CEnemyGun::Create(D3DXVECTOR3(-500.0f, 600.0f, 2350.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 
     //ドーム追加
@@ -250,8 +252,8 @@ HRESULT CGame::Init(void)
 
     // タイマー追加
     m_pTimer = CTime::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.4f, SCREEN_HEIGHT * 0.05f, 0.0f));
-    m_pTimer->Set(6000 * 3);
-    m_pTimer->SetActive(false);
+    m_pTimer->Set(0);
+    m_pTimer->SetActive(true);
 
     m_pPause = CPause::Create();
 

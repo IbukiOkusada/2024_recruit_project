@@ -34,6 +34,7 @@ public:	// 誰でもアクセス可能
 	void ListOut(CEnemy* pEnemy);
 	int GetNum(void) { return m_nNum; }
 	bool Hit(D3DXVECTOR3& pos, const float fRange, const int nDamage, CEnemy *pTarget);
+	void Bump(D3DXVECTOR3& pos, const float fRange, CEnemy *pMy = nullptr);
 
 private:	// 自分だけがアクセス可能
 

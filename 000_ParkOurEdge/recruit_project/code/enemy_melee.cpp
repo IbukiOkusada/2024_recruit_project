@@ -18,6 +18,7 @@
 #include "manager.h"
 #include "slow.h"
 #include "meshfield.h"
+#include "enemy_manager.h"
 
 // 無名名前空間
 namespace
@@ -32,6 +33,7 @@ namespace
 	const float CHASE_MINLENGTH = (100.0f);		// 追跡0距離
 	const float SEARCH_HEIGHT = (180.0f);		// 探索高さ制限
 	const float MOVE_INER = (0.3f);				// 移動慣性
+	const float STOP_COUNTER = (10.0f);
 }
 
 // 移動速度名前空間
@@ -66,6 +68,7 @@ CEnemyMelee::CEnemyMelee()
 	m_fInterVal = 0;
 	m_StateInfo.state = STATE_APPEAR;
 	m_StateInfo.fCounter = 0.0f;
+	m_fStopCounter = 0.0f;
 }
 
 //==========================================================
@@ -177,7 +180,14 @@ void CEnemyMelee::Update(void)
 		SInfo* pInfo = GetInfo();
 		pInfo->posOld = pInfo->pos;
 	}
-	m_fInterVal -= CManager::GetInstance()->GetSlow()->Get();
+
+	float fSlow = CManager::GetInstance()->GetSlow()->Get();
+	m_fInterVal -= fSlow;
+
+	if (m_fStopCounter > 0.0f) {
+		m_fStopCounter -= fSlow;
+		return;
+	}
 
 	// 処理
 	MethodLine();
@@ -211,6 +221,9 @@ void CEnemyMelee::MethodLine(void)
 
 	// 重力
 	Gravity();
+
+	// 敵同士の当たり判定確認
+	CEnemyManager::GetInstance()->Bump(pInfo->pos, GetBumpSize(), this);
 
 	// 当たり判定確認
 	CObjectX::COLLISION_AXIS axis = CObjectX::TYPE_MAX;
@@ -409,7 +422,9 @@ void CEnemyMelee::AttackCheck(void)
 	float fRange = 50.0f;
 	int nDamage = 1;
 	D3DXVECTOR3 pos = { pModel->GetMtx()->_41, pModel->GetMtx()->_42, pModel->GetMtx()->_43 };
-	CPlayerManager::GetInstance()->Hit(pos, fRange, fRange, nDamage);
+	if (CPlayerManager::GetInstance()->Hit(pos, fRange, fRange, nDamage)) {
+		m_fStopCounter = STOP_COUNTER;
+	}
 }
 
 //===============================================

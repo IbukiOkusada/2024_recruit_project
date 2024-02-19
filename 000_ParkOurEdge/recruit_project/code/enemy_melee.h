@@ -100,6 +100,7 @@ private:	// 自分だけがアクセス可能
 	SStateInfo m_StateInfo;	// 状態管理
 	int m_nAction;			// アクション番号
 	float m_fInterVal;
+	float m_fStopCounter;
 };
 
 #endif

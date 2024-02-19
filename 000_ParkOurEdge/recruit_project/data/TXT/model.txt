@@ -21,13 +21,14 @@ TEXTURE_FILENAME = data/TEXTURE/walldushwall.jpg		# [0]川水(下)
 #------------------------------------------------------------------------------
 # モデル数
 #------------------------------------------------------------------------------
-NUM_MODEL = 2
+NUM_MODEL = 3
 
 #------------------------------------------------------------------------------
 # モデルファイル名
 #------------------------------------------------------------------------------
-MODEL_FILENAME = data/MODEL/5mcube.x	   # [0]5mキューブ
+MODEL_FILENAME = data/MODEL/15mcube.x	   # [0]5mキューブ
 MODEL_FILENAME = data/MODEL/floor000.x	   # [0]5mキューブ
+MODEL_FILENAME = data/MODEL/5mcube.x	   # [0]5mキューブ
 
 #------------------------------------------------------------------------------
 # カメラ情報
@@ -77,9 +78,43 @@ END_MOUNTAINSET
 // 開始地点
 FIELDSET
 	TEXTYPE = 0
-	POS = 0.0 0.0 -2450.0
+	POS = 0.0 0.0 -5000.0
 	ROT = 0 0 0
-	BLOCK = 8 2
+	BLOCK = 6 2
+	SIZE = 150 150
+	MOVE = 0.0 0.0
+END_FIELDSET
+
+WALLSET
+	TEXTYPE = 0
+	POS = -300 0 -4250
+	ROT = 0 -90 0
+	BLOCK = 3 1
+	SIZE = 100 150
+END_WALLSET
+
+WALLSET
+	TEXTYPE = 0
+	POS = 300 0 -4250
+	ROT = 0 90 0
+	BLOCK = 3 1
+	SIZE = 100 150
+END_WALLSET
+
+FIELDSET
+	TEXTYPE = 0
+	POS = 0.0 100.0 -3500.0
+	ROT = 0 0 0
+	BLOCK = 2 2
+	SIZE = 150 150
+	MOVE = 0.0 0.0
+END_FIELDSET
+
+FIELDSET
+	TEXTYPE = 0
+	POS = 0.0 00.0 -2600.0
+	ROT = 0 0 0
+	BLOCK = 1 1
 	SIZE = 150 150
 	MOVE = 0.0 0.0
 END_FIELDSET
@@ -130,9 +165,60 @@ END_WALLSET
 
 WALLSET
 	TEXTYPE = 0
+	POS = 300 0 300
+	ROT = 0 180 0
+	BLOCK = 3 1
+	SIZE = 100 150
+END_WALLSET
+
+WALLSET
+	TEXTYPE = 0
+	POS = -300 0 300
+	ROT = 0 180 0
+	BLOCK = 3 1
+	SIZE = 100 150
+END_WALLSET
+
+WALLSET
+	TEXTYPE = 0
 	POS = 450 0 750
 	ROT = 0 90 0
 	BLOCK = 3 3
+	SIZE = 100 150
+END_WALLSET
+
+// 戦闘広場前
+FIELDSET
+	TEXTYPE = 0
+	POS = 0.0 0.0 -600.0
+	ROT = 0 0 0
+	BLOCK = 6 1
+	SIZE = 150 150
+	MOVE = 0.0 0.0
+END_FIELDSET
+
+WALLSET
+	TEXTYPE = 0
+	POS = -150 0 -600
+	ROT = 0 -90 0
+	BLOCK = 3 6
+	SIZE = 100 150
+END_WALLSET
+
+WALLSET
+	TEXTYPE = 0
+	POS = 150 0 -600
+	ROT = 0 90 0
+	BLOCK = 3 6
+	SIZE = 100 150
+END_WALLSET
+
+WALLSET
+	TEXTYPE = 2
+	WALLTYPE = 1
+	POS = -150 0 -2100
+	ROT = 0 -90 0
+	BLOCK = 2 4
 	SIZE = 100 150
 END_WALLSET
 
@@ -169,15 +255,6 @@ WALLSET
 	POS = -250 0 1350
 	ROT = 0 -90 0
 	BLOCK = 3 1
-	SIZE = 100 150
-END_WALLSET
-
-WALLSET
-	TEXTYPE = 2
-	WALLTYPE = 1
-	POS = -300 0 -700
-	ROT = 0 -90 0
-	BLOCK = 2 5
 	SIZE = 100 150
 END_WALLSET
 
@@ -331,6 +408,120 @@ END_FIELDSET
 MODELSET
 	TYPE = 1
 	POS = 450.0 700.0 2000.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 1		#使用しない場合は0
+END_MODELSET
+
+MODELSET
+	TYPE = 0
+	POS = 150.0 0.0 -4800.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 1		#使用しない場合は0
+END_MODELSET
+
+
+MODELSET
+	TYPE = 0
+	POS = -150.0 0.0 -4800.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 1		#使用しない場合は0
+END_MODELSET
+
+MODELSET
+	TYPE = 1
+	POS = 200.0 150.0 -5000.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 1		#使用しない場合は0
+END_MODELSET
+
+MODELSET
+	TYPE = 1
+	POS = 0.0 100.0 -5000.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 1		#使用しない場合は0
+END_MODELSET
+
+MODELSET
+	TYPE = 1
+	POS = -200.0 50.0 -5000.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 1		#使用しない場合は0
+END_MODELSET
+
+MODELSET
+	TYPE = 0
+	POS = 150.0 0.0 -3950.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 1		#使用しない場合は0
+END_MODELSET
+
+
+MODELSET
+	TYPE = 0
+	POS = -150.0 0.0 -3950.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 1		#使用しない場合は0
+END_MODELSET
+
+MODELSET
+	TYPE = 0
+	POS = 0.0 50.0 0.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 1		#使用しない場合は0
+END_MODELSET
+
+MODELSET
+	TYPE = 0
+	POS = 0.0 350.0 0.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 1		#使用しない場合は0
+END_MODELSET
+
+MODELSET
+	TYPE = 0
+	POS = 0.0 650.0 0.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 1		#使用しない場合は0
+END_MODELSET
+
+MODELSET
+	TYPE = 2
+	POS = 0.0 300.0 -3200.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 1		#使用しない場合は0
+END_MODELSET
+
+MODELSET
+	TYPE = 2
+	POS = 0.0 300.0 -3100.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 1		#使用しない場合は0
+END_MODELSET
+
+MODELSET
+	TYPE = 2
+	POS = 0.0 300.0 -3000.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 1		#使用しない場合は0
+END_MODELSET
+
+MODELSET
+	TYPE = 2
+	POS = 0.0 300.0 -2900.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 1		#使用しない場合は0
+END_MODELSET
+
+MODELSET
+	TYPE = 2
+	POS = 0.0 300.0 -2800.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 1		#使用しない場合は0
+END_MODELSET
+
+MODELSET
+	TYPE = 2
+	POS = 0.0 300.0 -2700.0
 	ROT = 0.0 0.0 0.0
 	SHADOW = 1		#使用しない場合は0
 END_MODELSET

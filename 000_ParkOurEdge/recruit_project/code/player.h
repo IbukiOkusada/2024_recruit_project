@@ -179,34 +179,35 @@ private:	// 自分だけがアクセス可能
 	void KickChance(void);
 
 	// メンバ変数
-	CPlayer *m_pPrev;		// 前のオブジェクトへのポインタ
-	CPlayer *m_pNext;		// 次のオブジェクトへのポインタ
-	SInfo m_Info;			// 自分自身の情報
-	CWaist *m_pWaist;		// 腰
-	CCharacter *m_pBody;	// 上半身
-	CCharacter *m_pLeg;		// 下半身
+	CPlayer *m_pPrev;			// 前のオブジェクトへのポインタ
+	CPlayer *m_pNext;			// 次のオブジェクトへのポインタ
+	SInfo m_Info;				// 自分自身の情報
+	CWaist *m_pWaist;			// 腰
+	CCharacter *m_pBody;		// 上半身
+	CCharacter *m_pLeg;			// 下半身
 	CCamera* m_pMyCamera;
 	TYPE m_type;
-	D3DXVECTOR3 m_ColiNor;	// 当たり判定ベクトル
-	D3DXVECTOR3 m_MoveNor;	// 移動方向ベクトル
+	D3DXVECTOR3 m_ColiNor;		// 当たり判定ベクトル
+	D3DXVECTOR3 m_MoveNor;		// 移動方向ベクトル
 	D3DXVECTOR3 m_ColiNorOld;	// 前回の移動ベクトル
-	CEnemy* m_pTarget;		// ロックオン対象
-	CLockOn* m_pLockOn;		// ロックオン
-	CLifeUI* m_pUI;			// 体力UI
-	int m_nWallType;		// 触れた壁の種類
-	float m_fRotMove;		// 現在の角度
-	float m_fRotDiff;		// 目的の角度
-	float m_fRotDest;		// 角度計算
-	float m_fCamRotZ;		// 保存カメラ向き
-	float m_fCamLength;		// 保存カメラ距離
+	CEnemy* m_pTarget;			// ロックオン対象
+	CLockOn* m_pLockOn;			// ロックオン
+	CLifeUI* m_pUI;				// 体力UI
+	int m_nWallType;			// 触れた壁の種類
+	float m_fRotMove;			// 現在の角度
+	float m_fRotDiff;			// 目的の角度
+	float m_fRotDest;			// 角度計算
+	float m_fCamRotZ;			// 保存カメラ向き
+	float m_fCamLength;			// 保存カメラ距離
 	float m_fAtkChargeCnter;	// 攻撃chargeカウンタ
-	int m_nId;				// ID
-	int m_nAction;			// 現在のアクション
-	int m_nActionOld;		// 前回のアクション
-	int m_nLife;			// 体力
-	bool m_bJump;			// ジャンプフラグ
-	bool m_bMove;			// 移動フラ
-	bool m_bLockOn;			// ロックオン中かどうか
+	float m_fStopCounter;
+	int m_nId;					// ID
+	int m_nAction;				// 現在のアクション
+	int m_nActionOld;			// 前回のアクション
+	int m_nLife;				// 体力
+	bool m_bJump;				// ジャンプフラグ
+	bool m_bMove;				// 移動フラ
+	bool m_bLockOn;				// ロックオン中かどうか
 };
 
 #endif

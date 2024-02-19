@@ -169,3 +169,38 @@ bool CEnemyManager::Hit(D3DXVECTOR3& pos, const float fRange, const int nDamage,
 
 	return bhit;
 }
+
+//==========================================================
+// Õ“Ë”»’è
+//==========================================================
+void CEnemyManager::Bump(D3DXVECTOR3& pos, const float fRange, CEnemy* pMy)
+{
+	CEnemy* pEnemy = m_pTop;
+
+	//ŒÂ•Ê”»’è
+	while (pEnemy != nullptr) {
+		CEnemy* pEnemyNext = pEnemy->GetNext();
+		if (pMy == pEnemy) { // ©•ª©g‚Ìê‡
+			pEnemy = pEnemyNext;
+			continue;
+		}
+
+		// ‹——£‚ğæ“¾
+		D3DXVECTOR3 EnemyPos = pEnemy->GetPosition();
+		float fLength = sqrtf((pos.x - EnemyPos.x) * (pos.x - EnemyPos.x)
+			+ (pos.z - EnemyPos.z) * (pos.z - EnemyPos.z));
+		float fFusionRange = fRange + pEnemy->GetBumpSize();
+
+		if (fLength > fFusionRange) {	// ‹——£‚ª‹ß‚¢
+			pEnemy = pEnemyNext;
+			continue;
+		}
+
+		// G‚ê‚Ä‚¢‚é‚Ì‚Å‚ß‚è‚İ‚ğ’¼‚·
+		D3DXVECTOR3 vec = D3DXVECTOR3(pos.x - EnemyPos.x, pos.y - EnemyPos.y, pos.z - EnemyPos.z);
+		D3DXVec3Normalize(&vec, &vec);
+		pos = D3DXVECTOR3(EnemyPos.x + fFusionRange * vec.x, pos.y, EnemyPos.z + fFusionRange * vec.z);
+
+		pEnemy = pEnemyNext;
+	}
+}

@@ -12,6 +12,7 @@
 
 namespace {
 	const float ROT_MULTI = (0.1f);	// Œü‚«•â³”{—¦
+	const float BUMP_SIZE = (25.0f);
 }
 
 //==========================================================
@@ -30,6 +31,7 @@ CEnemy::CEnemy()
 	m_fMoveIner = 0.0f;
 	m_fRotMulti = ROT_MULTI;
 	m_bLockOn = true;
+	m_fBumpSize = BUMP_SIZE;
 
 	// ƒŠƒXƒg‚É‘}“ü
 	CEnemyManager::GetInstance()->ListIn(this);

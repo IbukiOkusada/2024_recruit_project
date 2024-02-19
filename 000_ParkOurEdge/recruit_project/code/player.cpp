@@ -53,7 +53,7 @@
 #define JUMP	(16.0f)
 
 namespace {
-	const D3DXVECTOR3 PLAYERSTARTPOS = { 10.0f, 0.0f, -2300.0f };  // プレイヤーのスタート位置
+	const D3DXVECTOR3 PLAYERSTARTPOS = { 10.0f, 0.0f, -5500.0f };  // プレイヤーのスタート位置
 	const int HEADPARTS_IDX = (1);	// 頭のパーツインデックス
 	const float DAMAGE_INTERVAL = (10.0f);	// ダメージインターバル
 	const float DAMAGE_APPEAR = (110.0f);	// 無敵時間インターバル
@@ -94,6 +94,7 @@ namespace {
 	const float AXEKICK_MOVE = (0.75f);
 	const int LIFE = (10);
 	const float KICK_STEPMOVE = (45.0f);
+	const float ATK_INTERVAL = (5.0f);
 	const D3DXVECTOR3 LIFEUI_POS = { SCREEN_WIDTH * 0.175f, SCREEN_HEIGHT * 0.9f, 0.0f };
 }
 
@@ -137,6 +138,8 @@ CPlayer::CPlayer()
 	m_pUI = nullptr;
 	m_nWallType = 0;
 	m_ColiNorOld = { 0.0f, 0.0f, 0.0f };
+	m_fAtkChargeCnter = 0.0f;
+	m_fStopCounter = 0.0f;
 
 	CPlayerManager::GetInstance()->ListIn(this);
 }
@@ -330,6 +333,11 @@ void CPlayer::Update(void)
 {	
 	// 前回の座標を取得
 	m_Info.posOld = GetPosition();
+
+	if (m_fStopCounter > 0.0f) {
+		m_fStopCounter -= CManager::GetInstance()->GetSlow()->Get();
+		return;
+	}
 
 	StateSet();	
 
@@ -1894,6 +1902,7 @@ void CPlayer::Hit(void)
 	D3DXVECTOR3 pos = { pModel->GetMtx()->_41, pModel->GetMtx()->_42, pModel->GetMtx()->_43 };
 	
 	if (CEnemyManager::GetInstance()->Hit(pos, fRange, nDamage, m_pTarget)) {	// 当たった場合
+		m_fStopCounter = ATK_INTERVAL;
 		if (m_nAction == ACTION_NORMALATK) {
 			m_nAction = ACTION_KICKUP;
 			m_Info.move = { 0.0f, 0.0f, 0.0f };	// 移動量リセット

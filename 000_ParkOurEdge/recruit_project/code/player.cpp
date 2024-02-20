@@ -95,6 +95,7 @@ namespace {
 	const int LIFE = (10);
 	const float KICK_STEPMOVE = (45.0f);
 	const float ATK_INTERVAL = (5.0f);
+	const float CEILING_ROTZ = (D3DX_PI * 0.55f);
 	const D3DXVECTOR3 LIFEUI_POS = { SCREEN_WIDTH * 0.175f, SCREEN_HEIGHT * 0.9f, 0.0f };
 }
 
@@ -372,8 +373,11 @@ void CPlayer::Update(void)
 			// 角度調整
 			float fRot = m_fCamRotZ;
 			D3DXVECTOR3 CamRot = m_pMyCamera->GetRotation();
-			if (m_nAction == ACTION_SLIDING || m_nAction == ACTION_CEILINGDUSH) {	// スライディングの時
+			if (m_nAction == ACTION_SLIDING) {	// スライディングの時
 				fRot = SLIDINNG_ROTZ;
+			}
+			else if(m_nAction == ACTION_CEILINGDUSH){
+				fRot = CEILING_ROTZ;
 			}
 			else if (m_nAction == ACTION_AXEKICK) {
 				fRot = AXEKICK_ROTZ;
@@ -530,33 +534,6 @@ void CPlayer::Controller(void)
 	m_bJump = true;	// ジャンプ状態リセット
 
 	// 起伏との当たり判定
-	// メッシュフィールドとの判定
-	{
-		float fHeight = CMeshField::GetHeight(m_Info.pos);
-		if (m_Info.pos.y < fHeight && m_Info.posOld.y >= fHeight)
-		{
-			m_Info.pos.y = fHeight;
-			m_Info.move.y = 0.0f;
-			m_bJump = false;
-
-			if (m_nAction == ACTION_WALLKICK) {	// 壁蹴りの場合
-				SetAction(ACTION_NEUTRAL);
-				if (BodyCheck(m_pBody) && BodyCheck(m_pLeg)) {	// 上下どちらも使用中
-					m_pBody->GetMotion()->Set(m_nAction);
-					m_pLeg->GetMotion()->Set(m_nAction);
-				}
-			}
-			else if (m_nAction == ACTION_SLIDEJUMP) {
-				SetAction(ACTION_NEUTRAL);
-			}
-
-			if (m_fAtkChargeCnter > 0.0f) {
-				m_fAtkChargeCnter = 0.0f;
-				CManager::GetInstance()->GetSlow()->SetSlow(false);
-				m_pLockOn->SetLock(false);
-			}
-		}
-	}
 
 	// オブジェクトとの当たり判定
 	D3DXVECTOR3 vtxMax = PLAYER::COLLIMAX;
@@ -598,12 +575,41 @@ void CPlayer::Controller(void)
 	}
 
 	m_nWallType = 0;
+	vtxMin.y = 0.0f;
 	D3DXVECTOR3 nor = CMeshWall::Collision(m_Info.pos, m_Info.posOld, m_Info.move, vtxMax, vtxMin, ColiAxis, m_nWallType);
 
 	CManager::GetInstance()->GetDebugProc()->Print("今触れている壁の種類 [ %d ]\n", m_nWallType);
 
 	if (nor.x != 0.0f || nor.z != 0.0f) {
 		m_ColiNor = nor;
+	}
+
+	// メッシュフィールドとの判定
+	{
+		float fHeight = CMeshField::GetHeight(m_Info.pos, m_Info.posOld);
+		if (m_Info.pos.y < fHeight && m_Info.posOld.y >= fHeight)
+		{
+			m_Info.pos.y = fHeight;
+			m_Info.move.y = 0.0f;
+			m_bJump = false;
+
+			if (m_nAction == ACTION_WALLKICK) {	// 壁蹴りの場合
+				SetAction(ACTION_NEUTRAL);
+				if (BodyCheck(m_pBody) && BodyCheck(m_pLeg)) {	// 上下どちらも使用中
+					m_pBody->GetMotion()->Set(m_nAction);
+					m_pLeg->GetMotion()->Set(m_nAction);
+				}
+			}
+			else if (m_nAction == ACTION_SLIDEJUMP) {
+				SetAction(ACTION_NEUTRAL);
+			}
+
+			if (m_fAtkChargeCnter > 0.0f) {
+				m_fAtkChargeCnter = 0.0f;
+				CManager::GetInstance()->GetSlow()->SetSlow(false);
+				m_pLockOn->SetLock(false);
+			}
+		}
 	}
 
 	if (bOld && !m_bJump) {
@@ -620,7 +626,7 @@ void CPlayer::Controller(void)
 		m_bJump = false;
 	}
 
-	if (m_Info.pos.y <= -100.0f && CManager::GetInstance()->GetMode() == CScene::MODE_GAME) {
+	if (m_Info.pos.y <= -200.0f && CManager::GetInstance()->GetMode() == CScene::MODE_GAME) {
 		m_Info.pos = PLAYERSTARTPOS;
 	}
 }

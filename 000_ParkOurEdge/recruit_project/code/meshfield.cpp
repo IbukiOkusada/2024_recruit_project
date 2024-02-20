@@ -9,6 +9,7 @@
 #include "manager.h"
 #include "debugproc.h"
 #include "input.h"
+#include "player_manager.h"
 
 CMeshField *CMeshField::m_pTop = NULL;	// 先頭のオブジェクトへのポインタ
 CMeshField *CMeshField::m_pCur = NULL;	// 最後尾のオブジェクトへのポインタ
@@ -289,139 +290,12 @@ void CMeshField::SetSize(float fWidth, float fHeight)
 }
 
 //==========================================================
-// 当たり判定
-//==========================================================
-float CMeshField::GetHeight(D3DXVECTOR3 pos, D3DXVECTOR3 &normal)
-{
-	float fHeight = 0.0f;	// 高さ
-	D3DXVECTOR3 Pos0, Pos1, Pos2, Pos3;
-	D3DXVECTOR3 vecToPos;	//判定用変数
-	D3DXVECTOR3 vec1, vec2;	//判定用変数
-	D3DXVECTOR3 nor0, nor3;
-	float fRate, fRate2;	//判定用変数
-	float fMaxField;		//判定用
-	float fField, fField2;
-	D3DXVECTOR3 nor;
-	D3DXVECTOR3 MeshPos = GetPosition();
-	int nNowWidth = -1;		// 乗っている幅番号
-	int nNowHeight = -1;	// 乗っている高さ番号
-
-	if (pos.x < MeshPos.x + m_pVtx[0].pos.x || pos.x > MeshPos.x + m_pVtx[GetVertex() - 1].pos.x ||
-		pos.z > MeshPos.z + m_pVtx[0].pos.z || pos.z < MeshPos.z + m_pVtx[GetVertex() - 1].pos.z)
-	{// 範囲外
-		return fHeight;
-	}
-
-	// サイズを取得
-	vec1 = m_pVtx[GetVertex() - 1].pos - m_pVtx[0].pos;
-	vec2 = pos - (GetPosition() + m_pVtx[0].pos);
-
-	if (vec1.x == 0.0f || vec1.z == 0.0f)
-	{// 直線の場合
-		return fHeight;
-	}
-
-	//xとz座標のメッシュ内の割合を求める
-	nor0 = D3DXVECTOR3(vec2.x / vec1.x, 0.0f, vec2.z / vec1.z);
-
-	// 幅の場所を取得
-	nNowWidth = (int)((float)(GetNumWidth() * nor0.x));
-
-	// 高さの場所を取得
-	nNowHeight = (int)((float)(GetNumHeight() * nor0.z));
-
-	Pos0 = m_pVtx[nNowHeight * (GetNumWidth() + 1) + nNowWidth + GetNumWidth() + 1].pos;
-	Pos1 = m_pVtx[nNowHeight * (GetNumWidth() + 1) + nNowWidth + 0].pos;
-	Pos2 = m_pVtx[nNowHeight * (GetNumWidth() + 1) + nNowWidth + GetNumWidth() + 2].pos;
-	Pos3 = m_pVtx[nNowHeight * (GetNumWidth() + 1) + nNowWidth + 1].pos;
-
-	// Pos0からのベクトルを求める
-	vec1 = Pos1 - Pos0;
-	vec2 = Pos2 - Pos0;
-
-	// 現在の座標のベクトルを求める
-	vecToPos = D3DXVECTOR3(pos.x - (MeshPos.x + Pos0.x),
-		pos.y - (MeshPos.y + Pos0.y),
-		pos.z - (MeshPos.z + Pos0.z));
-
-	D3DXVec3Cross(&nor0, &vec1, &vec2);
-
-	D3DXVec3Normalize(&nor0, &nor0);	// ベクトルを正規化する
-
-	// 面積を求める
-	fMaxField = (vec1.x * vec2.z) - (vec1.z * vec2.x);
-
-	// 現在の位置との面積を求める
-	fField = (vecToPos.x * vec2.z) - (vecToPos.z * vec2.x);
-	fField2 = (vecToPos.z * vec1.x) - (vecToPos.x * vec1.z);
-
-	// 交点の割合を求める
-	fRate = fField / fMaxField;
-	fRate2 = fField2 / fMaxField;
-
-	// 範囲内判定
-	if (nor0.y != 0.0f)
-	{
-		if (fRate >= 0.0f && fRate <= 1.0f && fRate2 >= 0.0f && fRate2 <= 1.0f && (fRate + fRate2) <= 1.0f)
-		{// 三角ポリゴンの中にいる
-			fHeight = (-((pos.x - (MeshPos.x + Pos0.x)) * nor0.x) +
-				-((pos.z - (MeshPos.z + Pos0.z)) * nor0.z)) / nor0.y + (MeshPos.y + Pos0.y);
-
-			normal = nor0;
-
-			return fHeight;
-		}
-	}
-
-	// Pos3からのベクトルを求める
-	vec1 = Pos2 - Pos3;
-	vec2 = Pos1 - Pos3;
-
-	D3DXVec3Cross(&nor3, &vec2, &vec1);
-
-	D3DXVec3Normalize(&nor3, &nor3);	// ベクトルを正規化する
-
-	// 現在の座標のベクトルを求める
-	vecToPos = D3DXVECTOR3(pos.x - (MeshPos.x + Pos3.x),
-		pos.y - (MeshPos.y + Pos3.y),
-		pos.z - (MeshPos.z + Pos3.z));
-
-	// 面積を求める
-	fMaxField = (vec1.x * vec2.z) - (vec1.z * vec2.x);
-
-	// 現在の位置との面積を求める
-	fField = (vecToPos.x * vec2.z) - (vecToPos.z * vec2.x);
-	fField2 = (vecToPos.z * vec1.x) - (vecToPos.x * vec1.z);
-
-	// 交点の割合を求める
-	fRate = fField / fMaxField;
-	fRate2 = fField2 / fMaxField;
-
-	// 範囲内判定
-	if (nor0.y != 0.0f)
-	{
-		if (fRate >= 0.0f && fRate <= 1.0f && fRate2 >= 0.0f && fRate2 <= 1.0f && (fRate + fRate2) <= 1.0f)
-		{// 三角ポリゴンの中にいる
-			fHeight = (-((pos.x - (MeshPos.x + Pos3.x)) * nor3.x) +
-				-((pos.z - (MeshPos.z + Pos3.z)) * nor3.z)) / nor3.y + (MeshPos.y + Pos3.y);
-
-			normal = nor3;
-
-			return fHeight;
-		}
-	}
-
-	return pos.y;
-}
-
-//==========================================================
 // 全ての床との判定
 //==========================================================
-float CMeshField::GetHeight(D3DXVECTOR3 pos)
+float CMeshField::GetHeight(const D3DXVECTOR3& pos, const D3DXVECTOR3& posOld)
 {
 	CMeshField *pMesh = CMeshField::GetTop();	// 先頭を取得
 	float fHeight = pos.y;	// 高さ
-	bool bValue = false;
 	D3DXVECTOR3 Pos0, Pos1, Pos2, Pos3;
 	D3DXVECTOR3 vecToPos;	//判定用変数
 	D3DXVECTOR3 vec1, vec2;	//判定用変数
@@ -506,9 +380,8 @@ float CMeshField::GetHeight(D3DXVECTOR3 pos)
 				float fValue = (-((pos.x - (MeshPos.x + Pos0.x)) * nor0.x) +
 					-((pos.z - (MeshPos.z + Pos0.z)) * nor0.z)) / nor0.y + (MeshPos.y + Pos0.y);
 
-				if (fValue >= fHeight || bValue == false)
+				if (pos.y < fValue && posOld.y >= fValue)
 				{
-					bValue = true;
 					fHeight = fValue;
 				}
 			}
@@ -547,9 +420,8 @@ float CMeshField::GetHeight(D3DXVECTOR3 pos)
 				float fValue = (-((pos.x - (MeshPos.x + Pos3.x)) * nor3.x) +
 					-((pos.z - (MeshPos.z + Pos3.z)) * nor3.z)) / nor3.y + (MeshPos.y + Pos3.y);
 
-				if (fValue >= fHeight || bValue == false)
+				if (pos.y < fValue && posOld.y >= fValue)
 				{
-					bValue = true;
 					fHeight = fValue;
 				}
 			}
@@ -566,7 +438,7 @@ float CMeshField::GetHeight(D3DXVECTOR3 pos)
 //==========================================================
 void CMeshField::Edit(float *pLength, float *pSpeed)
 {
-	CPlayer *pPlayer = CManager::GetInstance()->GetScene()->GetPlayer();
+	CPlayer *pPlayer = CPlayerManager::GetInstance()->GetTop();
 
 	if (pPlayer == NULL)
 	{

@@ -41,8 +41,7 @@ public:		// 誰でもアクセス可能
 	// メンバ関数(設定)
 	void SetSize(float fWidth, float fHeight);
 	void SetTexMove(D3DXVECTOR2 texmove) { m_texmove = texmove; }
-	float GetHeight(D3DXVECTOR3 pos, D3DXVECTOR3 &normal);
-	static float GetHeight(D3DXVECTOR3 pos);
+	static float GetHeight(const D3DXVECTOR3& pos, const D3DXVECTOR3& posOld);
 
 private:	// 自分だけがアクセス可能
 

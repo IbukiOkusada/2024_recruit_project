@@ -48,6 +48,7 @@ public:	// 誰でもアクセス可能
 	void MoveVR(void);
 	void SetPositionR(D3DXVECTOR3 pos);
 	void SetPositionV(D3DXVECTOR3 pos);
+	void Edit(void);
 
 	//当たり判定
 	void CollisionObj(void);
@@ -91,7 +92,6 @@ private:	// 自分だけがアクセス可能
 	void MoveR(void);
 	void SetV(void);
 	void SetR(void);
-	void Edit(void);
 	void Slow(void);
 	void Zoom(void);
 

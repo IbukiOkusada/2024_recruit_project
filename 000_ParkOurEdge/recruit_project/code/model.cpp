@@ -196,7 +196,7 @@ void CModel::Draw(void)
 		if (m_mtxWorld._42 >= -296.0f)
 		{
 			pos = D3DXVECTOR3(m_mtxWorld._41, -296.0f, m_mtxWorld._43);
-			pos.y = CMeshField::GetHeight(D3DXVECTOR3(m_mtxWorld._41, m_mtxWorld._42, m_mtxWorld._43)) + 4.0f;
+			pos.y = CMeshField::GetHeight(D3DXVECTOR3(m_mtxWorld._41, -100.0f, m_mtxWorld._43), D3DXVECTOR3(m_mtxWorld._41, m_mtxWorld._42, m_mtxWorld._43)) + 4.0f;
 			CObjectX::CollisionLand(pos);
 			normal = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
 			D3DXPlaneFromPointNormal(&plane, &pos, &normal);

@@ -223,7 +223,7 @@ void CEnemyGun::MethodLine(void)
 	int nType = 0;
 	CObjectX::COLLISION_AXIS axis = CObjectX::TYPE_MAX;
 	CMeshWall::Collision(pInfo->pos, pInfo->posOld, pInfo->move, COLLIMAX, COLLIMIN, axis, nType);
-	float fHeight = CMeshField::GetHeight(pInfo->pos);
+	float fHeight = CMeshField::GetHeight(pInfo->pos, pInfo->posOld);
 	if (pInfo->pos.y < fHeight && pInfo->posOld.y >= fHeight) {
 		pInfo->pos.y = fHeight;
 		pInfo->move.y = 0.0f;

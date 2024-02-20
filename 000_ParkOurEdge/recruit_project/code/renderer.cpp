@@ -12,6 +12,7 @@
 #include "object_manager.h"
 #include "object.h"
 #include "camera.h"
+#include "editor.h"
 
 //===================================================
 // コンストラクタ
@@ -221,6 +222,10 @@ void CRenderer::Draw(void)
 #if _DEBUG	// デバッグ時
 
 	 // エディターの描画
+	if (CEditor::GetInstance() != nullptr) {
+		CEditor::GetInstance()->Draw();
+	}
+
 #endif
 		CManager::GetInstance()->GetCamera()->SetCamera();
 		CObjectManager::GetInstance()->DrawOneDimension(CObjectManager::TYPE_2D);

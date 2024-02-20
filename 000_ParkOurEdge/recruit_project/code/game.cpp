@@ -36,6 +36,7 @@
 #include "player_manager.h"
 #include "enemy_gun.h"
 #include "enemy_boss.h"
+#include "editor.h"
 
 // 無名名前空間を定義
 namespace {
@@ -180,6 +181,11 @@ HRESULT CGame::Init(void)
         }
     }
 
+#ifdef _DEBUG
+    // エディターの生成
+    CEditor::Create();
+#endif // _DEBUG
+
     // カメラの初期位置設定
     CCamera* pCamera = CManager::GetInstance()->GetCamera();
     pCamera->SetPositionV(D3DXVECTOR3(-874.3f, 1124.15f, 1717.2f));
@@ -236,7 +242,7 @@ HRESULT CGame::Init(void)
         break;
     }
 
-    CEnemyBoss::Create(D3DXVECTOR3(-1200.0f, 1000.0f, 3950.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+    /*CEnemyBoss::Create(D3DXVECTOR3(-1200.0f, 1000.0f, 3950.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
     CEnemyMelee::Create(D3DXVECTOR3(100.0f, 600.0f, 2250.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
     CEnemyMelee::Create(D3DXVECTOR3(300.0f, 600.0f, 2250.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
     CEnemyGun::Create(D3DXVECTOR3(0.0f, 0.0f, 1150.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
@@ -244,11 +250,11 @@ HRESULT CGame::Init(void)
     CEnemyMelee::Create(D3DXVECTOR3(-430.0f, 600.0f, 2250.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
     CEnemyGun::Create(D3DXVECTOR3(500.0f, 600.0f, 2350.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
     CEnemyMelee::Create(D3DXVECTOR3(0.0f, 0.0f, -600.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
-    CEnemyGun::Create(D3DXVECTOR3(-500.0f, 600.0f, 2350.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+    CEnemyGun::Create(D3DXVECTOR3(-500.0f, 600.0f, 2350.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));*/
 
     //ドーム追加
-    CMeshDome::Create(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), 9000.0f, 3000.0f, 3, 8, 8);
-    CMeshDome::Create(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(D3DX_PI, 0.0f, 0.0f), 9000.0f, 3000.0f, 3, 8, 8);
+    CMeshDome::Create(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), 15000.0f, 3000.0f, 3, 8, 8);
+    CMeshDome::Create(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(D3DX_PI, 0.0f, 0.0f), 15000.0f, 3000.0f, 3, 8, 8);
 
     // タイマー追加
     m_pTimer = CTime::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.4f, SCREEN_HEIGHT * 0.05f, 0.0f));
@@ -276,12 +282,14 @@ void CGame::Uninit(void)
         }
     }
 
+    // ポーズ
     if (m_pPause != nullptr) {
         m_pPause->Uninit();
         delete m_pPause;
         m_pPause = nullptr;
     }
 
+    // ファイル読み込み
     if (m_pFileLoad != nullptr)
     {
         m_pFileLoad->Uninit();
@@ -290,6 +298,7 @@ void CGame::Uninit(void)
         m_pFileLoad = nullptr;
     }
 
+    // クライアント
     if (m_pClient != nullptr)
     {
         m_pClient->Uninit();
@@ -297,6 +306,7 @@ void CGame::Uninit(void)
         m_pClient = nullptr;
     }
 
+    // プレイヤーダブルポインタ
     if (m_ppPlayer != nullptr) { // 使用していた場合
         for (int nCnt = 0; nCnt < m_nNumPlayer; nCnt++)
         {
@@ -309,6 +319,7 @@ void CGame::Uninit(void)
         m_ppPlayer = nullptr;	// 使用していない状態にする
     }
 
+    // カメラダブルポインタ
     if (m_ppCamera != nullptr) { // 使用していた場合
         for (int nCnt = 0; nCnt < m_nNumPlayer; nCnt++)
         {
@@ -322,11 +333,15 @@ void CGame::Uninit(void)
         m_ppCamera = nullptr;	// 使用していない状態にする
     }
 
+    // タイマー
     if (m_pTimer != nullptr) {
         m_pTimer->Uninit();
         delete m_pTimer;
         m_pTimer = nullptr;
     }
+
+    // エディター
+    CEditor::Release();
 
     // defaultカメラオン
     CManager::GetInstance()->GetCamera()->SetDraw(true);
@@ -342,6 +357,20 @@ void CGame::Uninit(void)
 //===============================================
 void CGame::Update(void)
 {
+    // エディター更新
+#if _DEBUG	// デバッグ時
+
+     // エディターの描画
+    if (CEditor::GetInstance() != nullptr) {
+        CEditor::GetInstance()->Update();
+
+        if (CEditor::GetInstance()->GetActive()) {
+            return;
+        }
+    }
+
+#endif
+
 	CInputPad *pInputPad = CManager::GetInstance()->GetInputPad();
 	CInputKeyboard *pInputKey = CManager::GetInstance()->GetInputKeyboard();
 

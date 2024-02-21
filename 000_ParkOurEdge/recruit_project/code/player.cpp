@@ -95,7 +95,9 @@ namespace {
 	const int LIFE = (10);
 	const float KICK_STEPMOVE = (45.0f);
 	const float ATK_INTERVAL = (5.0f);
-	const float CEILING_ROTZ = (D3DX_PI * 0.55f);
+	const float CEILING_ROTZ = (D3DX_PI * 0.65f);
+	const float CEILING_MOVE = (MOVE * 0.5f);
+	const float CEILING_CAMLENGTH = (300.0f);
 	const D3DXVECTOR3 LIFEUI_POS = { SCREEN_WIDTH * 0.175f, SCREEN_HEIGHT * 0.9f, 0.0f };
 }
 
@@ -390,7 +392,7 @@ void CPlayer::Update(void)
 
 			// 追従
 			float fLength = m_fCamLength;
-			if (m_nAction == ACTION_SLIDING || m_nAction == ACTION_CEILINGDUSH) {	// スライディングの時
+			if (m_nAction == ACTION_SLIDING) {	// スライディングの時
 				fLength = SLIDING_LENGTH;
 			}
 			else if (m_nAction == ACTION_AXEKICK) {
@@ -398,6 +400,9 @@ void CPlayer::Update(void)
 			}
 			else if (m_nAction == ACTION_RIDERKICK) {
 				fLength = RIDERKICK_CAMERALENGTH;
+			}
+			else if (m_nAction == ACTION_CEILINGDUSH) {
+				fLength = CEILING_CAMLENGTH;
 			}
 			m_pMyCamera->Pursue(GetPosition(), GetRotation(), fLength);
 		}
@@ -755,6 +760,10 @@ void CPlayer::MoveController(void)
 
 	case ACTION_AXEKICK:
 		fSpeed = AXEKICK_MOVE;
+		break;
+
+	case ACTION_CEILINGDUSH:
+		fSpeed = CEILING_MOVE;
 		break;
 	}
 

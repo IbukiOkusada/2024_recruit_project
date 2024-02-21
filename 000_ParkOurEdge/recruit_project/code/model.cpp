@@ -203,7 +203,7 @@ void CModel::Draw(void)
 				pos = DefPos;
 			}
 
-			float fHeight = CMeshField::GetHeight(D3DXVECTOR3(m_mtxWorld._41, -10000.0f, m_mtxWorld._43), pos) + 4.0f;
+			float fHeight = CMeshField::GetHeight(D3DXVECTOR3(m_mtxWorld._41, -10000.0f, m_mtxWorld._43), pos) + 1.0f;
 
 			if (fHeight >= pos.y && fHeight <= DefPos.y || pos.y == DefPos.y) {	// Œ»Ý‚ÌÀ•W‚æ‚è‚à’á‚¢
 				pos.y = fHeight;

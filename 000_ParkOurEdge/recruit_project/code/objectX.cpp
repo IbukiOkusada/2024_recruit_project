@@ -665,7 +665,7 @@ void CObjectX::CollisionLand(D3DXVECTOR3 &pos)
 			&& pos.z <= pObj->m_pos.z + vtxObjMax.z)
 		{//îÕàÕì‡Ç…Ç†ÇÈ
 			//è„Ç©ÇÁÇÃîªíË
-			if (pos.y < pObj->m_pos.y + vtxObjMax.y)
+			if (pos.y >= pObj->m_pos.y + vtxObjMax.y)
 			{//è„Ç©ÇÁÇﬂÇËçûÇÒÇæ
 				//è„Ç…ÇÃÇπÇÈ
 				pos.y = pObj->m_pos.y + vtxObjMax.y + 4.0f;

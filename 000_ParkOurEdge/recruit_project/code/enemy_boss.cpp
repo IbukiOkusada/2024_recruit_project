@@ -198,7 +198,7 @@ HRESULT CEnemyBoss::Init(void)
 	SetRotMulti(ROTDIFF_INER);
 
 	// “®ì‚·‚é‹´‚ğ¶¬
-	m_pBridge = CBridge::Create(D3DXVECTOR3(-2700.0f, 1010.0f, 3750.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+	m_pBridge = CBridge::Create(D3DXVECTOR3(-3450.0f, 1010.0f, 3000.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 
 	// ƒƒbƒNƒIƒ“‚Å‚«‚È‚¢ó‘Ô‚Éİ’è
 	SetLockOn(false);

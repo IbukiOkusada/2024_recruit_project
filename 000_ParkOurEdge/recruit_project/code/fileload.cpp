@@ -15,6 +15,10 @@
 #include "objectX.h"
 #include "game.h"
 #include "model.h"
+#include "enemy.h"
+#include "enemy_boss.h"
+#include "enemy_gun.h"
+#include "enemy_melee.h"
 
 //==========================================================
 // マクロ定義
@@ -235,6 +239,10 @@ void CFileLoad::LoadFileData(FILE *pFile)
 		else if (strcmp(&aStr[0], SPEARSET_TXT) == 0)
 		{
 			LoadSpearData(pFile);
+		}
+		else if (strcmp(&aStr[0], "ENEMYSET") == 0)
+		{
+			LoadEnemyData(pFile);
 		}
 
 		//終了確認
@@ -1020,5 +1028,74 @@ void CFileLoad::LoadSpearData(FILE *pFile)
 		{//終了文字
 			break;
 		}
+	}
+}
+
+//==========================================================
+// 敵配置データ
+//==========================================================
+void CFileLoad::LoadEnemyData(FILE* pFile)
+{
+	char aStr[256];	//余分な文章読み込み用
+
+	D3DXVECTOR3 pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	D3DXVECTOR3 rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	int nLife = -1;
+	int nType = 1;
+
+	//終了文字まで読み込み
+	while (1)
+	{
+		fscanf(pFile, "%s", &aStr[0]);
+
+		//配置情報確認
+		if (strcmp(&aStr[0], LOAD_POS) == 0)
+		{//座標
+			fscanf(pFile, "%s", &aStr[0]);	//(=)読み込み
+			fscanf(pFile, "%f", &pos.x);	//x座標読み込み
+			fscanf(pFile, "%f", &pos.y);	//y座標読み込み
+			fscanf(pFile, "%f", &pos.z);	//z座標読み込み
+		}
+		else if (strcmp(&aStr[0], LOAD_ROT) == 0)
+		{//向き
+			fscanf(pFile, "%s", &aStr[0]);	//(=)読み込み
+			fscanf(pFile, "%f", &rot.x);	//x座標読み込み
+			fscanf(pFile, "%f", &rot.y);	//y座標読み込み
+			fscanf(pFile, "%f", &rot.z);	//z座標読み込み
+		}
+		else if (strcmp(&aStr[0], LOAD_MODELTYPE) == 0)
+		{//ID
+			fscanf(pFile, "%s", &aStr[0]);	//(=)読み込み
+			fscanf(pFile, "%d", &nType);	// ID
+		}
+		else if (strcmp(&aStr[0], "LIFE") == 0)
+		{// 体力
+			fscanf(pFile, "%s", &aStr[0]);	//(=)読み込み
+			fscanf(pFile, "%d", &nLife);	// 体力
+		}
+
+		//終了
+		if (strcmp(&aStr[0], "END_ENEMYSET") == 0)
+		{//終了文字
+			break;
+		}
+	}
+
+	// 生成
+	CEnemy* pEnemy = nullptr;
+
+	switch (nType)
+	{
+	case CEnemy::TYPE_MELEE:
+		pEnemy = CEnemyMelee::Create(pos, D3DXToRadian(rot));
+		break;
+
+	case CEnemy::TYPE_GUN:
+		pEnemy = CEnemyGun::Create(pos, D3DXToRadian(rot));
+		break;
+	}
+
+	if (pEnemy != nullptr) {
+		pEnemy->SetLife(nLife);
 	}
 }

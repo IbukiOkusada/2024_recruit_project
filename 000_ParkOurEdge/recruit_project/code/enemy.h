@@ -14,13 +14,12 @@
 //==========================================================
 class CEnemy : public CTask
 {
-protected:
+public:
 
 	// 種類列挙型
 	enum TYPE
 	{
 		TYPE_MELEE = 0,		// 近接型(近距離)
-		TYPE_SHIELD,		// 盾持ち
 		TYPE_GUN,			// 銃(遠距離)
 		TYPE_BOSS,			// ボス
 		TYPE_MAX
@@ -67,6 +66,7 @@ public:	// 誰でもアクセス可能
 	void SetRotation(const D3DXVECTOR3& rot) { m_Info.rot = rot; }
 	void SetMove(const D3DXVECTOR3& move) { m_Info.move = move; }
 	void SetRotDiff(const float fRotDiff) { m_fRotDiff = fRotDiff; }
+	void SetLife(const int nLife) { m_nLife = nLife; }
 
 	// メンバ関数
 	virtual bool Hit(D3DXVECTOR3& pos, const float fRange, const int nDamage);
@@ -80,7 +80,6 @@ protected:
 	void SetInfo(const SInfo& Info) { m_Info = Info; }
 	void SetMatrix(void);
 	int GetLife(void) { return m_nLife; }
-	void SetLife(const int nLife) { m_nLife = nLife; }
 	void InfoReset(void);
 	void AddMove(void);
 	void SetIner(const float fIner) { m_fMoveIner = fIner; }

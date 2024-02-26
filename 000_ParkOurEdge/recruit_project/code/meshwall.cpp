@@ -1,4 +1,4 @@
-//==========================================================
+ //==========================================================
 //
 // メッシュウォールの処理 [meshwall.cpp]
 // Author : Ibuki Okusada
@@ -7,6 +7,7 @@
 #include "meshwall.h"
 #include "texture.h"
 #include "manager.h"
+#include "renderer.h"
 
 // マクロ定義
 
@@ -114,8 +115,19 @@ void CMeshWall::Update(void)
 //==========================================================
 void CMeshWall::Draw(void)
 {
+	LPDIRECT3DDEVICE9 pDevice;	//デバイスへのポインタ
+
+	//デバイスの取得
+	pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
+
+	// カリング設定
+	pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
+
 	// 描画
 	CObjectMesh::Draw();
+
+	// カリング設定直す
+	pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
 }
 
 //==========================================================

@@ -1,0 +1,65 @@
+#==============================================================================
+#
+# 敵配置スクリプトファイル [enemy.txt]
+# Author : IBUKI OKUSADA
+#
+#==============================================================================
+SCRIPT			# この行は絶対消さないこと！
+
+ENEMYSET
+	TYPE = 0
+	POS = 700.0 1400.0 1100.0
+	ROT = 0.0 0.0 0.0
+	LIFE = 5
+END_ENEMYSET
+
+ENEMYSET
+	TYPE = 0
+	POS = 700.0 1400.0 1400.0
+	ROT = 0.0 0.0 0.0
+	LIFE = 5
+END_ENEMYSET
+
+ENEMYSET
+	TYPE = 1
+	POS = 1000.0 1400.0 -500.0
+	ROT = 0.0 0.0 0.0
+	LIFE = 3
+END_ENEMYSET
+
+ENEMYSET
+	TYPE = 1
+	POS = 1600.0 1400.0 -500.0
+	ROT = 0.0 0.0 0.0
+	LIFE = 3
+END_ENEMYSET
+
+ENEMYSET
+	TYPE = 1
+	POS = 1900.0 1000.0 2200.0
+	ROT = 0.0 0.0 0.0
+	LIFE = 3
+END_ENEMYSET
+
+ENEMYSET
+	TYPE = 1
+	POS = 1900.0 1000.0 1600.0
+	ROT = 0.0 0.0 0.0
+	LIFE = 3
+END_ENEMYSET
+
+ENEMYSET
+	TYPE = 0
+	POS = 4900.0 1000.0 2400.0
+	ROT = 0.0 0.0 0.0
+	LIFE = 5
+END_ENEMYSET
+
+ENEMYSET
+	TYPE = 0
+	POS = 5900.0 1000.0 2400.0
+	ROT = 0.0 0.0 0.0
+	LIFE = 5
+END_ENEMYSET
+
+END_SCRIPT

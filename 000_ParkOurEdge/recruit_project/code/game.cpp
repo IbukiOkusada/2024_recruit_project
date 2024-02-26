@@ -178,6 +178,7 @@ HRESULT CGame::Init(void)
         {
             m_pFileLoad->Init();
             m_pFileLoad->OpenFile("data\\TXT\\model.txt");			//ƒ‚ƒfƒ‹—Þ
+            m_pFileLoad->OpenFile("data\\TXT\\enemy.txt");			//“G”z’u
         }
     }
 

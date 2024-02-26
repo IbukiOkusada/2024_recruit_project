@@ -160,6 +160,8 @@
     <ClCompile Include="code\camera.cpp" />
     <ClCompile Include="code\camera_manager.cpp" />
     <ClCompile Include="code\character.cpp" />
+    <ClCompile Include="code\checkpoint.cpp" />
+    <ClCompile Include="code\checkpoint_manager.cpp" />
     <ClCompile Include="code\debugproc.cpp" />
     <ClCompile Include="code\editor.cpp" />
     <ClCompile Include="code\effect.cpp" />
@@ -228,6 +230,8 @@
     <ClInclude Include="code\camera.h" />
     <ClInclude Include="code\camera_manager.h" />
     <ClInclude Include="code\character.h" />
+    <ClInclude Include="code\checkpoint.h" />
+    <ClInclude Include="code\checkpoint_manager.h" />
     <ClInclude Include="code\debugproc.h" />
     <ClInclude Include="code\editor.h" />
     <ClInclude Include="code\effect.h" />

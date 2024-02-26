@@ -100,7 +100,6 @@ private:	// 自分だけがアクセス可能な定義
 		float fSlideMove;		// スライディング開始移動量
 		D3DXVECTOR3 posOld;		// 設定位置
 		D3DXMATRIX mtxWorld;	// ワールドマトリックス
-		D3DXVECTOR3 posDiff;	// 目標の座標
 		STATE state;			// 状態
 		float fStateCounter;	// 状態管理カウンター
 	};
@@ -121,8 +120,7 @@ public:	// 誰でもアクセス可能
 
 	// メンバ関数(設定)
 	void SetMove(const D3DXVECTOR3 move) { m_Info.move = move; }
-	void SetPosition(const D3DXVECTOR3 pos) { m_Info.pos = pos; m_Info.posDiff = pos; }
-	void SetDiffPosition(const D3DXVECTOR3 pos) { m_Info.posDiff = pos; }
+	void SetPosition(const D3DXVECTOR3 pos) { m_Info.pos = pos; }
 	void SetRotation(const D3DXVECTOR3 rot) { m_Info.rot = rot; }
 	void SetType(TYPE type);
 	void SetCamera(CCamera* pCamera);
@@ -190,6 +188,7 @@ private:	// 自分だけがアクセス可能
 	D3DXVECTOR3 m_ColiNor;		// 当たり判定ベクトル
 	D3DXVECTOR3 m_MoveNor;		// 移動方向ベクトル
 	D3DXVECTOR3 m_ColiNorOld;	// 前回の移動ベクトル
+	D3DXVECTOR3 m_CheckPointPos;
 	CEnemy* m_pTarget;			// ロックオン対象
 	CLockOn* m_pLockOn;			// ロックオン
 	CLifeUI* m_pUI;				// 体力UI

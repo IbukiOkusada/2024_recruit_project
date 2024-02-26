@@ -71,6 +71,7 @@ private:	// 自分だけがアクセス可能
 	void LoadRotateDoorData(FILE *pFile);
 	void LoadPointData(FILE *pFile);
 	void LoadEnemyData(FILE* pFile);
+	void LoadCheckPointData(FILE* pFile);
 
 	// メンバ変数
 	File *m_pModelFile;	// モデルファイル情報

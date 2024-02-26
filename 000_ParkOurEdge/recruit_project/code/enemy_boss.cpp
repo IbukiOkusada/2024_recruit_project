@@ -54,6 +54,7 @@ namespace
 	const float ARM_COLLSIONSIZE = (175.0f);
 	const float BEYBLADE_COLLSIONSIZE = (50.0f);
 	const float ARM_HEIGHT = (10.0f);
+	const int ARM_CNT = (3);
 }
 
 // 移動速度名前空間
@@ -63,7 +64,7 @@ namespace SPEED
 	const float MOVE_NEAR = (-1.0f);	// 近距離移動
 	const float MOVE_MIN = (0.15f);		// 移動量移動
 	const float GRAVITY = (-0.9f);		// 重力
-	const float ROTATEATK_FIST = (20.0f);
+	const float ROTATEATK_FIST = (30.0f);
 	const float ROTATEATK_SLOW = (0.5f);
 	const float DAMAGE_MOVE = (2.0f);	// 移動量
 	const float BULLET = (3.0f);		// 弾速
@@ -103,6 +104,7 @@ CEnemyBoss::CEnemyBoss()
 	m_fAtkCnter = 0.0f;
 	m_nArmAction = 0;
 	m_NowArm = PARTS_MAX;
+	m_ActionCnt = 0;
 
 	for (int i = 0; i < PARTS_MAX; i++) {
 		m_apArm[i] = nullptr;
@@ -848,6 +850,7 @@ void CEnemyBoss::ArmAttack(const int nRandRange)
 	// 攻撃方法をランダムで決める
 	int nRand = rand() % 2 + 1;
 	ARM arm = ARM_MAX;
+	m_ActionCnt++;
 
 	if (nRand == ARM_ATTACK) {
 		arm = ARM_ATTACK;
@@ -857,6 +860,11 @@ void CEnemyBoss::ArmAttack(const int nRandRange)
 	}
 	else {
 		return;
+	}
+
+	if (m_ActionCnt >= ARM_CNT) {
+		arm = ARM_ATTACK;
+		m_ActionCnt = 0;
 	}
 
 	m_apArm[m_NowArm]->GetMotion()->BlendSet(arm);
@@ -1220,7 +1228,6 @@ D3DXMATRIX CEnemyBoss::AtkMtxMix(const D3DXVECTOR3& pos, D3DXMATRIX* pParent)
 	}
 
 	D3DXMATRIX mtxTrans;	// 計算用マトリックス
-	CXFile* pModelFile = CManager::GetInstance()->GetModelFile();	// Xファイル情報のポインタ
 
 	//ワールドマトリックスの初期化
 	D3DXMatrixIdentity(&returnMtx);

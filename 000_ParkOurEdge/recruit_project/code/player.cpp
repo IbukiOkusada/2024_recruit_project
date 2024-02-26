@@ -40,6 +40,7 @@
 #include "lockon.h"
 #include "fade.h"
 #include "life_ui.h"
+#include "checkpoint_manager.h"
 
 //===============================================
 // マクロ定義
@@ -53,7 +54,6 @@
 #define JUMP	(16.0f)
 
 namespace {
-	const D3DXVECTOR3 PLAYERSTARTPOS = { 10.0f, 0.0f, -5500.0f };  // プレイヤーのスタート位置
 	const int HEADPARTS_IDX = (1);	// 頭のパーツインデックス
 	const float DAMAGE_INTERVAL = (10.0f);	// ダメージインターバル
 	const float DAMAGE_APPEAR = (110.0f);	// 無敵時間インターバル
@@ -449,6 +449,8 @@ CPlayer *CPlayer::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move, con
 		// 座標設定
 		pPlayer->SetPosition(pos);
 
+		pPlayer->m_CheckPointPos = pos;
+
 		// 向き設定
 		pPlayer->SetRotation(rot);
 
@@ -632,8 +634,11 @@ void CPlayer::Controller(void)
 	}
 
 	if (m_Info.pos.y <= -200.0f && CManager::GetInstance()->GetMode() == CScene::MODE_GAME) {
-		m_Info.pos = PLAYERSTARTPOS;
+		m_Info.pos = m_CheckPointPos;
 	}
+
+	// チェックポイントとの判定
+	CCheckPointManager::GetInstance()->Hit(m_Info.pos, m_CheckPointPos);
 }
 
 //===============================================
@@ -1301,7 +1306,7 @@ void CPlayer::StateSet(void)
 			m_Info.fStateCounter = DAMAGE_APPEAR;
 			m_Info.state = STATE_SPAWN;
 
-			m_Info.pos = PLAYERSTARTPOS;
+			m_Info.pos = m_CheckPointPos;
 
 			CModel* pModel = m_pLeg->GetParts(0);  // 腰のパーツ
 

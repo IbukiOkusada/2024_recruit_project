@@ -19,6 +19,7 @@
 #include "enemy_boss.h"
 #include "enemy_gun.h"
 #include "enemy_melee.h"
+#include "checkpoint.h"
 
 //==========================================================
 // マクロ定義
@@ -243,6 +244,10 @@ void CFileLoad::LoadFileData(FILE *pFile)
 		else if (strcmp(&aStr[0], "ENEMYSET") == 0)
 		{
 			LoadEnemyData(pFile);
+		}
+		else if (strcmp(&aStr[0], "CHECKPOINTSET") == 0)
+		{
+			LoadCheckPointData(pFile);
 		}
 
 		//終了確認
@@ -1098,4 +1103,34 @@ void CFileLoad::LoadEnemyData(FILE* pFile)
 	if (pEnemy != nullptr) {
 		pEnemy->SetLife(nLife);
 	}
+}
+
+void CFileLoad::LoadCheckPointData(FILE* pFile)
+{
+	char aStr[256];	//余分な文章読み込み用
+
+	D3DXVECTOR3 pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+
+	//終了文字まで読み込み
+	while (1)
+	{
+		fscanf(pFile, "%s", &aStr[0]);
+
+		//配置情報確認
+		if (strcmp(&aStr[0], LOAD_POS) == 0)
+		{//座標
+			fscanf(pFile, "%s", &aStr[0]);	//(=)読み込み
+			fscanf(pFile, "%f", &pos.x);	//x座標読み込み
+			fscanf(pFile, "%f", &pos.y);	//y座標読み込み
+			fscanf(pFile, "%f", &pos.z);	//z座標読み込み
+		}
+
+		//終了
+		if (strcmp(&aStr[0], "END_CHECKPOINTSET") == 0)
+		{//終了文字
+			break;
+		}
+	}
+
+	CCheckPoint::Create(pos);
 }

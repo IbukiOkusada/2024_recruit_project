@@ -1,19 +1,19 @@
 //==========================================================
 //
-// 敵マネージャー [Player_manager.cpp]
+// チェックポイントマネージャー [checkpoint_manager.cpp]
 // Author : Ibuki Okusada
 //
 //==========================================================
-#include "player_manager.h"
-#include "player.h"
+#include "checkpoint_manager.h"
+#include "checkpoint.h"
 
 // 静的メンバ変数宣言
-CPlayerManager* CPlayerManager::m_pInstance = nullptr;	// インスタンス
+CCheckPointManager* CCheckPointManager::m_pInstance = nullptr;	// インスタンス
 
 //==========================================================
 // コンストラクタ
 //==========================================================
-CPlayerManager::CPlayerManager()
+CCheckPointManager::CCheckPointManager()
 {
 	// 値のクリア
 	m_pCur = nullptr;
@@ -24,7 +24,7 @@ CPlayerManager::CPlayerManager()
 //==========================================================
 // デストラクタ
 //==========================================================
-CPlayerManager::~CPlayerManager()
+CCheckPointManager::~CCheckPointManager()
 {
 
 }
@@ -32,7 +32,7 @@ CPlayerManager::~CPlayerManager()
 //==========================================================
 // 初期化処理
 //==========================================================
-HRESULT CPlayerManager::Init(void)
+HRESULT CCheckPointManager::Init(void)
 {
 	return S_OK;
 }
@@ -40,7 +40,7 @@ HRESULT CPlayerManager::Init(void)
 //==========================================================
 // 終了処理
 //==========================================================
-void CPlayerManager::Uninit(void)
+void CCheckPointManager::Uninit(void)
 {
 
 }
@@ -48,7 +48,7 @@ void CPlayerManager::Uninit(void)
 //==========================================================
 // 更新処理
 //==========================================================
-void CPlayerManager::Update(void)
+void CCheckPointManager::Update(void)
 {
 
 }
@@ -56,10 +56,10 @@ void CPlayerManager::Update(void)
 //==========================================================
 // インスタンスを確保
 //==========================================================
-CPlayerManager* CPlayerManager::GetInstance(void)
+CCheckPointManager* CCheckPointManager::GetInstance(void)
 {
 	if (m_pInstance == nullptr) {	// 使われていない
-		m_pInstance = new CPlayerManager;
+		m_pInstance = new CCheckPointManager;
 	}
 
 	return m_pInstance;
@@ -68,7 +68,7 @@ CPlayerManager* CPlayerManager::GetInstance(void)
 //==========================================================
 // インスタンスをリリース
 //==========================================================
-void CPlayerManager::Release(void)
+void CCheckPointManager::Release(void)
 {
 	if (m_pInstance != nullptr) {	// インスタンスを確保されている
 		m_pInstance->Uninit();
@@ -80,18 +80,18 @@ void CPlayerManager::Release(void)
 //==========================================================
 // リストに挿入
 //==========================================================
-void CPlayerManager::ListIn(CPlayer* pPlayer)
+void CCheckPointManager::ListIn(CCheckPoint* pCheckPoint)
 {
 	if (m_pTop != nullptr)
 	{// 先頭が存在している場合
-		m_pCur->SetNext(pPlayer);	// 現在最後尾のオブジェクトのポインタにつなげる
-		pPlayer->SetPrev(m_pCur);
-		m_pCur = pPlayer;	// 自分自身が最後尾になる
+		m_pCur->SetNext(pCheckPoint);	// 現在最後尾のオブジェクトのポインタにつなげる
+		pCheckPoint->SetPrev(m_pCur);
+		m_pCur = pCheckPoint;	// 自分自身が最後尾になる
 	}
 	else
 	{// 存在しない場合
-		m_pTop = pPlayer;	// 自分自身が先頭になる
-		m_pCur = pPlayer;	// 自分自身が最後尾になる
+		m_pTop = pCheckPoint;	// 自分自身が先頭になる
+		m_pCur = pCheckPoint;	// 自分自身が最後尾になる
 	}
 
 	m_nNum++;
@@ -100,14 +100,14 @@ void CPlayerManager::ListIn(CPlayer* pPlayer)
 //==========================================================
 // リストから外す
 //==========================================================
-void CPlayerManager::ListOut(CPlayer* pPlayer)
+void CCheckPointManager::ListOut(CCheckPoint* pCheckPoint)
 {
 	// リストから自分自身を削除する
-	if (m_pTop == pPlayer)
+	if (m_pTop == pCheckPoint)
 	{// 自身が先頭
-		if (pPlayer->GetNext() != nullptr)
+		if (pCheckPoint->GetNext() != nullptr)
 		{// 次が存在している
-			m_pTop = pPlayer->GetNext();	// 次を先頭にする
+			m_pTop = pCheckPoint->GetNext();	// 次を先頭にする
 			m_pTop->SetPrev(nullptr);	// 次の前のポインタを覚えていないようにする
 		}
 		else
@@ -116,11 +116,11 @@ void CPlayerManager::ListOut(CPlayer* pPlayer)
 			m_pCur = nullptr;	// 最後尾がない状態にする
 		}
 	}
-	else if (m_pCur == pPlayer)
+	else if (m_pCur == pCheckPoint)
 	{// 自身が最後尾
-		if (pPlayer->GetPrev() != nullptr)
+		if (pCheckPoint->GetPrev() != nullptr)
 		{// 次が存在している
-			m_pCur = pPlayer->GetPrev();		// 前を最後尾にする
+			m_pCur = pCheckPoint->GetPrev();		// 前を最後尾にする
 			m_pCur->SetNext(nullptr);			// 前の次のポインタを覚えていないようにする
 		}
 		else
@@ -131,13 +131,13 @@ void CPlayerManager::ListOut(CPlayer* pPlayer)
 	}
 	else
 	{
-		if (pPlayer->GetNext() != nullptr)
+		if (pCheckPoint->GetNext() != nullptr)
 		{
-			pPlayer->GetNext()->SetPrev(pPlayer->GetPrev());	// 自身の次に前のポインタを覚えさせる
+			pCheckPoint->GetNext()->SetPrev(pCheckPoint->GetPrev());	// 自身の次に前のポインタを覚えさせる
 		}
-		if (pPlayer->GetPrev() != nullptr)
+		if (pCheckPoint->GetPrev() != nullptr)
 		{
-			pPlayer->GetPrev()->SetNext(pPlayer->GetNext());	// 自身の前に次のポインタを覚えさせる
+			pCheckPoint->GetPrev()->SetNext(pCheckPoint->GetNext());	// 自身の前に次のポインタを覚えさせる
 		}
 	}
 
@@ -147,19 +147,14 @@ void CPlayerManager::ListOut(CPlayer* pPlayer)
 //==========================================================
 // 攻撃ヒット確認
 //==========================================================
-bool CPlayerManager::Hit(D3DXVECTOR3& pos, const float fRange, const float fHeight, const int nDamage)
+void CCheckPointManager::Hit(const D3DXVECTOR3& pos, D3DXVECTOR3& CheckPointPos)
 {
-	CPlayer* pPlayer = m_pTop;
-	bool bUse = false;
+	CCheckPoint* pCheckPoint = m_pTop;
 
 	//個別判定
-	while (pPlayer != nullptr) {
-		CPlayer* pPlayerNext = pPlayer->GetNext();
-		if (pPlayer->HitCheck(pos, fRange, fHeight, nDamage)) {
-			bUse = true;
-		}
-		pPlayer = pPlayerNext;
+	while (pCheckPoint != nullptr) {
+		CCheckPoint* pCheckPointNext = pCheckPoint->GetNext();
+		pCheckPoint->Hit(pos, CheckPointPos);
+		pCheckPoint = pCheckPointNext;
 	}
-
-	return bUse;
 }

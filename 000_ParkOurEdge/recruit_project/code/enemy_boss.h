@@ -144,6 +144,7 @@ private:	// 自分だけがアクセス可能
 	CCharacter* m_apArm[PARTS_MAX];	// 腕
 	int m_nArmAction;		// 腕のアクション
 	int m_NowArm;			// 現在動作する腕
+	int m_ActionCnt;
 	CCharacter* m_pBody;	// 上半身
 	CCharacter* m_pLeg;		// 下半身
 	SChase m_Chase;			// 追跡管理

@@ -179,6 +179,7 @@ HRESULT CGame::Init(void)
             m_pFileLoad->Init();
             m_pFileLoad->OpenFile("data\\TXT\\model.txt");			//モデル類
             m_pFileLoad->OpenFile("data\\TXT\\enemy.txt");			//敵配置
+            m_pFileLoad->OpenFile("data\\TXT\\checkpoint.txt");		//チェックポイント配置
         }
     }
 
@@ -574,7 +575,7 @@ void CGame::ByteCheck(char *pRecvData, int nRecvByte)
                     {
                     case COMMAND_TYPE_SETPOSITION:
 
-                        pPlayer->SetDiffPosition(pos);
+                        pPlayer->SetPosition(pos);
                         break;
 
                     case COMMAND_TYPE_SETROTATION:

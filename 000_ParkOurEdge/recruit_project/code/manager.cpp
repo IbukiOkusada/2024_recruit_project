@@ -26,6 +26,7 @@
 #include "camera_manager.h"
 #include "enemy_manager.h"
 #include "player_manager.h"
+#include "checkpoint_manager.h"
 
 //===============================================
 // Ã“Iƒƒ“ƒo•Ï”
@@ -414,6 +415,7 @@ void CManager::ManagerRelease(void)
 	CCameraManager::Release();
 	CEnemyManager::Release();
 	CPlayerManager::Release();
+	CCheckPointManager::Release();
 }
 
 //===================================================

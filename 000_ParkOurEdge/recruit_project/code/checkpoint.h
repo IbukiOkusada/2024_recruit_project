@@ -14,25 +14,6 @@
 //==========================================================
 class CCheckPoint : public CTask
 {
-public:
-
-	// 種類列挙型
-	enum TYPE
-	{
-		TYPE_MELEE = 0,		// 近接型(近距離)
-		TYPE_GUN,			// 銃(遠距離)
-		TYPE_BOSS,			// ボス
-		TYPE_MAX
-	};
-
-protected:
-
-	// 情報構造体
-	struct SInfo
-	{
-		D3DXVECTOR3 pos;		// 位置
-	};
-
 public:	// 誰でもアクセス可能
 
 	CCheckPoint();	// コンストラクタ(オーバーロード)
@@ -63,6 +44,7 @@ private:	// 自分だけがアクセス可能
 	CCheckPoint* m_pPrev;	// 前のオブジェクトへのポインタ
 	CCheckPoint* m_pNext;	// 次のオブジェクトへのポインタ
 	D3DXVECTOR3 m_pos;		// 位置
+	
 };
 
 #endif

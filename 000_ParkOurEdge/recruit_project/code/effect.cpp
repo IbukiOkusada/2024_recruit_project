@@ -162,6 +162,12 @@ void CEffect::Update(void)
 		m_Info.move.z -= m_Info.move.z * 0.045f * CManager::GetInstance()->GetSlow()->Get();
 		m_Info.fRadius += 0.45f * CManager::GetInstance()->GetSlow()->Get();
 
+		{
+			D3DXVECTOR3 rot = m_pObjectBilBoard->GetRotation();
+			rot.z += D3DX_PI * (rand() % 50 * 0.001f + 0.1f);
+			m_pObjectBilBoard->SetRotation(rot);
+		}
+
 		break;
 
 	case TYPE_BLACKSMAKE:	// ‰Œ
@@ -303,6 +309,19 @@ void CEffect::Update(void)
 	case TYPE_BOSSKNUCKLECHARGE:	// ‰Œ
 		m_Info.move -= (m_Info.move * GUNCHARGE) * CManager::GetInstance()->GetSlow()->Get();
 		m_Info.fRadius += 0.1f * CManager::GetInstance()->GetSlow()->Get();
+
+		break;
+
+	case TYPE_ENEMYHIT:
+
+		m_Info.col.a -= 0.035f * CManager::GetInstance()->GetSlow()->Get();
+		m_Info.move -= m_Info.move * 0.045f * CManager::GetInstance()->GetSlow()->Get();
+		m_Info.fRadius -= 0.3f * CManager::GetInstance()->GetSlow()->Get();
+		{
+			D3DXVECTOR3 rot = m_pObjectBilBoard->GetRotation();
+			rot.z += D3DX_PI * (rand() % 50 * 0.001f + 0.065f);
+			m_pObjectBilBoard->SetRotation(rot);
+		}
 
 		break;
 	}
@@ -504,7 +523,7 @@ CTexture::TYPE CEffect::SetTex(TYPE type)
 
 	case TYPE_HIT:
 	{
-		return CTexture::TYPE_ITEMGET_EF;
+		return CTexture::TYPE_ENEMYHIT;
 	}
 	break;
 
@@ -573,6 +592,10 @@ CTexture::TYPE CEffect::SetTex(TYPE type)
 		return CTexture::TYPE_EFFECT;
 	}
 	break;
+
+	case TYPE_ENEMYHIT:
+
+		return CTexture::TYPE_ITEMGET_EF;
 	}
 
 	return CTexture::TYPE();
@@ -755,6 +778,13 @@ void CEffect::DrawSet(void)
 		m_pObjectBilBoard->SetZTest(true);
 		m_pObjectBilBoard->SetLighting(true);
 		m_pObjectBilBoard->SetFusion(CObjectBillboard::FUSION_MINUS);
+	}
+	break;
+
+	case TYPE_ENEMYHIT:
+	{
+		m_pObjectBilBoard->SetLighting(true);
+		m_pObjectBilBoard->SetFusion(CObjectBillboard::FUSION_NORMAL);
 	}
 	break;
 

@@ -31,6 +31,7 @@ public:	// 誰でもアクセス可能な定義
 		TYPE_WALK,			// 歩き
 		TYPE_AIRWOOD,			// 風で舞った木っ端
 		TYPE_LOCKON,
+		TYPE_ENEMYHIT,		// 敵ヒット
 		TYPE_MAX				   
 	};
 

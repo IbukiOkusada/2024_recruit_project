@@ -1922,6 +1922,10 @@ void CPlayer::Hit(void)
 	D3DXVECTOR3 pos = { pModel->GetMtx()->_41, pModel->GetMtx()->_42, pModel->GetMtx()->_43 };
 	
 	if (CEnemyManager::GetInstance()->Hit(pos, fRange, nDamage, m_pTarget)) {	// 当たった場合
+
+		// エフェクトの生成
+		CParticle::Create(pos, CEffect::TYPE_ENEMYHIT);
+
 		m_fStopCounter = ATK_INTERVAL;
 		if (m_nAction == ACTION_NORMALATK) {
 			m_nAction = ACTION_KICKUP;

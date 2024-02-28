@@ -492,14 +492,54 @@ void CCharacter::SetShadow(bool bShadow)
 	}
 }
 
+//==========================================================
+// マトリックス設定
+//==========================================================
 void CCharacter::SetCharaMtx(void)
 {
 	if (m_ppParts != NULL)
 	{// 使用していた場合
 		for (int nCnt = 0; nCnt < m_nNumParts; nCnt++)
 		{
-			// 終了処理
+			// 親のマトリックスを設定
 			m_ppParts[nCnt]->SetCharaParent(&m_mtxWorld);
+		}
+	}
+}
+
+//==========================================================
+// マテリアルカラー設定
+//==========================================================
+void CCharacter::SetChangeMatCol(const D3DXCOLOR& col)
+{
+	D3DMATERIAL9 mat;
+	mat.Ambient = col;
+	mat.Diffuse = col;
+	mat.Emissive = col;
+	mat.Power = col;
+	mat.Specular = col;
+
+	if (m_ppParts != NULL)
+	{// 使用していた場合
+		for (int nCnt = 0; nCnt < m_nNumParts; nCnt++)
+		{
+			// マテリアル設定
+			m_ppParts[nCnt]->SetMaterial(mat);
+		}
+	}
+}
+
+//==========================================================
+// マテリアル変更設定
+//==========================================================
+void CCharacter::SetChangeMat(const bool bChange)
+{
+	if (m_ppParts != NULL)
+	{// 使用していた場合
+		for (int nCnt = 0; nCnt < m_nNumParts; nCnt++)
+		{
+			// マテリアル設定
+			m_ppParts[nCnt]->ChangeCol(bChange);
 		}
 	}
 }

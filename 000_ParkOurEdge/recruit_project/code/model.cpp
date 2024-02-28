@@ -99,6 +99,7 @@ void CModel::Draw(void)
 	D3DXMATRIX mtxRot, mtxTrans;	// 計算用マトリックス
 	CXFile *pModelFile = CManager::GetInstance()->GetModelFile();	// Xファイル情報のポインタ
 	D3DMATERIAL9 matDef;	// 現在のマテリアル保存用
+	D3DMATERIAL9 changemat;
 	D3DXMATERIAL *pMat;	// マテリアルデータへのポインタ
 	D3DXMATRIX mtxParent;	// 親のマトリックス情報
 	CSlow *pSlow = CManager::GetInstance()->GetSlow();
@@ -112,7 +113,8 @@ void CModel::Draw(void)
 
 	//位置を反映
 	D3DXMatrixTranslation(&mtxTrans, m_CurPos.x, m_CurPos.y, m_CurPos.z);
-	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxTrans);
+	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, 
+		&mtxTrans);
 
 	if(m_pParentMtx != NULL)
 	{// 覚えている場合
@@ -147,26 +149,11 @@ void CModel::Draw(void)
 			}
 			else
 			{
-				m_ChangeMat.Power = pMat[nCntMat].MatD3D.Power;
-				m_ChangeMat.Specular = pMat[nCntMat].MatD3D.Specular;
-				// マテリアルの設定
-				//if (pSlow->Get() != 1.0f)
-				//{
-				//	m_ChangeMat.Emissive.r -= 0.3f;
-				//	m_ChangeMat.Emissive.g -= 0.3f;
-				//	m_ChangeMat.Emissive.b -= 0.3f;
-				//	m_ChangeMat.Emissive.a -= 0.3f;
-				//}
-				//else
-				//{
-				//	m_ChangeMat.Emissive = pMat[nCntMat].MatD3D.Emissive;
-				//	m_ChangeMat.Emissive.r += 0.1f;
-				//	m_ChangeMat.Emissive.g += 0.1f;
-				//	m_ChangeMat.Emissive.b += 0.1f;
-				//	m_ChangeMat.Emissive.a += 0.1f;
-				//}
+				changemat = pMat[nCntMat].MatD3D;
+				changemat = m_ChangeMat;
 
-				pDevice->SetMaterial(&m_ChangeMat);
+				// マテリアルの設定
+				pDevice->SetMaterial(&changemat);
 			}
 
 			// テクスチャの設定
@@ -235,21 +222,23 @@ void CModel::Draw(void)
 				{
 					if (m_bChangeCol == false)
 					{
-						m_ChangeMat.Emissive.r = 0.0f;
-						m_ChangeMat.Emissive.g = 0.0f;
-						m_ChangeMat.Emissive.b = 0.0f;
-						m_ChangeMat.Emissive.a = 0.7f;
-						m_ChangeMat.Diffuse.r = 0.0f;
-						m_ChangeMat.Diffuse.g = 0.0f;
-						m_ChangeMat.Diffuse.b = 0.0f;
-						m_ChangeMat.Diffuse.a = 0.7f;
+						changemat = m_ChangeMat;
+						changemat.Ambient = {0.0f, 0.0f, 0.0f, 0.7f};
+						changemat.Diffuse = { 0.0f, 0.0f, 0.0f, 0.7f };
+						changemat.Emissive = { 0.0f, 0.0f, 0.0f, 0.7f };
+						changemat.Specular = { 0.0f, 0.0f, 0.0f, 0.7f };
 
 						//マテリアルの設定
-						pDevice->SetMaterial(&m_ChangeMat);
+						pDevice->SetMaterial(&changemat);
 					}
 					else
 					{
-						pDevice->SetMaterial(&m_ChangeMat);
+						changemat = m_ChangeMat;
+						changemat.Ambient = { 0.0f, 0.0f, 0.0f, 0.7f };
+						changemat.Diffuse = { 0.0f, 0.0f, 0.0f, 0.7f };
+						changemat.Emissive = { 0.0f, 0.0f, 0.0f, 0.7f };
+						changemat.Specular = { 0.0f, 0.0f, 0.0f, 0.7f };
+						pDevice->SetMaterial(&changemat);
 					}
 
 					//テクスチャの設定

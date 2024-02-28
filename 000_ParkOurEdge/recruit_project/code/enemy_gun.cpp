@@ -106,6 +106,7 @@ HRESULT CEnemyGun::Init(void)
 	m_pBody->SetParent(m_pWaist->GetMtxWorld());
 	m_pBody->SetShadow(true);
 	m_pBody->SetDraw();
+	m_pBody->SetChangeMatCol(D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f));
 
 	if (m_pBody->GetMotion() != nullptr)
 	{
@@ -118,6 +119,7 @@ HRESULT CEnemyGun::Init(void)
 	m_pLeg->SetParent(m_pWaist->GetMtxWorld());
 	m_pLeg->SetShadow(true);
 	m_pLeg->SetDraw();
+	m_pLeg->SetChangeMatCol(D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f));
 
 	if (m_pLeg->GetMotion() != nullptr)
 	{
@@ -374,6 +376,11 @@ void CEnemyGun::Damage(const int nDamage)
 		SetLife(nLife);
 		m_StateInfo.state = STATE_DAMAGE;
 		m_StateInfo.fCounter = INTERVAL::DAMAGE;
+
+		if (BodyCheck(m_pBody) && BodyCheck(m_pLeg)) {
+			m_pBody->SetChangeMat(true);
+			m_pLeg->SetChangeMat(true);
+		}
 	}
 }
 
@@ -507,7 +514,10 @@ void CEnemyGun::SetState(void)
 
 	case STATE_NORMAL:
 	{
-
+		if (BodyCheck(m_pBody) && BodyCheck(m_pLeg)) {
+			m_pBody->SetChangeMat(false);
+			m_pLeg->SetChangeMat(false);
+		}
 	}
 		break;
 
@@ -515,6 +525,11 @@ void CEnemyGun::SetState(void)
 	{
 		if (m_StateInfo.fCounter <= 0.0f) {	// カウンター終了
 			m_StateInfo.fCounter = 0.0f;
+
+			if (BodyCheck(m_pBody) && BodyCheck(m_pLeg)) {
+				m_pBody->SetChangeMat(false);
+				m_pLeg->SetChangeMat(false);
+			}
 		}
 		else {
 			// 座標を後ろに下げる

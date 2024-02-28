@@ -43,6 +43,7 @@ public:	// 誰でもアクセス可能な定義
 		TYPE_BOSSGUN,			// ボス弾
 		TYPE_BOSSKNUCKLECHARGE,		// ボスの拳溜め
 		TYPE_BOSSKNIFECHARGE,		// ボスのナイフ溜め
+		TYPE_ENEMYHIT,			// 敵ヒット
 		TYPE_MAX
 	}TYPE;
 

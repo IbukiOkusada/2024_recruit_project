@@ -8,6 +8,10 @@
 #include "texture.h"
 #include "manager.h"
 #include "renderer.h"
+#include "player.h"
+#include "player_manager.h"
+#include "camera.h"
+#include "camera_manager.h"
 
 // マクロ定義
 
@@ -18,7 +22,7 @@ CMeshWall *CMeshWall::m_pCur = NULL;	// 最後尾のオブジェクトへのポインタ
 //==========================================================
 // コンストラクタ
 //==========================================================
-CMeshWall::CMeshWall()
+CMeshWall::CMeshWall() : CObjectMesh(5)
 {
 	m_pNext = NULL;
 	m_pPrev = NULL;
@@ -116,6 +120,15 @@ void CMeshWall::Update(void)
 void CMeshWall::Draw(void)
 {
 	LPDIRECT3DDEVICE9 pDevice;	//デバイスへのポインタ
+
+	for (int nCntpVtx = 0; nCntpVtx < GetVertex(); nCntpVtx++)
+	{
+		m_pVtx[nCntpVtx].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+	}
+
+	// 
+	SetVtx();
+	SceltonWall();
 
 	//デバイスの取得
 	pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
@@ -305,4 +318,83 @@ D3DXVECTOR3 CMeshWall::Collision(D3DXVECTOR3 &pos, D3DXVECTOR3 &posOld, D3DXVECT
 void CMeshWall::SetType(const int type)
 {
 	m_type = type;
+}
+
+//==========================================================
+// 壁の透過設定
+//==========================================================
+void CMeshWall::SceltonWall(void)
+{
+	D3DXVECTOR3 pVtxPos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);	//頂点の座標
+	int nVerTex = GetVertex();
+	D3DXVECTOR3 pos = GetPosition();
+	D3DXVECTOR3 rot = GetRotation();
+	float fHeight = GetHeight();
+	float fWidth = GetWidth();
+	int nNumWidth = GetNumWidth();		// 幅枚数を取得
+	int nNumHeight = GetNumHeight();	// 高さ枚数を取得
+	CCamera* pCamera = CCameraManager::GetInstance()->GetTop();
+	CPlayer* pPlayer = CPlayerManager::GetInstance()->GetTop();
+
+	// 距離を取る
+	{
+		//視点とモデルの距離を求める
+		float fLength =
+			sqrtf((pos.x - pPlayer->GetPosition().x) * (pos.x - pPlayer->GetPosition().x)
+				+ (pos.z - pPlayer->GetPosition().z) * (pos.z - pPlayer->GetPosition().z));
+		if (fLength >= fWidth * static_cast<float>(nNumWidth)) {
+			return;
+		}
+	}
+
+	//頂点座標の設定(左奥から右手前に向かって頂点情報を設定する
+	for (int nCntpVtx = 0; nCntpVtx < nVerTex; nCntpVtx++)
+	{
+		pVtxPos = D3DXVECTOR3(
+			pos.x + cosf(rot.y) * (-(fWidth * nNumWidth) + (nCntpVtx % (nNumWidth + 1) * (fWidth * 2))),
+			pos.y + ((fHeight * 2) * nNumHeight) + ((nCntpVtx / (nNumWidth + 1) * (-fHeight * 2))),
+			pos.z + sinf(rot.y) * ((fWidth * nNumWidth) + (nCntpVtx % (nNumWidth + 1) * (-fWidth * 2)))
+		);
+
+		//視点とモデルの距離を求める
+		float fLength =
+			sqrtf((pVtxPos.x - pCamera->GetPositionV().x) * (pVtxPos.x - pCamera->GetPositionV().x)
+				+ (pVtxPos.y - pCamera->GetPositionV().y) * (pVtxPos.y - pCamera->GetPositionV().y)
+				+ (pVtxPos.z - pCamera->GetPositionV().z) * (pVtxPos.z - pCamera->GetPositionV().z));
+
+		float fPlayLength =
+			sqrtf((pPlayer->GetPosition().x - pCamera->GetPositionV().x) * (pPlayer->GetPosition().x - pCamera->GetPositionV().x)
+				+ (pPlayer->GetPosition().z - pCamera->GetPositionV().z) * (pPlayer->GetPosition().z - pCamera->GetPositionV().z));
+
+		//角度を求める
+		float fRotY = atan2f(pCamera->GetPositionV().z - pVtxPos.z, pCamera->GetPositionV().x - pVtxPos.x);
+		float fDiff = pCamera->GetRotation().y - fRotY;
+
+		if (fDiff > D3DX_PI)
+		{
+			fDiff += -D3DX_PI * 2.0f;
+		}
+		else if (fDiff < -D3DX_PI)
+		{
+			fDiff += D3DX_PI * 2.0f;
+		}
+
+
+		if (fLength <= 0)
+		{
+			fLength *= -1.0f;
+		}
+
+		if (fLength < fPlayLength
+			&& fDiff >= -1.5f && fDiff <= 1.5f)
+		{//距離が視点と注視点の距離より短い場合
+			m_pVtx[nCntpVtx].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.2f);
+		}
+		else
+		{
+			m_pVtx[nCntpVtx].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+		}
+	}
+
+	SetVtx();
 }

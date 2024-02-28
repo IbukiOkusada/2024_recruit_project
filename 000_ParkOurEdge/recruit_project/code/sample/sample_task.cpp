@@ -53,15 +53,15 @@ void CSampleTask::Update(void)
 //==========================================================
 CSampleTask *CSampleTask::Create(void)
 {
-	CSampleTask *pSample = nullptr;
+	CSampleTask *pSampleTask = nullptr;
 
-	pSample = new CSampleTask;
+	pSampleTask = new CSampleTask;
 
-	if (pSample != nullptr)
+	if (pSampleTask != nullptr)
 	{
 		// ‰Šú‰»ˆ—
-		pSample->Init();
+		pSampleTask->Init();
 	}
 
-	return pSample;
+	return pSampleTask;
 }

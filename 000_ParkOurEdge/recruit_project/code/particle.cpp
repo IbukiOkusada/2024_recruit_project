@@ -189,7 +189,7 @@ void CParticle::Set(const D3DXVECTOR3& Defpos, const D3DXVECTOR3& Defmove, CEffe
 			move.z = cosf((float)(rand() % 629 - 314) * 0.01f) * ((float)(rand() % 100)) * 0.15f;
 
 			//êFÇÃê›íË
-			col = D3DXCOLOR(rand() % 5 * 0.1f + 0.6f, 1.0f, 0.3f, 1.0f);
+			col = D3DXCOLOR(rand() % 5 * 0.1f + 0.6f, 0.3f, 0.3f, 1.0f);
 
 			//îºåaÇÃê›íË
 			fRadius = 7.0f;
@@ -540,6 +540,35 @@ void CParticle::Set(const D3DXVECTOR3& Defpos, const D3DXVECTOR3& Defmove, CEffe
 			fLife = 30.0f;
 
 			CEffect::Create(pos, move, col, fRadius, fLife, CEffect::TYPE_BOSSKNUCKLECHARGE);
+		}
+	}
+	break;
+
+	case CEffect::TYPE_ENEMYHIT:	// âå
+	{
+		for (int nCnt = 0; nCnt < 15; nCnt++)
+		{
+			// ç¿ïWÇÃê›íË
+			pos = Defpos;
+
+			{
+				float frand = static_cast<float>(rand() % 629 - 314);
+				//à⁄ìÆó ÇÃê›íË
+				move.x = sinf(frand * 0.01f) * ((float)(rand() % 100)) * 0.1f;
+				move.y = sinf(frand * 0.01f) * ((float)(rand() % 100)) * 0.1f;
+				move.z = cosf(frand * 0.01f) * ((float)(rand() % 100)) * 0.1f;
+			}
+
+			//êFÇÃê›íË
+			col = D3DXCOLOR(rand() % 5 * 0.1f + 0.6f, rand() % 5 * 0.1f + 0.6f, rand() % 5 * 0.1f + 0.6f, 1.0f);
+
+			//îºåaÇÃê›íË
+			fRadius = 16.0f;
+
+			//éıñΩÇÃê›íË
+			fLife = 50.0f;
+
+			CEffect::Create(Defpos + move, move, col, fRadius, fLife, type);
 		}
 	}
 	break;

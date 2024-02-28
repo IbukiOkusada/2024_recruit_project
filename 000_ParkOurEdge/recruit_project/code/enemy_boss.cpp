@@ -39,9 +39,7 @@ namespace
 	const D3DXVECTOR3 COLLIMAX = { 20.0f, 120.0f, 20.0f };	// 当たり判定最大
 	const D3DXVECTOR3 COLLIMIN = { -20.0f, 0.0f, -20.0f };	// 当たり判定最小
 	const int DAMAGEINTERVAL = (60);	// ダメージインターバル
-	const float CHASE_MAXLENGTH = (3400.0f);	// 追跡最長距離
-	const float CHASE_NEARLENGTH = (700.0f);	// 追跡近距離
-	const float CHASE_MINLENGTH = (400.0f);		// 追跡0距離
+	const float CHASE_MAXLENGTH = (9000.0f);	// 追跡最長距離
 	const float SEARCH_HEIGHT = (400.0f);		// 探索高さ制限
 	const float MOVE_INER = (0.3f);				// 移動慣性
 	const float ROTATE_ATKINER = (0.0f);		// 
@@ -67,7 +65,7 @@ namespace SPEED
 	const float ROTATEATK_FIST = (30.0f);
 	const float ROTATEATK_SLOW = (0.5f);
 	const float DAMAGE_MOVE = (2.0f);	// 移動量
-	const float BULLET = (3.0f);		// 弾速
+	const float BULLET = (15.0f);		// 弾速
 	const float KNIFE = (15.0f);		// knife
 }
 
@@ -142,6 +140,7 @@ HRESULT CEnemyBoss::Init(void)
 	m_pBody->SetParent(m_pWaist->GetMtxWorld());
 	m_pBody->SetShadow(true);
 	m_pBody->SetDraw();
+	m_pBody->SetChangeMatCol(D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f));
 
 	if (m_pBody->GetMotion() != nullptr)
 	{
@@ -154,6 +153,7 @@ HRESULT CEnemyBoss::Init(void)
 	m_pLeg->SetParent(m_pWaist->GetMtxWorld());
 	m_pLeg->SetShadow(true);
 	m_pLeg->SetDraw();
+	m_pLeg->SetChangeMatCol(D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f));
 
 	if (m_pLeg->GetMotion() != nullptr)
 	{
@@ -499,6 +499,11 @@ void CEnemyBoss::Damage(const int nDamage)
 		SetLife(nLife);
 		m_StateInfo.state = STATE_DAMAGE;
 		m_StateInfo.fCounter = INTERVAL::DAMAGE;
+
+		if (BodyCheck(m_pBody) && BodyCheck(m_pLeg)) {
+			m_pBody->SetChangeMat(true);
+			m_pLeg->SetChangeMat(true);
+		}
 	}
 }
 
@@ -598,6 +603,11 @@ void CEnemyBoss::SetState(void)
 	{
 		if (m_StateInfo.fCounter <= 0.0f) {	// カウンター終了
 			m_StateInfo.state = STATE_NORMAL;
+
+			if (BodyCheck(m_pBody) && BodyCheck(m_pLeg)) {
+				m_pBody->SetChangeMat(false);
+				m_pLeg->SetChangeMat(false);
+			}
 		}
 	}
 		break;
@@ -613,6 +623,11 @@ void CEnemyBoss::SetState(void)
 		if (m_StateInfo.fCounter <= 0.0f) {	// カウンター終了
 			m_StateInfo.fCounter = 50.0f;
 			m_StateInfo.state = STATE_APPEAR;
+
+			if (BodyCheck(m_pBody) && BodyCheck(m_pLeg)) {
+				m_pBody->SetChangeMat(false);
+				m_pLeg->SetChangeMat(false);
+			}
 		}
 		else {
 			// 座標を後ろに下げる

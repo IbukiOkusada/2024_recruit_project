@@ -41,6 +41,8 @@ public:	// 誰でもアクセス可能
 	void SetDraw(bool bDraw = true);
 	void SetShadow(bool bShadow = false);
 	void SetCharaMtx(void);
+	void SetChangeMatCol(const D3DXCOLOR& col);
+	void SetChangeMat(const bool bChange = false);
 
 	// メンバ関数(取得)
 	D3DXVECTOR3 GetRotation(void) { return m_rot; }

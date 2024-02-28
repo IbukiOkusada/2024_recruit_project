@@ -19,7 +19,7 @@
 namespace {
 	const char* FILENAME = "data\\MODEL\\bullet.x";	// ファイル名
 	const int SETLIFE = (240);	// 弾の設定寿命
-	const int SETBOSSLIFE = (300);
+	const int SETBOSSLIFE = (50);
 	const float COLLRANGE = (25.0f);
 }
 
@@ -184,7 +184,7 @@ void CBullet::Hit(void)
 	bool bHit = false;
 	
 	// プレイヤーとの判定
-	if (m_type == TYPE_ENEMY) {
+	{
 		CPlayer* pPlay = CPlayerManager::GetInstance()->GetTop();
 
 		while (pPlay != nullptr) {

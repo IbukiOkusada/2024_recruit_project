@@ -53,6 +53,7 @@ namespace
 	const float BEYBLADE_COLLSIONSIZE = (50.0f);
 	const float ARM_HEIGHT = (10.0f);
 	const int ARM_CNT = (3);
+	const float WAVE_CHASEINER = (0.4f);
 }
 
 // 移動速度名前空間
@@ -1131,6 +1132,17 @@ void CEnemyBoss::Move(void)
 			else {
 				m_MoveInfo.fSpeed = SPEED::ROTATEATK_FIST;
 			}
+		}
+	}
+	else if (m_nAction == ACTION_WAVEATK) {
+		if (!BodyCheck(m_pBody)) {	// 胴体が使用されていない
+			return;
+		}
+
+		if (m_pBody->GetMotion()->GetNowKey() <= 2 && GetMove().y >= 0.0f) {	// 空中にいる
+			D3DXVECTOR3 Diff = m_Chase.pTarget->GetPosition() - GetPosition();
+			Diff.y = 0.0f;
+			SetPosition(GetPosition() + Diff * WAVE_CHASEINER);
 		}
 	}
 	else {

@@ -635,6 +635,7 @@ void CPlayer::Controller(void)
 
 	if (m_Info.pos.y <= -200.0f && CManager::GetInstance()->GetMode() == CScene::MODE_GAME) {
 		m_Info.pos = m_CheckPointPos;
+		Damage(1);
 	}
 
 	// チェックポイントとの判定

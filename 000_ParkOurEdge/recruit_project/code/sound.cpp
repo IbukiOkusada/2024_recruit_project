@@ -13,40 +13,30 @@
 const CSound::SOUNDINFO CSound::m_aSoundInfo[LABEL_MAX] =
 {
 	{ "data/BGM/title.wav", -1 },		// BGMタイトル
-	{ "data/BGM/tutorial.wav", -1 },	// BGMチュートリアル
 	{ "data/BGM/game.wav", -1 },		// BGMゲーム
+	{ "data/BGM/boss.wav", -1 },		// BGMボス
 	{ "data/BGM/clear.wav", -1 },		// BGMリザルト
-	{ "data/BGM/failed.wav", -1 },		// BGMリザルト
-	{ "data/BGM/ranking.wav", -1 },		// BGMランキング
 	{ "data/SE/coin00.wav", 0 },		// Enter
-	{ "data/SE/walk02.wav", 0 },		// 移動音
+	{ "data/SE/walk01.wav", 0 },		// 移動音
 	{ "data/SE/attack.wav", 0 },		// 攻撃	音
 	{ "data/SE/spawn.wav", 0 },			// 着地音
-	{ "data/SE/futon.wav", 0 },			// 風の術
-	{ "data/SE/kunai.wav", 0 },			// クナイ
 	{ "data/SE/jab.wav", 0 },			// 攻撃
-	{ "data/SE/catch.wav", 0 },			// つかむ
-	{ "data/SE/drop.wav", 0 },			// 落とす
-	{ "data/SE/item.wav", 0 },			// 取得
-	{ "data/SE/select.wav", 0 },		// アイテム選択
-	{ "data/SE/lever.wav", 0 },			// レバー
 	{ "data/SE/jump.wav", 0 },			// ジャンプ
-	{ "data/SE/grow.wav", 0 },			// 拡大
-	{ "data/SE/fade.wav", 0 },			// 縮小
-	{ "data/SE/seek.wav", 0 },			// 見つけた
 	{ "data/SE/land.wav", 0 },			// 着地
 	{ "data/SE/death.wav", 0 },			// 死亡
-	{ "data/SE/spear.wav", 0 },			// 槍
-	{ "data/SE/open01.wav", 0 },		// 協力扉が開く
-	{ "data/SE/open02.wav", 0 },		// 協力扉が閉まる
-	{ "data/SE/open.wav", 0 },			// 開始扉
-	{ "data/SE/warning.wav", 0 },		// 警告音
-	{ "data/SE/coin01.wav", 0 },		// コインの音
-	{ "data/SE/coin01.wav", 0 },		// コインの音
-	{ "data/SE/button.wav", 0 },		// ボタンを押した
-	{ "data/SE/move.wav", 0 },			// 壺移動
-	{ "data/SE/rage.wav", 0 },			// バタバタ
-	{ "data/SE/entry.wav", 0 },			// エントリー
+	{ "data/SE/wave.wav", 0 },			// 波
+	{ "data/SE/beam.wav", 0 },			// ビーム
+	{ "data/SE/knife.wav", 0 },			// ナイフ
+	{ "data/SE/knifecharge.wav", 0 },	// ナイフチャージ
+	{ "data/SE/knucklecharge.wav", 0 },	// ウェーブチャージ
+	{ "data/SE/down.wav", 0 },			// ダウン
+	{ "data/SE/hit.wav", 0 },			// ダウン
+	{ "data/SE/wallkick.wav", 0 },		// 壁キック
+	{ "data/SE/wallslide.wav", 0 },		// 壁キック
+	{ "data/SE/sliding.wav", 0 },		// 壁キック
+	{ "data/SE/celingdash.wav", 0 },	// 壁キック
+	{ "data/SE/checkpoint.wav", 0 },	// 壁キック
+
 };										
 
 //=============================================================================

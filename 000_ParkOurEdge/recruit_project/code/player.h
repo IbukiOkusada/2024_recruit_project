@@ -175,6 +175,7 @@ private:	// 自分だけがアクセス可能
 	void NearLockOn(void);
 	void RiderKick(void);
 	void KickChance(void);
+	void SetBed(void);
 
 	// メンバ変数
 	CPlayer *m_pPrev;			// 前のオブジェクトへのポインタ

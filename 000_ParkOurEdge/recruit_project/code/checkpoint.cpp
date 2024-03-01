@@ -9,6 +9,7 @@
 #include "debugproc.h"
 #include "manager.h"
 #include "message.h"
+#include "sound.h"
 
 // 名前空間
 namespace {
@@ -75,6 +76,7 @@ void CCheckPoint::Hit(const D3DXVECTOR3& pos, D3DXVECTOR3& CheckPointPos)
 	// 自身の座標を渡して廃棄
 	CheckPointPos = m_pos;
 	CMessage::Create(m_pos);	// メッセージ生成
+	CManager::GetInstance()->GetSound()->Play(CSound::LABEL_SE_CHECKPOINT);
 	Uninit();
 }
 

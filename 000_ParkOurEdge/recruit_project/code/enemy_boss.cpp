@@ -26,6 +26,7 @@
 #include "particle.h"
 #include "knifewave.h"
 #include "enemy_manager.h"
+#include "sound.h"
 
 // 無名名前空間
 namespace
@@ -39,7 +40,7 @@ namespace
 	const D3DXVECTOR3 COLLIMAX = { 20.0f, 120.0f, 20.0f };	// 当たり判定最大
 	const D3DXVECTOR3 COLLIMIN = { -20.0f, 0.0f, -20.0f };	// 当たり判定最小
 	const int DAMAGEINTERVAL = (60);	// ダメージインターバル
-	const float CHASE_MAXLENGTH = (9000.0f);	// 追跡最長距離
+	const float CHASE_MAXLENGTH = (3150.0f);	// 追跡最長距離
 	const float SEARCH_HEIGHT = (400.0f);		// 探索高さ制限
 	const float MOVE_INER = (0.3f);				// 移動慣性
 	const float ROTATE_ATKINER = (0.0f);		// 
@@ -104,6 +105,7 @@ CEnemyBoss::CEnemyBoss()
 	m_nArmAction = 0;
 	m_NowArm = PARTS_MAX;
 	m_ActionCnt = 0;
+	m_bSound = false;
 
 	for (int i = 0; i < PARTS_MAX; i++) {
 		m_apArm[i] = nullptr;
@@ -271,6 +273,15 @@ void CEnemyBoss::Update(void)
 	if (CManager::GetInstance()->GetInputKeyboard()->GetTrigger(DIK_H)) {
 		ArmDamage();
 	}
+
+	// 音楽変更
+	if (m_Chase.pTarget != nullptr) {	// 発見している
+		if (!m_bSound) {	// 変更前
+			m_bSound = true;
+			CManager::GetInstance()->GetSound()->Stop();
+			CManager::GetInstance()->GetSound()->Play(CSound::LABEL_BGM_BOSS);
+		}
+	}
 }
 
 //===============================================
@@ -283,7 +294,9 @@ void CEnemyBoss::MethodLine(void)
 	if (m_StateInfo.state != STATE_DEATH) {
 
 		// 捜索
-		m_Chase.pTarget = Search(m_Chase.fLength);
+		if (m_Chase.pTarget == nullptr) {
+			m_Chase.pTarget = Search(m_Chase.fLength);
+		}
 
 		// 追跡
 		LockOn();
@@ -293,6 +306,10 @@ void CEnemyBoss::MethodLine(void)
 
 		// 移動
 		AddMove();
+	}
+
+	if (m_Chase.pTarget == nullptr) {
+		return;
 	}
 
 	// 重力
@@ -495,11 +512,13 @@ void CEnemyBoss::Damage(const int nDamage)
 	if (nLife <= 0) {	// 体力がなくなった
 		m_StateInfo.state = STATE_DEATH;
 		m_nAction = ACTION_DEATH;
+		CManager::GetInstance()->GetSound()->Play(CSound::LABEL_SE_DOWN);
 	}
 	else {	// まだある
 		SetLife(nLife);
 		m_StateInfo.state = STATE_DAMAGE;
 		m_StateInfo.fCounter = INTERVAL::DAMAGE;
+		CManager::GetInstance()->GetSound()->Play(CSound::LABEL_SE_HIT);
 
 		if (BodyCheck(m_pBody) && BodyCheck(m_pLeg)) {
 			m_pBody->SetChangeMat(true);
@@ -656,6 +675,9 @@ void CEnemyBoss::SetState(void)
 
 					// 敵を削除
 					Uninit();
+
+					CManager::GetInstance()->GetSound()->Stop();
+					CManager::GetInstance()->GetSound()->Play(CSound::LABEL_BGM_GAME);
 				}
 			}
 		}
@@ -931,6 +953,7 @@ void CEnemyBoss::ArmAttackCheck(void)
 			pModel->GetMtx()->_42,
 			pModel->GetMtx()->_43 - 1400.0f);
 		CWave::Create(pos, 0, 1000.0f);
+		CManager::GetInstance()->GetSound()->Play(CSound::LABEL_SE_WAVE);
 	}
 }
 
@@ -1092,6 +1115,7 @@ void CEnemyBoss::Attack(void)
 
 	case ATTACK_WAVE:
 		m_nAction = ACTION_WAVECHARGE;
+		CManager::GetInstance()->GetSound()->Play(CSound::LABEL_SE_WAVECHARGE);
 		break;
 
 	case ATTACK_SHOT:
@@ -1100,6 +1124,7 @@ void CEnemyBoss::Attack(void)
 
 	case ATTACK_KNIFE:
 		m_nAction = ACTION_KNIFECHARGE;
+		CManager::GetInstance()->GetSound()->Play(CSound::LABEL_SE_KNIFECHARGE);
 		break;
 	}
 	
@@ -1189,7 +1214,8 @@ void CEnemyBoss::AttackChance(void)
 
 		CModel* pModel = m_pBody->GetParts(m_pBody->GetNumParts() - 1);
 		D3DXVECTOR3 pos = { pModel->GetMtx()->_41, pModel->GetMtx()->_42, pModel->GetMtx()->_43 };
-		CWave::Create(pos, 0, 1000.0f);
+		CWave::Create(pos, 0, 1500.0f);
+		CManager::GetInstance()->GetSound()->Play(CSound::LABEL_SE_WAVE);
 	}
 		break;
 
@@ -1213,6 +1239,7 @@ void CEnemyBoss::AttackChance(void)
 
 		if (static_cast<int>(m_pBody->GetMotion()->GetNowFrame()) % 4 == 0) {
 			CBullet::Create(MyPos, D3DXVECTOR3(0.0f, 0.0f, 0.0f), nor * SPEED::BULLET, CBullet::TYPE_BOSS);
+			CManager::GetInstance()->GetSound()->Play(CSound::LABEL_SE_BEAM);
 		}
 	}
 		break;
@@ -1238,6 +1265,7 @@ void CEnemyBoss::AttackChance(void)
 		D3DXVECTOR3 nor = pos - MyPos;
 		D3DXVec3Normalize(&nor, &nor);
 		CKnifeWave::Create(MyPos, GetInfo()->rot, nor * SPEED::KNIFE, CKnifeWave::TYPE_ENEMY);
+		CManager::GetInstance()->GetSound()->Play(CSound::LABEL_SE_KNIFE);
 	}
 	break;
 	}

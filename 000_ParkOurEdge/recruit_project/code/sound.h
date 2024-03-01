@@ -20,40 +20,29 @@ public:	// 誰でもアクセス可能な定義
 	typedef enum
 	{
 		LABEL_BGM_TITLE = 0,	// BGMタイトル
-		LABEL_BGM_TUTORIAL,		// BGMチュートリアル
 		LABEL_BGM_GAME,			// BGMゲーム
-		LABEL_BGM_RESULT_CLEAR,	// BGMリザルトクリア
-		LABEL_BGM_RESULT_FAILED,// BGMリザルト失敗
-		LABEL_BGM_RANKING,		// BGMランキング
+		LABEL_BGM_BOSS,			// BGMボス
+		LABEL_BGM_RESULT,		// BGMリザルトクリア
 		LABEL_SE_CLICK,			// Enter
-		LABEL_SE_STEP,			// ステップ音
+		LABEL_SE_WALK,			// 移動音
 		LABEL_SE_DAMAGE,		// ダメージ音
 		LABEL_SE_SPAWN,			// 復活音
-		LABEL_SE_AIR,			// 風の術
-		LABEL_SE_KUNAI,			// クナイ
 		LABEL_SE_ATTACK,		// 攻撃
-		LABEL_SE_CATCH,			// つかむ
-		LABEL_SE_DROP,			// 落とす
-		LABEL_SE_GET,			// 取得
-		LABEL_SE_SELECT,		// アイテム選択
-		LABEL_SE_LEVER,			// レバー
 		LABEL_SE_JUMP,			// ジャンプ
-		LABEL_SE_GROW,			// 拡大
-		LABEL_SE_FADE,			// 縮小
-		LABEL_SE_SEEK,			// 見つけた
 		LABEL_SE_LAND,			// 着地
 		LABEL_SE_DEATH,			// 死亡
-		LABEL_SE_SPEAR,			// 死亡
-		LABEL_SE_OPEN00,		// 協力扉が開く
-		LABEL_SE_OPEN01,		// 協力扉が閉まる
-		LABEL_SE_OPEN02,		// 開始扉
-		LABEL_SE_WARNING,		// 警告音
-		LABEL_SE_COIN00,		// コイン
-		LABEL_SE_COIN01,		// コイン
-		LABEL_SE_BUTTON,		// ボタンを押した
-		LABEL_SE_MOVE,			// 壺移動
-		LABEL_SE_RAGE,			// バタバタ
-		LABEL_SE_ENTRY,			// エントリー
+		LABEL_SE_WAVE,			// ウェーブ
+		LABEL_SE_BEAM,			// ビーム
+		LABEL_SE_KNIFE,			// ナイフ
+		LABEL_SE_KNIFECHARGE,	// ナイフチャージ
+		LABEL_SE_WAVECHARGE,	// 波ちゃーじ
+		LABEL_SE_DOWN,			// ダウン
+		LABEL_SE_HIT,			// ヒット
+		LABEL_SE_WALLKICK,		// 壁キック
+		LABEL_SE_WALLSLIDE,		// 壁ずり
+		LABEL_SE_SLIDING,		// sliding
+		LABEL_SE_CELINGDASH,		// sliding
+		LABEL_SE_CHECKPOINT,		// チェックポイント
 		LABEL_MAX,
 	} LABEL;
 

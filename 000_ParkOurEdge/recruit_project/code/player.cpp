@@ -337,6 +337,8 @@ void CPlayer::Update(void)
 	// 前回の座標を取得
 	m_Info.posOld = GetPosition();
 
+	SetBed();
+
 	if (m_fStopCounter > 0.0f) {
 		m_fStopCounter -= CManager::GetInstance()->GetSlow()->Get();
 		return;
@@ -947,6 +949,7 @@ void CPlayer::Jump(void)
 				m_Info.move.y = WALLKICK_JUMP;
 				m_fRotDest = atan2f(-m_Info.move.x, -m_Info.move.z);
 				SetAction(ACTION_WALLKICK);
+				CManager::GetInstance()->GetSound()->Play(CSound::LABEL_SE_WALLKICK);
 			}
 		}
 
@@ -983,6 +986,9 @@ void CPlayer::Slide(void)
 		{
 			if (m_bJump == false)
 			{// ジャンプしていない場合
+				if (m_nAction != ACTION_SLIDING) {
+					CManager::GetInstance()->GetSound()->Play(CSound::LABEL_SE_SLIDING);
+				}
 				SetAction(ACTION_SLIDING);
 				bSlide = true;
 			}
@@ -1091,6 +1097,7 @@ void CPlayer::WallDush(void)
 			m_fRotDest = atan2f(-m_Info.move.x, -m_Info.move.z);
 			m_Info.move.y = WALLKICK_JUMP;
 			SetAction(ACTION_WALLKICK);
+			CManager::GetInstance()->GetSound()->Play(CSound::LABEL_SE_WALLKICK);
 		}
 	}
 }
@@ -1451,6 +1458,10 @@ void CPlayer::MotionSet(void)
 		{
 			m_pBody->GetMotion()->BlendSet(m_nAction);
 			m_pLeg->GetMotion()->BlendSet(m_nAction);
+
+			if (m_pBody->GetMotion()->GetNowKey() % 2 == 0 && m_pBody->GetMotion()->GetNowFrame() == 0) {
+				CManager::GetInstance()->GetSound()->Play(CSound::LABEL_SE_WALLSLIDE);
+			}
 		}
 		break;
 
@@ -1490,6 +1501,10 @@ void CPlayer::MotionSet(void)
 		{
 			m_pBody->GetMotion()->BlendSet(m_nAction);
 			m_pLeg->GetMotion()->BlendSet(m_nAction);
+
+			if (m_pBody->GetMotion()->GetNowKey() % 2 == 0 && m_pBody->GetMotion()->GetNowFrame() == 0) {
+				CManager::GetInstance()->GetSound()->Play(CSound::LABEL_SE_CELINGDASH);
+			}
 		}
 		break;
 
@@ -1598,7 +1613,7 @@ void CPlayer::MotionSet(void)
 		if (m_pLeg->GetMotion()->GetNowFrame() == 0 && (m_pLeg->GetMotion()->GetNowKey() == 0 || m_pLeg->GetMotion()->GetNowKey() == 2))
 		{
 			CParticle::Create(m_Info.pos, CEffect::TYPE_WALK);
-			CManager::GetInstance()->GetSound()->Play(CSound::LABEL_SE_STEP);
+			CManager::GetInstance()->GetSound()->Play(CSound::LABEL_SE_WALK);
 		}
 	}
 	else
@@ -1666,6 +1681,7 @@ void CPlayer::Attack(void)
 
 	if (pInputKey->GetTrigger(DIK_I) || pInputPad->GetTrigger(CInputPad::BUTTON_RIGHTBUTTON, m_nId)) {
 		// 現在の状態によって攻撃方法を変える
+		CManager::GetInstance()->GetSound()->Play(CSound::LABEL_SE_ATTACK);
 		switch (m_nAction) {
 		case ACTION_KICKUP:
 			SetAction(ACTION_AXEKICK);
@@ -1791,7 +1807,7 @@ void CPlayer::SetFailedParticle(void)
 	{
 		return;
 		CParticle::Create(m_Info.pos, CEffect::TYPE_WALK);
-		CManager::GetInstance()->GetSound()->Play(CSound::LABEL_SE_STEP);
+		CManager::GetInstance()->GetSound()->Play(CSound::LABEL_SE_WALK);
 	}
 
 	CModel *pModel = nullptr;
@@ -2098,4 +2114,22 @@ void CPlayer::KickChance(void)
 D3DXVECTOR3 CPlayer::GetColliMax(void)
 {
 	return PLAYER::COLLIMAX;
+}
+
+//===============================================
+// ベッド描画設定
+//===============================================
+void CPlayer::SetBed(void)
+{
+	if (!BodyCheck(m_pLeg)) {	// 使用されていない
+		return;
+	}
+
+	bool bDraw = false;
+
+	if (m_nAction == ACTION_SLIDING) {
+		bDraw = true;
+	}
+
+	m_pLeg->GetParts(m_pLeg->GetNumParts() - 1)->SetDraw(bDraw);
 }

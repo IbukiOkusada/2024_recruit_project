@@ -37,6 +37,7 @@
 #include "enemy_gun.h"
 #include "enemy_boss.h"
 #include "editor.h"
+#include "ranking.h"
 
 // 無名名前空間を定義
 namespace {
@@ -211,7 +212,7 @@ HRESULT CGame::Init(void)
         sprintf(&aBodyPass[0], "%s\\motion_body%s", FILEPASS, FILEEXT);
         sprintf(&aLegPass[0], "%s\\motion_leg%s", FILEPASS, FILEEXT);
 
-        CPlayer *pPlayer = CPlayer::Create(D3DXVECTOR3(PLAYERSTARTPOS.x, PLAYERSTARTPOS.y, PLAYERSTARTPOS.z), D3DXVECTOR3(0.0f, -D3DX_PI * 0.5f, 0.0f), 
+        CPlayer *pPlayer = CPlayer::Create(D3DXVECTOR3(PLAYERSTARTPOS.x, PLAYERSTARTPOS.y, PLAYERSTARTPOS.z), D3DXVECTOR3(0.0f, -D3DX_PI * 1.0f, 0.0f), 
             D3DXVECTOR3(0.0f, 0.0f, 0.0f), &aBodyPass[0], &aLegPass[0]);
         pPlayer->SetCamera(CManager::GetInstance()->GetCamera());
         pPlayer->BindId(0);
@@ -245,14 +246,6 @@ HRESULT CGame::Init(void)
     }
 
     CEnemyBoss::Create(D3DXVECTOR3(-1300.0f, 900.0f, 3000.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
-    /*CEnemyMelee::Create(D3DXVECTOR3(100.0f, 600.0f, 2250.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
-    CEnemyMelee::Create(D3DXVECTOR3(300.0f, 600.0f, 2250.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
-    CEnemyGun::Create(D3DXVECTOR3(0.0f, 0.0f, 1150.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
-    CEnemyMelee::Create(D3DXVECTOR3(80.0f, 0.0f, 2250.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
-    CEnemyMelee::Create(D3DXVECTOR3(-430.0f, 600.0f, 2250.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
-    CEnemyGun::Create(D3DXVECTOR3(500.0f, 600.0f, 2350.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
-    CEnemyMelee::Create(D3DXVECTOR3(0.0f, 0.0f, -600.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
-    CEnemyGun::Create(D3DXVECTOR3(-500.0f, 600.0f, 2350.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));*/
 
     //ドーム追加
     CMeshDome::Create(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), 15000.0f, 3000.0f, 3, 8, 8);
@@ -265,6 +258,8 @@ HRESULT CGame::Init(void)
 
     m_pPause = CPause::Create();
 
+    CManager::GetInstance()->GetSound()->Play(CSound::LABEL_BGM_GAME);
+
     return S_OK;
 }
 
@@ -273,6 +268,8 @@ HRESULT CGame::Init(void)
 //===============================================
 void CGame::Uninit(void)
 {
+    CManager::GetInstance()->GetSound()->Stop();
+
     m_bEnd = true;
 
     while (1)
@@ -405,14 +402,11 @@ void CGame::Update(void)
 
     if (m_pTimer != nullptr) {
         m_pTimer->Update();
-
-        if (m_pTimer->GetNum() <= 0) {
-            CManager::GetInstance()->GetFade()->Set(CScene::MODE_RESULT);
-        }
     }
 
     if (CPlayerManager::GetInstance()->GetTop()->GetPosition().x <= -3000.0f) {
         CManager::GetInstance()->GetFade()->Set(CScene::MODE_RANKING);
+        CRanking::SetScore(m_pTimer->GetNum());
     }
 
     CScene::Update();

@@ -9,7 +9,7 @@ SCRIPT			# この行は絶対消さないこと！
 #------------------------------------------------------------------------------
 # テクスチャ数
 #------------------------------------------------------------------------------
-NUM_TEXTURE = 12
+NUM_TEXTURE = 21
 
 #------------------------------------------------------------------------------
 # テクスチャファイル名
@@ -23,9 +23,18 @@ TEXTURE_FILENAME = data/TEXTURE/wall001.jpg		5
 TEXTURE_FILENAME = data/TEXTURE/field007.jpg	6
 TEXTURE_FILENAME = data/TEXTURE/field008.jpg	7
 TEXTURE_FILENAME = data/TEXTURE/field009.jpg	8
-TEXTURE_FILENAME = data/TEXTURE/wall002.jpg	8
-TEXTURE_FILENAME = data/TEXTURE/wall003.jpg	8
-TEXTURE_FILENAME = data/TEXTURE/wall004.jpg	8
+TEXTURE_FILENAME = data/TEXTURE/wall002.jpg	9
+TEXTURE_FILENAME = data/TEXTURE/wall003.jpg	10
+TEXTURE_FILENAME = data/TEXTURE/wall004.jpg	11
+TEXTURE_FILENAME = data/TEXTURE/tutorial000.png	12
+TEXTURE_FILENAME = data/TEXTURE/tutorial001.png	13
+TEXTURE_FILENAME = data/TEXTURE/tutorial002.png	14
+TEXTURE_FILENAME = data/TEXTURE/tutorial003.png	15
+TEXTURE_FILENAME = data/TEXTURE/tutorial004.png	16
+TEXTURE_FILENAME = data/TEXTURE/tutorial005.png	17
+TEXTURE_FILENAME = data/TEXTURE/tutorial006.png	18
+TEXTURE_FILENAME = data/TEXTURE/tutorial007.png	19
+TEXTURE_FILENAME = data/TEXTURE/tutorial008.png	20
 
 #------------------------------------------------------------------------------
 # モデル数
@@ -4561,5 +4570,110 @@ MODELSET
 	ROT = 0.0 0.0 0.0
 	SHADOW = 1		#使用しない場合は0
 END_MODELSET
+
+// チュートリアル配置
+WALLSET
+	TEXTYPE = 12
+	POS = 100.0 0.0 -5400.0
+	ROT = 0 0 0
+	BLOCK = 1 1
+	SIZE = 50 50
+END_WALLSET
+
+WALLSET
+	TEXTYPE = 13
+	POS = -100.0 0.0 -5400.0
+	ROT = 0 0 0
+	BLOCK = 1 1
+	SIZE = 50 50
+END_WALLSET
+
+WALLSET
+	TEXTYPE = 14
+	POS = 0.0 -100.0 -4505.0
+	ROT = 0 0 0
+	BLOCK = 1 1
+	SIZE = 50 75
+END_WALLSET
+
+WALLSET
+	TEXTYPE = 15
+	POS = 1349.0 500.0 -4350.0
+	ROT = 0 90 0
+	BLOCK = 1 1
+	SIZE = 75 100
+END_WALLSET
+
+WALLSET
+	TEXTYPE = 16
+	POS = 2400.0 410.0 -4800.0
+	ROT = 0 180 0
+	BLOCK = 1 1
+	SIZE = 75 100
+END_WALLSET
+
+WALLSET
+	TEXTYPE = 16
+	POS = 2549.0 500.0 -4150.0
+	ROT = 0 90 0
+	BLOCK = 1 1
+	SIZE = 75 100
+END_WALLSET
+
+WALLSET
+	TEXTYPE = 17
+	POS = 3649.0 500.0 -4400.0
+	ROT = 0 90 0
+	BLOCK = 1 1
+	SIZE = 75 100
+END_WALLSET
+
+WALLSET
+	TEXTYPE = 18
+	POS = 4500.0 200.0 -4250.0
+	ROT = 0 90 0
+	BLOCK = 1 1
+	SIZE = 50 75
+END_WALLSET
+
+WALLSET
+	TEXTYPE = 19
+	POS = 5400.0 200.0 -1501.0
+	ROT = 0 0 0
+	BLOCK = 1 1
+	SIZE = 50 75
+END_WALLSET
+
+WALLSET
+	TEXTYPE = 19
+	POS = 5400.0 600.0 -901.0
+	ROT = 0 0 0
+	BLOCK = 1 1
+	SIZE = 50 75
+END_WALLSET
+
+WALLSET
+	TEXTYPE = 19
+	POS = 5400.0 1000.0 -301.0
+	ROT = 0 0 0
+	BLOCK = 1 1
+	SIZE = 50 75
+END_WALLSET
+
+WALLSET
+	TEXTYPE = 20
+	POS = 5400.0 1800.0 2099.0
+	ROT = 0 0 0
+	BLOCK = 1 1
+	SIZE = 50 75
+END_WALLSET
+
+WALLSET
+	TEXTYPE = 17
+	POS = 4100.0 1000.0 2099.0
+	ROT = 0 0 0
+	BLOCK = 1 1
+	SIZE = 100 200
+END_WALLSET
 
 END_SCRIPT

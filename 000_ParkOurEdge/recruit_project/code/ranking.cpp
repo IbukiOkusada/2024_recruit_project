@@ -21,10 +21,18 @@
 #include "character.h"
 #include "motion.h"
 #include "camera.h"
+#include "player.h"
 
 // マクロ定義
 #define RANKING_FILE	"data\\FILE\\ranking.bin"	// ランキングファイル
 #define MOVE_TIMER	(660)
+
+namespace
+{
+	const char* FILEPASS = "data\\TXT\\player";	// ファイルのパス
+	const char* FILEEXT = ".txt";				// ファイルの拡張子
+	const int FILEPASS_SIZE = (200);			// ファイルのパスサイズ
+}
 
 int CRanking::m_nScore = 0;
 
@@ -66,8 +74,9 @@ HRESULT CRanking::Init(void)
 		}
 	}
 
-	CManager::GetInstance()->GetCamera()->SetRotation(D3DXVECTOR3(0.0f, -D3DX_PI * 1.0f, 1.51f));
-	CManager::GetInstance()->GetCamera()->SetPositionR(D3DXVECTOR3(1000.0f, 0.0f, 0.0f));
+	CManager::GetInstance()->GetCamera()->SetRotation(D3DXVECTOR3(0.0f, -D3DX_PI * 1.0f, 1.61f));
+	CManager::GetInstance()->GetCamera()->SetPositionR(D3DXVECTOR3(1050.0f, 50.0f, 170.0f));
+	CManager::GetInstance()->GetCamera()->SetActive(false);
 	m_pTime = CTime::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.4f, SCREEN_HEIGHT * 0.075f, 0.0f));
 	m_pTime->Set(m_nScore);
 	m_pTime->SetColor(D3DXCOLOR(1.0f, 0.5f, 0.5f, 1.0f));
@@ -105,7 +114,18 @@ HRESULT CRanking::Init(void)
 		}
 	}
 
-	CManager::GetInstance()->GetSound()->Play(CSound::LABEL_BGM_RANKING);
+	char aBodyPass[FILEPASS_SIZE] = "";		// 胴体パス
+	char aLegPass[FILEPASS_SIZE] = "";		// 下半身パス
+
+	sprintf(&aBodyPass[0], "%s\\motion_body%s", FILEPASS, FILEEXT);
+	sprintf(&aLegPass[0], "%s\\motion_leg%s", FILEPASS, FILEEXT);
+
+	CPlayer* pPlayer = CPlayer::Create(D3DXVECTOR3(800.0f, 0.0f, 200.0f), D3DXVECTOR3(0.0f, D3DX_PI * 0.5f, 0.0f),
+		D3DXVECTOR3(0.0f, 0.0f, 0.0f), &aBodyPass[0], &aLegPass[0]);
+	pPlayer->BindId(0);
+	pPlayer->SetType(CPlayer::TYPE_NONE);
+	pPlayer->SetDraw(true);
+	pPlayer->SetMotion(16);
 
 	return S_OK;
 }
@@ -138,6 +158,7 @@ void CRanking::Uninit(void)
 		m_pFileLoad = nullptr;
 	}
 
+	CManager::GetInstance()->GetCamera()->SetActive(true);
 	m_nScore = 0;
 }
 
@@ -208,7 +229,7 @@ void CRanking::Load(int* pScore)
 	 //要素を入れておく
 		for (int nCntRanking = 0; nCntRanking < NUM_RANK; nCntRanking++)
 		{
-			pScore[nCntRanking] = 500 + (nCntRanking * 100);
+			pScore[nCntRanking] = 6000 * 10 + (6000 * nCntRanking);
 		}
 	}
 }
@@ -225,7 +246,7 @@ void CRanking::Sort(int* pScore)
 
 		for (int nCntSec = nCntFst + 1; nCntSec < NUM_RANK; nCntSec++)
 		{
-			if (pScore[nCntSec] > pScore[nTempNum])
+			if (pScore[nCntSec] < pScore[nTempNum])
 			{// 値が大きい場合
 				nTempNum = nCntSec;	// 大きい番号を変更
 			}
@@ -245,7 +266,7 @@ void CRanking::Sort(int* pScore)
 //===============================================
 void CRanking::RankIn(int* pScore, int nRanking)
 {
-	if (nRanking > pScore[NUM_RANK - 1])
+	if (nRanking < pScore[NUM_RANK - 1] && nRanking != 0)
 	{
 		pScore[NUM_RANK - 1] = nRanking;
 

@@ -152,6 +152,7 @@ private:	// 自分だけがアクセス可能
 	int m_nAction;			// アクション番号
 	float m_fInterVal;		// ダメージインターバル
 	float m_fAtkCnter;		// 攻撃カウンター
+	bool m_bSound;
 	CBridge* m_pBridge;		// 橋
 	SMoveInfo m_MoveInfo;	// 移動量管理用
 };

@@ -21,6 +21,7 @@
 #include "bullet.h"
 #include "particle.h"
 #include "enemy_manager.h"
+#include "sound.h"
 
 // –³–¼–¼‘O‹óŠÔ
 namespace
@@ -371,11 +372,13 @@ void CEnemyGun::Damage(const int nDamage)
 	if (nLife <= 0) {	// ‘Ì—Í‚ª‚È‚­‚È‚Á‚½
 		m_StateInfo.state = STATE_DEATH;
 		m_nAction = ACTION_DEATH;
+		CManager::GetInstance()->GetSound()->Play(CSound::LABEL_SE_DOWN);
 	}
 	else {	// ‚Ü‚¾‚ ‚é
 		SetLife(nLife);
 		m_StateInfo.state = STATE_DAMAGE;
 		m_StateInfo.fCounter = INTERVAL::DAMAGE;
+		CManager::GetInstance()->GetSound()->Play(CSound::LABEL_SE_HIT);
 
 		if (BodyCheck(m_pBody) && BodyCheck(m_pLeg)) {
 			m_pBody->SetChangeMat(true);

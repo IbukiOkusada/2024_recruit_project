@@ -124,8 +124,6 @@ HRESULT CTutorial::Init(void)
 	m_ppPlayer[0]->BindId(0);
 	m_ppPlayer[0]->SetType(CPlayer::TYPE_ACTIVE);
 
-	CManager::GetInstance()->GetSound()->Play(CSound::LABEL_BGM_TUTORIAL);
-
 	return S_OK;
 }
 

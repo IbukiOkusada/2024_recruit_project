@@ -127,6 +127,8 @@ HRESULT CResult::Init(void)
 		CManager::GetInstance()->GetCamera()->SetViewPort(viewport);
 	}
 
+	CManager::GetInstance()->GetSound()->Play(CSound::LABEL_BGM_RESULT);
+
 	return S_OK;
 }
 
@@ -151,6 +153,8 @@ void CResult::Uninit(void)
 	CRanking::SetScore(m_nScore);
 	m_nScore = 0;
 	CManager::GetInstance()->GetCamera()->SetActive(true);
+
+	CManager::GetInstance()->GetSound()->Stop();
 }
 
 //===============================================

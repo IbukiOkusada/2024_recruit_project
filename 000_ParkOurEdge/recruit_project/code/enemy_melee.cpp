@@ -19,6 +19,7 @@
 #include "slow.h"
 #include "meshfield.h"
 #include "enemy_manager.h"
+#include "sound.h"
 
 // –³–¼–¼‘O‹óŠÔ
 namespace
@@ -377,6 +378,7 @@ void CEnemyMelee::Damage(const int nDamage)
 	if (nLife <= 0) {	// ‘Ì—Í‚ª‚È‚­‚È‚Á‚½
 		m_StateInfo.state = STATE_DEATH;
 		m_nAction = ACTION_DEATH;
+		CManager::GetInstance()->GetSound()->Play(CSound::LABEL_SE_DOWN);
 	}
 	else {	// ‚Ü‚¾‚ ‚é
 		SetLife(nLife);
@@ -384,6 +386,7 @@ void CEnemyMelee::Damage(const int nDamage)
 			m_StateInfo.state = STATE_DAMAGE;
 			m_StateInfo.fCounter = INTERVAL::DAMAGE;
 		}
+		CManager::GetInstance()->GetSound()->Play(CSound::LABEL_SE_HIT);
 	}
 
 	if (BodyCheck(m_pBody) && BodyCheck(m_pLeg)) {

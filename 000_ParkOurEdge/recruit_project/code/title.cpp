@@ -132,6 +132,7 @@ void CTitle::Update(void)
 			if (m_pPlayer != nullptr) {
 				m_pPlayer->SetMotion(CPlayer::ACTION_WALK);
 			}
+			CManager::GetInstance()->GetSound()->Play(CSound::LABEL_SE_CLICK);
 		}
 
 		m_bPush = true;

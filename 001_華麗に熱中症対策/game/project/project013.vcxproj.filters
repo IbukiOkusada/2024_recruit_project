@@ -40,7 +40,6 @@
     <ClCompile Include="code\message.cpp" />
     <ClCompile Include="code\model.cpp" />
     <ClCompile Include="code\motion.cpp" />
-    <ClCompile Include="code\multibg.cpp" />
     <ClCompile Include="code\number.cpp" />
     <ClCompile Include="code\object.cpp" />
     <ClCompile Include="code\object2D.cpp" />
@@ -101,7 +100,6 @@
     <ClInclude Include="code\message.h" />
     <ClInclude Include="code\model.h" />
     <ClInclude Include="code\motion.h" />
-    <ClInclude Include="code\multibg.h" />
     <ClInclude Include="code\number.h" />
     <ClInclude Include="code\object.h" />
     <ClInclude Include="code\object2D.h" />

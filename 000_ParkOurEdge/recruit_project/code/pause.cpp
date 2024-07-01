@@ -279,19 +279,19 @@ CPause *CPause::Create(void)
 //===============================================
 void CPause::SetDraw(const bool bValue)
 {
-	if (m_pBg != nullptr) {
-		m_pBg->SetDraw(bValue);
-	}
+	//if (m_pBg != nullptr) {
+	//	m_pBg->SetDraw(bValue);
+	//}
 
-	// 選択肢の色変更
-	for (int nCnt = 0; nCnt < MENU_MAX; nCnt++)
-	{
-		if (m_aMenu[nCnt].pObject2D != NULL)
-		{// 使用されている
-		 // 色設定
-			m_aMenu[nCnt].pObject2D->SetDraw(bValue);
-		}
-	}
+	//// 選択肢の色変更
+	//for (int nCnt = 0; nCnt < MENU_MAX; nCnt++)
+	//{
+	//	if (m_aMenu[nCnt].pObject2D != NULL)
+	//	{// 使用されている
+	//	 // 色設定
+	//		m_aMenu[nCnt].pObject2D->SetDraw(bValue);
+	//	}
+	//}
 }
 
 //===============================================

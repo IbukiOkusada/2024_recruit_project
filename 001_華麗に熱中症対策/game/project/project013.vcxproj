@@ -19,161 +19,159 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="billboard.cpp" />
-    <ClCompile Include="block.cpp" />
-    <ClCompile Include="bullet.cpp" />
-    <ClCompile Include="camera.cpp" />
-    <ClCompile Include="car.cpp" />
-    <ClCompile Include="car_manager.cpp" />
-    <ClCompile Include="character.cpp" />
-    <ClCompile Include="debugproc.cpp" />
-    <ClCompile Include="editor.cpp" />
-    <ClCompile Include="effect.cpp" />
-    <ClCompile Include="enemy.cpp" />
-    <ClCompile Include="enemy_manager.cpp" />
-    <ClCompile Include="enemy_route.cpp" />
-    <ClCompile Include="explosion.cpp" />
-    <ClCompile Include="fade.cpp" />
-    <ClCompile Include="fileload.cpp" />
-    <ClCompile Include="filter.cpp" />
-    <ClCompile Include="game.cpp" />
-    <ClCompile Include="input.cpp" />
-    <ClCompile Include="item.cpp" />
-    <ClCompile Include="light.cpp" />
-    <ClCompile Include="lockon.cpp" />
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="manager.cpp" />
-    <ClCompile Include="mesh.cpp" />
-    <ClCompile Include="meshballoon.cpp" />
-    <ClCompile Include="meshcylinder.cpp" />
-    <ClCompile Include="meshdome.cpp" />
-    <ClCompile Include="meshfield.cpp" />
-    <ClCompile Include="meshorbit.cpp" />
-    <ClCompile Include="meshwall.cpp" />
-    <ClCompile Include="message.cpp" />
-    <ClCompile Include="model.cpp" />
-    <ClCompile Include="motion.cpp" />
-    <ClCompile Include="multibg.cpp" />
-    <ClCompile Include="number.cpp" />
-    <ClCompile Include="object.cpp" />
-    <ClCompile Include="object2D.cpp" />
-    <ClCompile Include="object3D.cpp" />
-    <ClCompile Include="objectX.cpp" />
-    <ClCompile Include="particle.cpp" />
-    <ClCompile Include="pause.cpp" />
-    <ClCompile Include="player.cpp" />
-    <ClCompile Include="precompile.cpp">
+    <ClCompile Include="code\billboard.cpp" />
+    <ClCompile Include="code\bullet.cpp" />
+    <ClCompile Include="code\camera.cpp" />
+    <ClCompile Include="code\car.cpp" />
+    <ClCompile Include="code\car_manager.cpp" />
+    <ClCompile Include="code\character.cpp" />
+    <ClCompile Include="code\debugproc.cpp" />
+    <ClCompile Include="code\editor.cpp" />
+    <ClCompile Include="code\effect.cpp" />
+    <ClCompile Include="code\enemy.cpp" />
+    <ClCompile Include="code\enemy_manager.cpp" />
+    <ClCompile Include="code\enemy_route.cpp" />
+    <ClCompile Include="code\explosion.cpp" />
+    <ClCompile Include="code\fade.cpp" />
+    <ClCompile Include="code\fileload.cpp" />
+    <ClCompile Include="code\filter.cpp" />
+    <ClCompile Include="code\game.cpp" />
+    <ClCompile Include="code\input.cpp" />
+    <ClCompile Include="code\item.cpp" />
+    <ClCompile Include="code\light.cpp" />
+    <ClCompile Include="code\lockon.cpp" />
+    <ClCompile Include="code\main.cpp" />
+    <ClCompile Include="code\manager.cpp" />
+    <ClCompile Include="code\mesh.cpp" />
+    <ClCompile Include="code\meshballoon.cpp" />
+    <ClCompile Include="code\meshcylinder.cpp" />
+    <ClCompile Include="code\meshdome.cpp" />
+    <ClCompile Include="code\meshfield.cpp" />
+    <ClCompile Include="code\meshorbit.cpp" />
+    <ClCompile Include="code\meshwall.cpp" />
+    <ClCompile Include="code\message.cpp" />
+    <ClCompile Include="code\model.cpp" />
+    <ClCompile Include="code\motion.cpp" />
+    <ClCompile Include="code\multibg.cpp" />
+    <ClCompile Include="code\number.cpp" />
+    <ClCompile Include="code\object.cpp" />
+    <ClCompile Include="code\object2D.cpp" />
+    <ClCompile Include="code\object3D.cpp" />
+    <ClCompile Include="code\objectX.cpp" />
+    <ClCompile Include="code\particle.cpp" />
+    <ClCompile Include="code\pause.cpp" />
+    <ClCompile Include="code\player.cpp" />
+    <ClCompile Include="code\precompile.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="ranking.cpp" />
-    <ClCompile Include="renderer.cpp" />
-    <ClCompile Include="result.cpp" />
-    <ClCompile Include="score.cpp" />
-    <ClCompile Include="shadow.cpp" />
-    <ClCompile Include="slow.cpp" />
-    <ClCompile Include="sound.cpp" />
-    <ClCompile Include="target.cpp" />
-    <ClCompile Include="texture.cpp" />
-    <ClCompile Include="thermo.cpp" />
-    <ClCompile Include="time.cpp" />
-    <ClCompile Include="title.cpp" />
-    <ClCompile Include="tutorial.cpp" />
-    <ClCompile Include="waist.cpp" />
-    <ClCompile Include="wet.cpp" />
-    <ClCompile Include="Xfile.cpp" />
+    <ClCompile Include="code\ranking.cpp" />
+    <ClCompile Include="code\renderer.cpp" />
+    <ClCompile Include="code\result.cpp" />
+    <ClCompile Include="code\score.cpp" />
+    <ClCompile Include="code\shadow.cpp" />
+    <ClCompile Include="code\slow.cpp" />
+    <ClCompile Include="code\sound.cpp" />
+    <ClCompile Include="code\target.cpp" />
+    <ClCompile Include="code\texture.cpp" />
+    <ClCompile Include="code\thermo.cpp" />
+    <ClCompile Include="code\time.cpp" />
+    <ClCompile Include="code\title.cpp" />
+    <ClCompile Include="code\tutorial.cpp" />
+    <ClCompile Include="code\waist.cpp" />
+    <ClCompile Include="code\wet.cpp" />
+    <ClCompile Include="code\Xfile.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="billboard.h" />
-    <ClInclude Include="block.h" />
-    <ClInclude Include="bullet.h" />
-    <ClInclude Include="camera.h" />
-    <ClInclude Include="car.h" />
-    <ClInclude Include="car_manager.h" />
-    <ClInclude Include="character.h" />
-    <ClInclude Include="debugproc.h" />
-    <ClInclude Include="editor.h" />
-    <ClInclude Include="effect.h" />
-    <ClInclude Include="enemy.h" />
-    <ClInclude Include="enemy_manager.h" />
-    <ClInclude Include="enemy_route.h" />
-    <ClInclude Include="explosion.h" />
-    <ClInclude Include="fade.h" />
-    <ClInclude Include="fileload.h" />
-    <ClInclude Include="filter.h" />
-    <ClInclude Include="game.h" />
-    <ClInclude Include="input.h" />
-    <ClInclude Include="item.h" />
-    <ClInclude Include="light.h" />
-    <ClInclude Include="lockon.h" />
-    <ClInclude Include="main.h" />
-    <ClInclude Include="manager.h" />
-    <ClInclude Include="mesh.h" />
-    <ClInclude Include="meshballoon.h" />
-    <ClInclude Include="meshcylinder.h" />
-    <ClInclude Include="meshdome.h" />
-    <ClInclude Include="meshfield.h" />
-    <ClInclude Include="meshorbit.h" />
-    <ClInclude Include="meshwall.h" />
-    <ClInclude Include="message.h" />
-    <ClInclude Include="model.h" />
-    <ClInclude Include="motion.h" />
-    <ClInclude Include="multibg.h" />
-    <ClInclude Include="number.h" />
-    <ClInclude Include="object.h" />
-    <ClInclude Include="object2D.h" />
-    <ClInclude Include="object3D.h" />
-    <ClInclude Include="objectX.h" />
-    <ClInclude Include="particle.h" />
-    <ClInclude Include="pause.h" />
-    <ClInclude Include="player.h" />
-    <ClInclude Include="precompile.h" />
-    <ClInclude Include="ranking.h" />
-    <ClInclude Include="renderer.h" />
-    <ClInclude Include="result.h" />
-    <ClInclude Include="score.h" />
-    <ClInclude Include="shadow.h" />
-    <ClInclude Include="slow.h" />
-    <ClInclude Include="sound.h" />
-    <ClInclude Include="target.h" />
-    <ClInclude Include="texture.h" />
-    <ClInclude Include="thermo.h" />
-    <ClInclude Include="time.h" />
-    <ClInclude Include="title.h" />
-    <ClInclude Include="tutorial.h" />
-    <ClInclude Include="waist.h" />
-    <ClInclude Include="wet.h" />
-    <ClInclude Include="Xfile.h" />
+    <ClInclude Include="code\billboard.h" />
+    <ClInclude Include="code\bullet.h" />
+    <ClInclude Include="code\camera.h" />
+    <ClInclude Include="code\car.h" />
+    <ClInclude Include="code\car_manager.h" />
+    <ClInclude Include="code\character.h" />
+    <ClInclude Include="code\debugproc.h" />
+    <ClInclude Include="code\editor.h" />
+    <ClInclude Include="code\effect.h" />
+    <ClInclude Include="code\enemy.h" />
+    <ClInclude Include="code\enemy_manager.h" />
+    <ClInclude Include="code\enemy_route.h" />
+    <ClInclude Include="code\explosion.h" />
+    <ClInclude Include="code\fade.h" />
+    <ClInclude Include="code\fileload.h" />
+    <ClInclude Include="code\filter.h" />
+    <ClInclude Include="code\game.h" />
+    <ClInclude Include="code\input.h" />
+    <ClInclude Include="code\item.h" />
+    <ClInclude Include="code\light.h" />
+    <ClInclude Include="code\lockon.h" />
+    <ClInclude Include="code\main.h" />
+    <ClInclude Include="code\manager.h" />
+    <ClInclude Include="code\mesh.h" />
+    <ClInclude Include="code\meshballoon.h" />
+    <ClInclude Include="code\meshcylinder.h" />
+    <ClInclude Include="code\meshdome.h" />
+    <ClInclude Include="code\meshfield.h" />
+    <ClInclude Include="code\meshorbit.h" />
+    <ClInclude Include="code\meshwall.h" />
+    <ClInclude Include="code\message.h" />
+    <ClInclude Include="code\model.h" />
+    <ClInclude Include="code\motion.h" />
+    <ClInclude Include="code\multibg.h" />
+    <ClInclude Include="code\number.h" />
+    <ClInclude Include="code\object.h" />
+    <ClInclude Include="code\object2D.h" />
+    <ClInclude Include="code\object3D.h" />
+    <ClInclude Include="code\objectX.h" />
+    <ClInclude Include="code\particle.h" />
+    <ClInclude Include="code\pause.h" />
+    <ClInclude Include="code\player.h" />
+    <ClInclude Include="code\precompile.h" />
+    <ClInclude Include="code\ranking.h" />
+    <ClInclude Include="code\renderer.h" />
+    <ClInclude Include="code\result.h" />
+    <ClInclude Include="code\score.h" />
+    <ClInclude Include="code\shadow.h" />
+    <ClInclude Include="code\slow.h" />
+    <ClInclude Include="code\sound.h" />
+    <ClInclude Include="code\target.h" />
+    <ClInclude Include="code\texture.h" />
+    <ClInclude Include="code\thermo.h" />
+    <ClInclude Include="code\time.h" />
+    <ClInclude Include="code\title.h" />
+    <ClInclude Include="code\tutorial.h" />
+    <ClInclude Include="code\waist.h" />
+    <ClInclude Include="code\wet.h" />
+    <ClInclude Include="code\Xfile.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{51327C2B-BB33-4D83-9579-ECCDA1CC297D}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>project013</RootNamespace>
-    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>

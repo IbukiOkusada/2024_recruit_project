@@ -76,6 +76,7 @@ private:	// 自分だけがアクセス可能
 	void Edit(void);
 	void Slow(void);
 	void SlowShw(void);
+	void MessageCheck(float fRot);
 
 	// メンバ変数
 	D3DXMATRIX m_mtxView;		// ビューマトリックス

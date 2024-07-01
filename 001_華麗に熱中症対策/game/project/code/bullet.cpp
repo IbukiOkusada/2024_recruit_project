@@ -67,6 +67,7 @@ CBullet::CBullet(D3DXVECTOR3 pos, D3DXVECTOR3 move)
 	m_pNext = NULL;
 	m_pPrev = NULL;
 	m_pOrbit = NULL;
+	m_pOrbit2 = NULL;
 
 	// 自分自身をリストに追加
 	if (m_pTop != NULL)
@@ -80,8 +81,6 @@ CBullet::CBullet(D3DXVECTOR3 pos, D3DXVECTOR3 move)
 		m_pTop = this;	// 自分自身が先頭になる
 		m_pCur = this;	// 自分自身が最後尾になる
 	}
-
-	m_pOrbit2 = NULL;
 }
 
 //===============================================
@@ -219,7 +218,7 @@ CBullet *CBullet::Create(D3DXVECTOR3 pos, D3DXVECTOR3 move, TYPE type)
 		pBullet->m_nType = type;
 
 		// オブジェクトタイプの設定
-		pBullet->SetType(CObject::TYPE_BULLET);
+		pBullet->CObject::SetType(CObject::TYPE_BULLET);
 
 		pBullet->BindTexture(-1);
 
@@ -227,30 +226,8 @@ CBullet *CBullet::Create(D3DXVECTOR3 pos, D3DXVECTOR3 move, TYPE type)
 
 		pBullet->SetMtx();
 
-		// 軌跡の
-		if (type == TYPE_NONE)
-		{
-			pBullet->m_pOrbit = CMeshOrbit::Create(pBullet->GetMtx(), D3DXVECTOR3(0.0f, 3.0f, 0.0f), D3DXVECTOR3(0.0f, -3.0f, 0.0f), CMeshOrbit::TYPE_BULLET);
-			pBullet->m_pOrbit2 = CMeshOrbit::Create(pBullet->GetMtx(), D3DXVECTOR3(0.0f, 3.0f, 0.0f), D3DXVECTOR3(0.0f, -3.0f, 0.0f), CMeshOrbit::TYPE_BULLET);
-			pBullet->m_pOrbit2->BindTexture(CManager::GetTexture()->Regist("data\\TEXTURE\\water000.jpg"));
-			pBullet->m_pOrbit->BindTexture(CManager::GetTexture()->Regist("data\\TEXTURE\\water001.jpg"));
-		}
-		else if (type == TYPE_SHOWER)
-		{
-			pBullet->m_pOrbit = CMeshOrbit::Create(pBullet->GetMtx(), D3DXVECTOR3(0.0f, 0.01f, 0.0f), D3DXVECTOR3(0.0f, -0.01f, 0.0f), CMeshOrbit::TYPE_BULLET);
-			pBullet->m_pOrbit2 = CMeshOrbit::Create(pBullet->GetMtx(), D3DXVECTOR3(0.0f, 0.01f, 0.0f), D3DXVECTOR3(0.0f, -0.01f, 0.0f), CMeshOrbit::TYPE_BULLET);
-			pBullet->m_pOrbit2->BindTexture(CManager::GetTexture()->Regist("data\\TEXTURE\\water002.jpg"));
-			pBullet->m_pOrbit->BindTexture(CManager::GetTexture()->Regist("data\\TEXTURE\\water001.jpg"));
-		}
-		else if (type == TYPE_EXPLOSION)
-		{
-			pBullet->m_pOrbit = CMeshOrbit::Create(pBullet->GetMtx(), D3DXVECTOR3(0.0f, 1.0f, 0.0f), D3DXVECTOR3(0.0f, -1.0f, 0.0f), CMeshOrbit::TYPE_BULLET);
-			pBullet->m_pOrbit2 = CMeshOrbit::Create(pBullet->GetMtx(), D3DXVECTOR3(0.0f, 1.0f, 0.0f), D3DXVECTOR3(0.0f, -1.0f, 0.0f), CMeshOrbit::TYPE_BULLET);
-			pBullet->m_pOrbit2->BindTexture(CManager::GetTexture()->Regist("data\\TEXTURE\\water000.jpg"));
-			pBullet->m_pOrbit->BindTexture(CManager::GetTexture()->Regist("data\\TEXTURE\\water001.jpg"));
-			pBullet->m_pOrbit->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
-			pBullet->m_pOrbit2->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
-		}
+		// 軌跡の設定
+		pBullet->SetType(type);
 	}
 	else
 	{// 生成に失敗した場合
@@ -572,4 +549,34 @@ void CBullet::DeathCheck(void)
 void CBullet::SetInerMove(D3DXVECTOR3 move)
 {
 	m_Inermove = move;
+}
+
+//===============================================
+// 種類設定
+//===============================================
+void CBullet::SetType(TYPE type)
+{
+	if (type == TYPE_NONE)
+	{
+		m_pOrbit = CMeshOrbit::Create(GetMtx(), D3DXVECTOR3(0.0f, 3.0f, 0.0f), D3DXVECTOR3(0.0f, -3.0f, 0.0f), CMeshOrbit::TYPE_BULLET);
+		m_pOrbit2 = CMeshOrbit::Create(GetMtx(), D3DXVECTOR3(0.0f, 3.0f, 0.0f), D3DXVECTOR3(0.0f, -3.0f, 0.0f), CMeshOrbit::TYPE_BULLET);
+		m_pOrbit2->BindTexture(CManager::GetTexture()->Regist("data\\TEXTURE\\water000.jpg"));
+		m_pOrbit->BindTexture(CManager::GetTexture()->Regist("data\\TEXTURE\\water001.jpg"));
+	}
+	else if (type == TYPE_SHOWER)
+	{
+		m_pOrbit = CMeshOrbit::Create(GetMtx(), D3DXVECTOR3(0.0f, 0.01f, 0.0f), D3DXVECTOR3(0.0f, -0.01f, 0.0f), CMeshOrbit::TYPE_BULLET);
+		m_pOrbit2 = CMeshOrbit::Create(GetMtx(), D3DXVECTOR3(0.0f, 0.01f, 0.0f), D3DXVECTOR3(0.0f, -0.01f, 0.0f), CMeshOrbit::TYPE_BULLET);
+		m_pOrbit2->BindTexture(CManager::GetTexture()->Regist("data\\TEXTURE\\water002.jpg"));
+		m_pOrbit->BindTexture(CManager::GetTexture()->Regist("data\\TEXTURE\\water001.jpg"));
+	}
+	else if (type == TYPE_EXPLOSION)
+	{
+		m_pOrbit = CMeshOrbit::Create(GetMtx(), D3DXVECTOR3(0.0f, 1.0f, 0.0f), D3DXVECTOR3(0.0f, -1.0f, 0.0f), CMeshOrbit::TYPE_BULLET);
+		m_pOrbit2 = CMeshOrbit::Create(GetMtx(), D3DXVECTOR3(0.0f, 1.0f, 0.0f), D3DXVECTOR3(0.0f, -1.0f, 0.0f), CMeshOrbit::TYPE_BULLET);
+		m_pOrbit2->BindTexture(CManager::GetTexture()->Regist("data\\TEXTURE\\water000.jpg"));
+		m_pOrbit->BindTexture(CManager::GetTexture()->Regist("data\\TEXTURE\\water001.jpg"));
+		m_pOrbit->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+		m_pOrbit2->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+	}
 }

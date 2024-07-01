@@ -18,12 +18,15 @@
 #include "sound.h"
 #include "camera.h"
 
-//===============================================
-// マクロ定義
-//===============================================
-#define AUTOMOVE_RANKING	(1200)	// ランキング自動遷移
-#define TITLE_CAMLENGTH		(1000.0f)
-#define TITLE_CAMROTZ		(D3DX_PI * 0.35f)
+//==========================================================
+// 定数定義
+//==========================================================
+namespace
+{
+	const float AUTOMOVE_RANKING = (1200);	// ランキング自動遷移
+	const float TITLE_CAMLENGTH = (1000.0f);
+	const float TITLE_CAMROTZ = (D3DX_PI * 0.35f);
+}
 
 //===============================================
 // コンストラクタ

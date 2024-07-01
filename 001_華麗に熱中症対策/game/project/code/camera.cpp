@@ -845,61 +845,14 @@ void CCamera::SlowShw(void)
 	}
 	else
 	{
+		// 前回から動いている
 		if (m_SlowOldRot.y != m_rot.y)
 		{
-			if (fLeftRot <= 0.0f)
-			{
-				if (fLeftRot >= -0.2f)
-				{
-					CMessage *pMessage = CMessage::Create(D3DXVECTOR3(300.0f, 150.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, (rand() % MESSAGERAND - (MESSAGERAND * 0.5f)) * 0.01f));
-					pMessage->BindTexture(CManager::GetTexture()->Regist(CManager::GetTexture()->GetFileName(CTexture::TYPE_PERFECT)));
-				}
-				else if (fLeftRot >= -0.4f)
-				{
-					CMessage *pMessage = CMessage::Create(D3DXVECTOR3(300.0f, 150.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, (rand() % MESSAGERAND - (MESSAGERAND * 0.5f)) * 0.01f));
-					pMessage->BindTexture(CManager::GetTexture()->Regist(CManager::GetTexture()->GetFileName(CTexture::TYPE_GOOD)));
-				}
-			}
-			else if (fLeftRot > 0.0f)
-			{
-				if (fLeftRot <= 0.2f)
-				{
-					CMessage *pMessage = CMessage::Create(D3DXVECTOR3(300.0f, 150.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, (rand() % MESSAGERAND - (MESSAGERAND * 0.5f)) * 0.01f));
-					pMessage->BindTexture(CManager::GetTexture()->Regist(CManager::GetTexture()->GetFileName(CTexture::TYPE_PERFECT)));
-				}
-				else if (fLeftRot <= 0.4f)
-				{
-					CMessage *pMessage = CMessage::Create(D3DXVECTOR3(300.0f, 150.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, (rand() % MESSAGERAND - (MESSAGERAND * 0.5f)) * 0.01f));
-					pMessage->BindTexture(CManager::GetTexture()->Regist(CManager::GetTexture()->GetFileName(CTexture::TYPE_GOOD)));
-				}
-			}
+			// 左側角度と確認
+			MessageCheck(fLeftRot);
 
-			if (fRightRot >= 0.0f)
-			{
-				if (fRightRot <= 0.2f)
-				{
-					CMessage *pMessage = CMessage::Create(D3DXVECTOR3(300.0f, 150.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, (rand() % MESSAGERAND - (MESSAGERAND * 0.5f)) * 0.01f));
-					pMessage->BindTexture(CManager::GetTexture()->Regist(CManager::GetTexture()->GetFileName(CTexture::TYPE_PERFECT)));
-				}
-				else if (fRightRot <= 0.4f)
-				{
-					CMessage *pMessage = CMessage::Create(D3DXVECTOR3(300.0f, 150.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, (rand() % MESSAGERAND - (MESSAGERAND * 0.5f)) * 0.01f));
-					pMessage->BindTexture(CManager::GetTexture()->Regist(CManager::GetTexture()->GetFileName(CTexture::TYPE_GOOD)));
-				}
-			}
-			else if (fRightRot < 0.0f)
-			{
-				if (fRightRot >= -0.2f)
-				{
-					CMessage *pMessage = CMessage::Create(D3DXVECTOR3(300.0f, 150.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, (rand() % MESSAGERAND - (MESSAGERAND * 0.5f)) * 0.01f));
-					pMessage->BindTexture(CManager::GetTexture()->Regist(CManager::GetTexture()->GetFileName(CTexture::TYPE_PERFECT)));
-				}
-				else if (fRightRot >= -0.4f)
-				{
-					CMessage *pMessage = CMessage::Create(D3DXVECTOR3(300.0f, 150.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, (rand() % MESSAGERAND - (MESSAGERAND * 0.5f)) * 0.01f));
-					pMessage->BindTexture(CManager::GetTexture()->Regist(CManager::GetTexture()->GetFileName(CTexture::TYPE_GOOD)));
-				}
-			}
+			// 右側角度と確認
+			MessageCheck(fRightRot);
 		}
 
 		m_SlowOldRot = m_rot;
@@ -916,6 +869,24 @@ void CCamera::SlowShw(void)
 	SetV();
 }
 
+//==========================================================
+// 角度によるメッセ―ジ表示確認
+//==========================================================
+void CCamera::MessageCheck(float fRot)
+{
+	fRot = fabsf(fRot);
+
+	if (fRot <= 0.2f)
+	{
+		CMessage* pMessage = CMessage::Create(D3DXVECTOR3(300.0f, 150.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, (rand() % MESSAGERAND - (MESSAGERAND * 0.5f)) * 0.01f));
+		pMessage->BindTexture(CManager::GetTexture()->Regist(CManager::GetTexture()->GetFileName(CTexture::TYPE_PERFECT)));
+	}
+	else if (fRot <= 0.4f)
+	{
+		CMessage* pMessage = CMessage::Create(D3DXVECTOR3(300.0f, 150.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, (rand() % MESSAGERAND - (MESSAGERAND * 0.5f)) * 0.01f));
+		pMessage->BindTexture(CManager::GetTexture()->Regist(CManager::GetTexture()->GetFileName(CTexture::TYPE_GOOD)));
+	}
+}
 
 //==========================================================
 // 向きを設定

@@ -27,7 +27,7 @@ namespace
 	const char* TEXTUREFILENAME_TXT = "TEXTURE_FILENAME";	// テクスチャファイル名確認文字
 	const char* MODELNUM_TXT = "NUM_MODEL";					// モデル使用確認文字
 	const char* MODELFILENAME_TXT = "MODEL_FILENAME";		// モデルファイル名確認文字
-	const char* FIELDSET_TXT = " FIELDSET";					// メッシュフィールド設置確認文字
+	const char* FIELDSET_TXT = "FIELDSET";					// メッシュフィールド設置確認文字
 	const char* ENDFIELDSET_TXT = "END_FIELDSET";			// 床読み込み終了
 	const char* WALLSET_TXT = "WALLSET";					// メッシュウォール設置確認文字
 	const char* ENDWALLSET_TXT = "END_WALLSET";				// 壁読み込み終了

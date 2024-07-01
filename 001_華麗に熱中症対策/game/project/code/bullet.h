@@ -61,6 +61,7 @@ private:	// 自分だけがアクセス可能
 
 	// メンバ関数
 	void Controller(void);
+	void SetType(TYPE type);
 	bool Collision(D3DXVECTOR3 pos, CObject::TYPE ObjType);
 
 	// メンバ変数

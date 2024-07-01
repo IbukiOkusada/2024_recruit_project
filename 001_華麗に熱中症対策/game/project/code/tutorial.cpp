@@ -34,14 +34,17 @@
 #include "enemy_route.h"
 #include "sound.h"
 
-//===============================================
-// マクロ定義
-//===============================================
-#define START_TIME	(60 * 3)	// 制限時間
-#define START_SCORE	(0)		// 開始スコア
-#define MAP_SIZE	(100.0f)	// マップサイズ
-#define STARTSET_NUMENEMY	(30)	// 開始時に配置する敵の数
-#define MAX_TIME	(60 * 20)	// 最大時間
+//==========================================================
+// 定数定義
+//==========================================================
+namespace
+{
+	const int START_TIME = (60 * 3);	// 制限時間
+	const int START_SCORE = (0);	// 開始スコア
+	const float MAP_SIZE = (100.0f);	// マップサイズ
+	const float STARTSET_NUMENEMY = (30);	// 開始時に配置する敵の数
+	const int MAX_TIME = (60 * 20);	// 最大時間
+}
 
 //===============================================
 // 静的メンバ変数

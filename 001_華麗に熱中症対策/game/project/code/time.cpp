@@ -13,12 +13,17 @@
 #include "slow.h"
 #include "debugproc.h"
 
-// マクロ定義
-#define WIDTH	(60)	// 幅
-#define X_SPACE	(50)	// 横の移動量
-#define HEIGHT	(80)	// 高さ
-#define NUM_WIDTH	(20)
-#define NUM_HEIGHT	(40)
+//==========================================================
+// 定数定義
+//==========================================================
+namespace
+{
+	const float WIDTH = (60);	// 幅
+	const float X_SPACE = (50);	// 横の移動量
+	const float HEIGHT = (80);	// 高さ
+	const int NUM_WIDTH = (20);
+	const int NUM_HEIGHT = (40);
+}
 
 //===============================================
 // コンストラクタ

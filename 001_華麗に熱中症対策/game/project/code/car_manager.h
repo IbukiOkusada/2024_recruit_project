@@ -39,6 +39,27 @@ private:	// 自分だけアクセス可能な定義
 		float fDef;		// 規定値
 	};
 
+	// 判定用構造体
+	struct COLLISION
+	{
+		D3DXVECTOR3 pos;	// 座標
+		D3DXVECTOR3 posOld;	// 前回の座標
+		D3DXVECTOR3 vtxMax;	// 最大
+		D3DXVECTOR3 vtxMin;	// 最小
+		D3DXVECTOR3 move;	// 移動量
+
+		COLLISION() : 
+			pos(MYDEFAULT::VECTOR3), posOld(MYDEFAULT::VECTOR3), 
+			vtxMax(MYDEFAULT::VECTOR3), vtxMin(MYDEFAULT::VECTOR3), 
+			move(MYDEFAULT::VECTOR3) {}
+
+		COLLISION(const D3DXVECTOR3& _pos, const D3DXVECTOR3& _posOld, 
+			const D3DXVECTOR3& _vtxMax, const D3DXVECTOR3& _vtxMin, 
+			const D3DXVECTOR3& _move) : pos(_pos), posOld(_posOld),
+			vtxMax(_vtxMax), vtxMin(_vtxMin),
+			move(_move) {}
+	};
+
 public:	// 誰でもアクセス可能
 
 	CCarManager();	// コンストラクタ
@@ -49,6 +70,7 @@ public:	// 誰でもアクセス可能
 	void Uninit(void);
 	void Update(void);
 	CCar *Collision(D3DXVECTOR3 &pos, D3DXVECTOR3 &posOld, D3DXVECTOR3 &move, D3DXVECTOR3 vtxMin, D3DXVECTOR3 vtxMax, bool *pJump);
+	bool CollisionCheck(COLLISION* car, COLLISION* target, const int nType);
 	void SetRanking(void);
 
 private:	// 自分だけがアクセス可能

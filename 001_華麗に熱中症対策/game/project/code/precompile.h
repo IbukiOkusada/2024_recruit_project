@@ -15,5 +15,11 @@
 #include "dinput.h"
 #include "xaudio2.h"					//サウンド処理に必要
 
+// 名前空間
+namespace MYDEFAULT
+{
+	const D3DXVECTOR3 VECTOR3 = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+}
+
 #endif
 

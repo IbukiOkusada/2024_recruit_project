@@ -104,8 +104,10 @@ void CEnemyManager::Spawn(int nSetNum)
 	// 敵の配置
 	while (1)
 	{
+		// 配置数が設定数以下
 		if (CObject::GetNumEnemAll() < nSetNum)
 		{
+			// モードごとに生成する
 			if (CManager::GetMode() != CScene::MODE_TUTORIAL)
 			{
 				CEnemy *pEnemy = CEnemy::Create(m_apEnemyFileName[rand() % m_nTypeRandRange + m_nTypeSetPlus]);

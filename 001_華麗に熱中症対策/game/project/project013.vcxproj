@@ -31,13 +31,11 @@
     <ClCompile Include="code\enemy.cpp" />
     <ClCompile Include="code\enemy_manager.cpp" />
     <ClCompile Include="code\enemy_route.cpp" />
-    <ClCompile Include="code\explosion.cpp" />
     <ClCompile Include="code\fade.cpp" />
     <ClCompile Include="code\fileload.cpp" />
     <ClCompile Include="code\filter.cpp" />
     <ClCompile Include="code\game.cpp" />
     <ClCompile Include="code\input.cpp" />
-    <ClCompile Include="code\item.cpp" />
     <ClCompile Include="code\light.cpp" />
     <ClCompile Include="code\lockon.cpp" />
     <ClCompile Include="code\main.cpp" />
@@ -93,13 +91,11 @@
     <ClInclude Include="code\enemy.h" />
     <ClInclude Include="code\enemy_manager.h" />
     <ClInclude Include="code\enemy_route.h" />
-    <ClInclude Include="code\explosion.h" />
     <ClInclude Include="code\fade.h" />
     <ClInclude Include="code\fileload.h" />
     <ClInclude Include="code\filter.h" />
     <ClInclude Include="code\game.h" />
     <ClInclude Include="code\input.h" />
-    <ClInclude Include="code\item.h" />
     <ClInclude Include="code\light.h" />
     <ClInclude Include="code\lockon.h" />
     <ClInclude Include="code\main.h" />

@@ -111,7 +111,7 @@ void CEditor::Update(void)
 	}
 
 	// メッシュフィールド操作
-	if (pMesh != NULL && m_bMesh == true)
+	if (pMesh != NULL && m_bMesh)
 	{
 		pMesh->Edit(&m_fLength, &m_fMeshMove);
 
@@ -134,30 +134,30 @@ void CEditor::Update(void)
 		}
 	}
 	
-	if (pInputKey->GetTrigger(DIK_F3) == true)
+	if (pInputKey->GetTrigger(DIK_F3))
 	{
 		m_bUse = m_bUse ? false : true;
 	}
-	if (pInputKey->GetTrigger(DIK_F4) == true)
+	if (pInputKey->GetTrigger(DIK_F4))
 	{
 		m_bMesh = m_bMesh ? false : true;
 	}
 
 	CManager::GetDebugProc()->Print("エディター[ F3 ] : メッシュ操作[ F4 ]\n");
 
-	if (m_bUse == false)
+	if (!m_bUse)
 	{// 使用中ではない場合
 		return;
 	}
 
-	if (pInputKey->GetPress(DIK_LEFT) == true)
+	if (pInputKey->GetPress(DIK_LEFT))
 	{
-		if (pInputKey->GetPress(DIK_UP) == true)
+		if (pInputKey->GetPress(DIK_UP))
 		{
 			pos.x += cosf(CamRot.y + (-D3DX_PI * 0.75f)) * m_fSpeed;
 			pos.z += sinf(CamRot.y + (-D3DX_PI * 0.75f)) * m_fSpeed;
 		}
-		else if (pInputKey->GetPress(DIK_DOWN) == true)
+		else if (pInputKey->GetPress(DIK_DOWN))
 		{
 			pos.x += cosf(CamRot.y + (-D3DX_PI * 0.25f)) * m_fSpeed;
 			pos.z += sinf(CamRot.y + (-D3DX_PI * 0.25f)) * m_fSpeed;
@@ -170,14 +170,14 @@ void CEditor::Update(void)
 
 		m_nMoveCnt++;
 	}
-	else if (pInputKey->GetPress(DIK_RIGHT) == true)
+	else if (pInputKey->GetPress(DIK_RIGHT))
 	{
-		if (pInputKey->GetPress(DIK_UP) == true)
+		if (pInputKey->GetPress(DIK_UP))
 		{
 			pos.x += cosf(CamRot.y + (D3DX_PI * 0.75f)) * m_fSpeed;
 			pos.z += sinf(CamRot.y + (D3DX_PI * 0.75f)) * m_fSpeed;
 		}
-		else if (pInputKey->GetPress(DIK_DOWN) == true)
+		else if (pInputKey->GetPress(DIK_DOWN))
 		{
 			pos.x += cosf(CamRot.y + (D3DX_PI * 0.25f)) * m_fSpeed;
 			pos.z += sinf(CamRot.y + (D3DX_PI * 0.25f)) * m_fSpeed;
@@ -190,14 +190,14 @@ void CEditor::Update(void)
 
 		m_nMoveCnt++;
 	}
-	else if (pInputKey->GetPress(DIK_UP) == true)
+	else if (pInputKey->GetPress(DIK_UP))
 	{
 		pos.x += -cosf(CamRot.y) * m_fSpeed;
 		pos.z += -sinf(CamRot.y) * m_fSpeed;
 
 		m_nMoveCnt++;
 	}
-	else if (pInputKey->GetPress(DIK_DOWN) == true)
+	else if (pInputKey->GetPress(DIK_DOWN))
 	{
 		pos.x += cosf(CamRot.y) * m_fSpeed;
 		pos.z += sinf(CamRot.y) * m_fSpeed;
@@ -205,13 +205,13 @@ void CEditor::Update(void)
 		m_nMoveCnt++;
 	}
 	//上下移動
-	else if (pInputKey->GetPress(DIK_RSHIFT) == true)
+	else if (pInputKey->GetPress(DIK_RSHIFT))
 	{
 		pos.y += m_fSpeed;
 
 		m_nMoveCnt++;
 	}
-	else if (pInputKey->GetPress(DIK_RCONTROL) == true)
+	else if (pInputKey->GetPress(DIK_RCONTROL))
 	{
 		pos.y -= m_fSpeed;
 
@@ -232,29 +232,29 @@ void CEditor::Update(void)
 	}
 
 	//設置
-	if (pInputKey->GetTrigger(DIK_RETURN) == true)
+	if (pInputKey->GetTrigger(DIK_RETURN))
 	{
 		CObjectX::Create(pos, rot, CManager::GetScene()->GetFileLoad()->GetModelFileName(m_nIdx));
 	}
 
 	//設置物変更
-	if (pInputKey->GetTrigger(DIK_LSHIFT) == true)
+	if (pInputKey->GetTrigger(DIK_LSHIFT))
 	{
 		m_nIdx = (m_nIdx + 1) % CManager::GetScene()->GetFileLoad()->GetModelNumAll();
 		m_Object.nIdxModel = CManager::GetModelFile()->Regist(CManager::GetScene()->GetFileLoad()->GetModelFileName(m_nIdx));
 	}
-	else if (pInputKey->GetTrigger(DIK_LCONTROL) == true)
+	else if (pInputKey->GetTrigger(DIK_LCONTROL))
 	{
 		m_nIdx = (m_nIdx - 1 + CManager::GetScene()->GetFileLoad()->GetModelNumAll()) % CManager::GetScene()->GetFileLoad()->GetModelNumAll();
 		m_Object.nIdxModel = CManager::GetModelFile()->Regist(CManager::GetScene()->GetFileLoad()->GetModelFileName(m_nIdx));
 	}
 
 	//回転
-	if (pInputKey->GetTrigger(DIK_P) == true)
+	if (pInputKey->GetTrigger(DIK_P))
 	{
 		rot.y += D3DX_PI * 0.5f;
 	}
-	else if (pInputKey->GetTrigger(DIK_L) == true)
+	else if (pInputKey->GetTrigger(DIK_L))
 	{
 		rot.y -= -D3DX_PI * 0.5f;
 	}
@@ -269,13 +269,13 @@ void CEditor::Update(void)
 	}
 
 	//保存
-	if (pInputKey->GetTrigger(DIK_F9) == true)
+	if (pInputKey->GetTrigger(DIK_F9))
 	{//F9キー押されたとき
 		Save();
 	}
 
 	//移動量変更
-	if (pInputKey->GetPress(DIK_0) == true)
+	if (pInputKey->GetPress(DIK_0))
 	{
 		m_fSpeed += 1.0f;
 		if (m_fSpeed > MAX_EDITSPEED)
@@ -283,7 +283,7 @@ void CEditor::Update(void)
 			m_fSpeed = MAX_EDITSPEED;
 		}
 	}
-	else if (pInputKey->GetPress(DIK_9) == true)
+	else if (pInputKey->GetPress(DIK_9))
 	{
 		m_fSpeed -= 1.0f;
 		if (m_fSpeed < MIN_EDITSPEED)
@@ -293,7 +293,7 @@ void CEditor::Update(void)
 	}
 
 	// 操作方法変更
-	if (pInputKey->GetTrigger(DIK_F4) == true)
+	if (pInputKey->GetTrigger(DIK_F4))
 	{
 		m_nType ^= 1;
 
@@ -344,7 +344,7 @@ void CEditor::Draw(void)
 	D3DMATERIAL9 matDef;					//現在のマテリアル保存用
 	D3DXMATERIAL *pMat;						//マテリアルデータへのポインタ
 
-	if (m_bUse == false)
+	if (!m_bUse)
 	{// 使用中ではない場合
 		return;
 	}

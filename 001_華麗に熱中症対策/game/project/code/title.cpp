@@ -119,7 +119,7 @@ void CTitle::Update(void)
 	{
 		CManager::GetFade()->Set(CScene::MODE_TUTORIAL);
 
-		if (m_bClick == false)
+		if (!m_bClick)
 		{
 			m_col.a = 1.0f;
 			m_bClick = true;
@@ -137,7 +137,7 @@ void CTitle::Update(void)
 		}
 	}
 
-	if (m_bClick == false)
+	if (!m_bClick)
 	{
 		m_col.a -= m_fMoveCol;
 

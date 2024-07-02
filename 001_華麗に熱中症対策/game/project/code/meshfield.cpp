@@ -531,7 +531,7 @@ void CMeshField::Edit(float *pLength, float *pSpeed)
 	D3DXVECTOR3 pos = pPlayer->GetPosition();
 
 	// リセット
-	if (pInputKey->GetPress(DIK_F6) == true)
+	if (pInputKey->GetPress(DIK_F6))
 	{
 		for (int nCntpVtx = 0; nCntpVtx < GetVertex(); nCntpVtx++)
 		{
@@ -540,47 +540,47 @@ void CMeshField::Edit(float *pLength, float *pSpeed)
 	}
 
 	// 範囲設定
-	if (pInputKey->GetPress(DIK_5) == true)
+	if (pInputKey->GetPress(DIK_5))
 	{
 		*pLength += 1.0f;
 	}
-	else if (pInputKey->GetPress(DIK_6) == true)
+	else if (pInputKey->GetPress(DIK_6))
 	{
 		*pLength -= 1.0f;
 	}
 
 	// 速度設定
-	if (pInputKey->GetPress(DIK_Y) == true)
+	if (pInputKey->GetPress(DIK_Y))
 	{
 		*pSpeed += 0.5f;
 	}
-	else if (pInputKey->GetPress(DIK_H) == true)
+	else if (pInputKey->GetPress(DIK_H))
 	{
 		*pSpeed -= 0.5f;
 	}
 
 	// 幅設定
-	if (pInputKey->GetPress(DIK_I) == true)
+	if (pInputKey->GetPress(DIK_I))
 	{
 		m_fWidth += 0.5f;
 	}
-	else if (pInputKey->GetPress(DIK_K) == true)
+	else if (pInputKey->GetPress(DIK_K))
 	{
 		m_fWidth -= 0.5f;
 	}
 
 	// 高さ設定
-	if (pInputKey->GetPress(DIK_O) == true)
+	if (pInputKey->GetPress(DIK_O))
 	{
 		m_fHeight += 1.0f;
 	}
-	else if (pInputKey->GetPress(DIK_L) == true)
+	else if (pInputKey->GetPress(DIK_L))
 	{
 		m_fHeight -= 1.0f;
 	}
 
 	// 範囲内頂点調整
-	if (pInputKey->GetPress(DIK_U) == true)
+	if (pInputKey->GetPress(DIK_U))
 	{
 		for (int nCntpVtx = 0; nCntpVtx < GetVertex(); nCntpVtx++)
 		{
@@ -596,7 +596,7 @@ void CMeshField::Edit(float *pLength, float *pSpeed)
 			}
 		}
 	}
-	else if (pInputKey->GetPress(DIK_J) == true)
+	else if (pInputKey->GetPress(DIK_J))
 	{
 		for (int nCntpVtx = 0; nCntpVtx < GetVertex(); nCntpVtx++)
 		{
@@ -656,7 +656,7 @@ void CMeshField::Edit(float *pLength, float *pSpeed)
 	}
 
 	// 保存
-	if (pInputKey->GetPress(DIK_F7) == true)
+	if (pInputKey->GetPress(DIK_F7))
 	{
 		FILE *pFile = fopen("data\\TXT\\mesh.txt", "w");
 		D3DXVECTOR3 ROT;
@@ -798,7 +798,7 @@ bool CMeshField::GetAreaHot(D3DXVECTOR3 pos)
 		if (pos.x > MeshPos.x + pMesh->m_pVtx[0].pos.x && pos.x < MeshPos.x + pMesh->m_pVtx[pMesh->GetVertex() - 1].pos.x &&
 			pos.z < MeshPos.z + pMesh->m_pVtx[0].pos.z && pos.z > MeshPos.z + pMesh->m_pVtx[pMesh->GetVertex() - 1].pos.z)
 		{// 範囲外
-			if (pMesh->GetHot() == true)
+			if (pMesh->GetHot())
 			{
 				return true;
 			}

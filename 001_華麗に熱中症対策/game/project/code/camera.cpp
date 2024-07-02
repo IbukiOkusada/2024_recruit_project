@@ -86,7 +86,7 @@ void CCamera::Uninit(void)
 //==========================================================
 void CCamera::Update(void)
 {
-	//if (CManager::GetEditor()->GetUse() == false)
+	//if (!CManager::GetEditor()->GetUse())
 	{
 		//マウスでの視点移動
 	}
@@ -104,7 +104,7 @@ void CCamera::Update(void)
 	{
 		if (CGame::GetPause() != NULL)
 		{
-			if (CGame::GetPause()->GetEnable() == false)
+			if (!CGame::GetPause()->GetEnable())
 			{
 				//視点の移動
 				MoveV();
@@ -184,16 +184,16 @@ void CCamera::MoveVR(void)
 	CInputKeyboard *pKey = CManager::GetInputKeyboard();
 
 	//視点注視点の同時移動
-	if (pKey->GetPress(DIK_A) == true)
+	if (pKey->GetPress(DIK_A))
 	{//Aキー入力
 
 		//視点の移動
-		if (pKey->GetPress(DIK_W) == true)
+		if (pKey->GetPress(DIK_W))
 		{
 			m_posV.x += cosf(m_rot.y + (-D3DX_PI * 0.75f)) * CAMERA_MOVESPEED;
 			m_posV.z += sinf(m_rot.y + (-D3DX_PI * 0.75f)) * CAMERA_MOVESPEED;
 		}
-		else if (pKey->GetPress(DIK_S) == true)
+		else if (pKey->GetPress(DIK_S))
 		{
 			m_posV.x += cosf(m_rot.y + (-D3DX_PI * 0.25f)) * CAMERA_MOVESPEED;
 			m_posV.z += sinf(m_rot.y + (-D3DX_PI * 0.25f)) * CAMERA_MOVESPEED;
@@ -204,16 +204,16 @@ void CCamera::MoveVR(void)
 			m_posV.z += sinf(m_rot.y + (-D3DX_PI * 0.5f)) * CAMERA_MOVESPEED;
 		}
 	}
-	else if (pKey->GetPress(DIK_D) == true)
+	else if (pKey->GetPress(DIK_D))
 	{//Dキー入力
 
 		//視点の移動
-		if (pKey->GetPress(DIK_W) == true)
+		if (pKey->GetPress(DIK_W))
 		{
 			m_posV.x += cosf(m_rot.y + (D3DX_PI * 0.75f)) * CAMERA_MOVESPEED;
 			m_posV.z += sinf(m_rot.y + (D3DX_PI * 0.75f)) * CAMERA_MOVESPEED;
 		}
-		else if (pKey->GetPress(DIK_S) == true)
+		else if (pKey->GetPress(DIK_S))
 		{
 			m_posV.x += cosf(m_rot.y + (D3DX_PI * 0.25f)) * CAMERA_MOVESPEED;
 			m_posV.z += sinf(m_rot.y + (D3DX_PI * 0.25f)) * CAMERA_MOVESPEED;
@@ -225,14 +225,14 @@ void CCamera::MoveVR(void)
 		}
 
 	}
-	else if (pKey->GetPress(DIK_W) == true)
+	else if (pKey->GetPress(DIK_W))
 	{//Wキー入力
 
 		//視点の移動
 		m_posV.x += -cosf(m_rot.y) * CAMERA_MOVESPEED;
 		m_posV.z += -sinf(m_rot.y) * CAMERA_MOVESPEED;
 	}
-	else if (pKey->GetPress(DIK_S) == true)
+	else if (pKey->GetPress(DIK_S))
 	{//Sキー入力
 		//視点の移動
 		m_posV.x += cosf(m_rot.y) * CAMERA_MOVESPEED;
@@ -259,7 +259,7 @@ void CCamera::MoveV(void)
 	}
 
 	//x軸の移動
-	if (pInputPad->GetStickPress(0, CInputPad::BUTTON_RIGHT_X, 0.0f, CInputPad::STICK_PLUS) == true)
+	if (pInputPad->GetStickPress(0, CInputPad::BUTTON_RIGHT_X, 0.0f, CInputPad::STICK_PLUS))
 	{//Qキー入力
 		m_rot.y += -D3DX_PI * ROTATE_SPEED * pInputPad->GetStickAdd(0, CInputPad::BUTTON_RIGHT_X, 0.0f, CInputPad::STICK_PLUS) * fMultiSlow;
 		if (m_rot.y < -D3DX_PI)
@@ -267,13 +267,13 @@ void CCamera::MoveV(void)
 			m_rot.y += D3DX_PI * 2;
 		}
 	}
-	else if (pInputPad->GetStickPress(0, CInputPad::BUTTON_RIGHT_X, 0.0f, CInputPad::STICK_MINUS) == true)
+	else if (pInputPad->GetStickPress(0, CInputPad::BUTTON_RIGHT_X, 0.0f, CInputPad::STICK_MINUS))
 	{//Eキー入力
 		m_rot.y += -D3DX_PI * ROTATE_SPEED * pInputPad->GetStickAdd(0, CInputPad::BUTTON_RIGHT_X, 0.0f, CInputPad::STICK_MINUS) * fMultiSlow;
 	}
 
 	//x軸の移動
-	if ((pKey->GetPress(DIK_Z) == true && pKey->GetPress(DIK_C) != true))
+	if ((pKey->GetPress(DIK_Z) && !pKey->GetPress(DIK_C)))
 	{//Qキー入力
 		m_rot.y += -D3DX_PI * ROTATE_SPEED;
 		if (m_rot.y < -D3DX_PI)
@@ -281,7 +281,7 @@ void CCamera::MoveV(void)
 			m_rot.y += D3DX_PI * 2;
 		}
 	}
-	else if ((pKey->GetPress(DIK_C) == true && pKey->GetPress(DIK_Z) != true))
+	else if ((pKey->GetPress(DIK_C) && !pKey->GetPress(DIK_Z)))
 	{//Eキー入力
 		m_rot.y += D3DX_PI * ROTATE_SPEED;
 		if (m_rot.y > D3DX_PI)
@@ -291,7 +291,7 @@ void CCamera::MoveV(void)
 	}
 
 	//z軸の移動
-	if (pInputPad->GetStickPress(0, CInputPad::BUTTON_RIGHT_Y, 0.1f, CInputPad::STICK_PLUS) == true)
+	if (pInputPad->GetStickPress(0, CInputPad::BUTTON_RIGHT_Y, 0.1f, CInputPad::STICK_PLUS))
 	{//Yキー入力
 		//角度の変更
 		m_rot.z += PAD_ROTATE * pInputPad->GetStickAdd(0, CInputPad::BUTTON_RIGHT_Y, 0.5f, CInputPad::STICK_PLUS) * fMultiSlow;
@@ -301,7 +301,7 @@ void CCamera::MoveV(void)
 		}
 		
 	}
-	else if (pInputPad->GetStickPress(0, CInputPad::BUTTON_RIGHT_Y, 0.1f, CInputPad::STICK_MINUS) == true)
+	else if (pInputPad->GetStickPress(0, CInputPad::BUTTON_RIGHT_Y, 0.1f, CInputPad::STICK_MINUS))
 	{//Nキー入力
 		//角度の変更
 		m_rot.z += PAD_ROTATE * 2 * pInputPad->GetStickAdd(0, CInputPad::BUTTON_RIGHT_Y, 0.5f, CInputPad::STICK_MINUS) * fMultiSlow;
@@ -314,7 +314,7 @@ void CCamera::MoveV(void)
 	}
 
 	//z軸の移動
-	if (pKey->GetPress(DIK_Y) == true && pKey->GetPress(DIK_N) != true)
+	if (pKey->GetPress(DIK_Y) && !pKey->GetPress(DIK_N))
 	{//Yキー入力
 	 //角度の変更
 		m_rot.z += -D3DX_PI * ROTATE_SPEED;
@@ -324,7 +324,7 @@ void CCamera::MoveV(void)
 		}
 
 	}
-	else if (pKey->GetPress(DIK_N) == true && pKey->GetPress(DIK_Y) != true)
+	else if (pKey->GetPress(DIK_N) && !pKey->GetPress(DIK_Y))
 	{//Nキー入力
 	 //角度の変更
 		m_rot.z += D3DX_PI * ROTATE_SPEED;
@@ -336,7 +336,7 @@ void CCamera::MoveV(void)
 	}
 
 	////注視点からの距離の操作
-	//if (pKey->GetPress(DIK_U) == true && pKey->GetPress(DIK_M) != true)
+	//if (pKey->GetPress(DIK_U) && !pKey->GetPress(DIK_M))
 	//{//Uキー入力
 	//	m_fLength -= CAMERA_LENGTHMOVE;
 
@@ -346,7 +346,7 @@ void CCamera::MoveV(void)
 	//	}
 	//	
 	//}
-	//else if (pKey->GetPress(DIK_M) == true && pKey->GetPress(DIK_U) != true)
+	//else if (pKey->GetPress(DIK_M) && !pKey->GetPress(DIK_U))
 	//{//Mキー入力
 	//	m_fLength += CAMERA_LENGTHMOVE;
 
@@ -381,7 +381,7 @@ void CCamera::MoveR(void)
 	CInputKeyboard *pKey = CManager::GetInputKeyboard();
 
 	//x軸の移動
-	if (pKey->GetPress(DIK_Q) == true && pKey->GetPress(DIK_E) != true)
+	if (pKey->GetPress(DIK_Q) && !pKey->GetPress(DIK_E))
 	{//Qキー入力
 
 		//角度の変更
@@ -391,7 +391,7 @@ void CCamera::MoveR(void)
 			m_rot.y += -D3DX_PI * 2;
 		}
 	}
-	else if (pKey->GetPress(DIK_E) == true && pKey->GetPress(DIK_Q) != true)
+	else if (pKey->GetPress(DIK_E) && !pKey->GetPress(DIK_Q))
 	{//Eキー入力
 
 		//角度の変更
@@ -404,7 +404,7 @@ void CCamera::MoveR(void)
 	}
 
 	//z軸の移動
-	if (pKey->GetPress(DIK_T) == true && pKey->GetPress(DIK_B) != true)
+	if (pKey->GetPress(DIK_T) && !pKey->GetPress(DIK_B))
 	{//Tキー入力
 
 		//角度の変更
@@ -415,7 +415,7 @@ void CCamera::MoveR(void)
 			m_rot.z = MAX_CAMERA_ROTZ;
 		}
 	}
-	else if (pKey->GetPress(DIK_B) == true && pKey->GetPress(DIK_T) != true)
+	else if (pKey->GetPress(DIK_B) && !pKey->GetPress(DIK_T))
 	{//Bキー入力
 		//角度の変更
 		m_rot.z += -D3DX_PI * ROTATE_SPEED;
@@ -456,7 +456,7 @@ void CCamera::MouseCamera(void)
 {
 	CInputMouse *pMouse = CManager::GetInputMouse();
 
-	//if (pMouse->GetPress(CInputMouse::BUTTON_LBUTTON) == true && pMouse->GetPress(CInputMouse::BUTTON_RBUTTON) == true)
+	//if (pMouse->GetPress(CInputMouse::BUTTON_LBUTTON) && pMouse->GetPress(CInputMouse::BUTTON_RBUTTON))
 	//{//左右同時に押されているとき
 	//	m_posV.x += cosf(m_rot.y + (-D3DX_PI * 0.5f)) * (pMouse->GetCousorMove().x * MOUSE_MOVESPEED) + -cosf(m_rot.y) * (pMouse->GetCousorMove().y * MOUSE_MOVESPEED);
 	//	m_posV.z += sinf(m_rot.y + (-D3DX_PI * 0.5f)) * (pMouse->GetCousorMove().x * MOUSE_MOVESPEED) + -sinf(m_rot.y) * (pMouse->GetCousorMove().y * MOUSE_MOVESPEED);
@@ -472,11 +472,11 @@ void CCamera::MouseCamera(void)
 	//	//注視点設定
 	//	SetR();
 	//}
-	//else if (pMouse->GetPress(CInputMouse::BUTTON_LBUTTON) == true)
+	//else if (pMouse->GetPress(CInputMouse::BUTTON_LBUTTON))
 	//{//左キーが押されているとき
 	//	
 	//}
-	//else if (pMouse->GetPress(CInputMouse::BUTTON_RBUTTON) == true)
+	//else if (pMouse->GetPress(CInputMouse::BUTTON_RBUTTON))
 	//{//右キーが押されているとき
 	//	m_rot.y -= pMouse->GetCousorMove().x * MOUSE_ROTATESPEED_X;
 	//	m_rot.z -= pMouse->GetCousorMove().y * MOUSE_ROTATESPEED_Z;
@@ -631,7 +631,7 @@ void CCamera::Setting(const D3DXVECTOR3 pos, const D3DXVECTOR3 rot)
 void CCamera::Edit(void)
 {
 	CInputMouse *pMouse = CManager::GetInputMouse();
-	if (pMouse->GetPress(CInputMouse::BUTTON_LBUTTON) == true && pMouse->GetPress(CInputMouse::BUTTON_RBUTTON) == true)
+	if (pMouse->GetPress(CInputMouse::BUTTON_LBUTTON) && pMouse->GetPress(CInputMouse::BUTTON_RBUTTON))
 	{//左右同時に押されているとき
 		m_posV.x += cosf(m_rot.y + (-D3DX_PI * 0.5f)) * (pMouse->GetCousorMove().x * MOUSE_MOVESPEED) + -cosf(m_rot.y) * (pMouse->GetCousorMove().y * MOUSE_MOVESPEED);
 		m_posV.z += sinf(m_rot.y + (-D3DX_PI * 0.5f)) * (pMouse->GetCousorMove().x * MOUSE_MOVESPEED) + -sinf(m_rot.y) * (pMouse->GetCousorMove().y * MOUSE_MOVESPEED);
@@ -647,12 +647,12 @@ void CCamera::Edit(void)
 		//注視点設定
 		SetR();
 	}
-	else if (pMouse->GetPress(CInputMouse::BUTTON_LBUTTON) == true)
+	else if (pMouse->GetPress(CInputMouse::BUTTON_LBUTTON))
 	{//左キーが押されているとき
 		m_rot.y -= pMouse->GetCousorMove().x * MOUSE_ROTATESPEED_X;
 		m_rot.z -= pMouse->GetCousorMove().y * 0.003f;
 	}
-	else if (pMouse->GetPress(CInputMouse::BUTTON_RBUTTON) == true)
+	else if (pMouse->GetPress(CInputMouse::BUTTON_RBUTTON))
 	{//右キーが押されているとき
 		m_rot.y -= pMouse->GetCousorMove().x * MOUSE_ROTATESPEED_X;
 		m_rot.z -= pMouse->GetCousorMove().y * MOUSE_ROTATESPEED_Z;
@@ -826,7 +826,7 @@ void CCamera::SlowShw(void)
 	}
 
 	//x軸の移動
-	if (pInputPad->GetStickPress(0, CInputPad::BUTTON_RIGHT_X, 0.0f, CInputPad::STICK_PLUS) == true)
+	if (pInputPad->GetStickPress(0, CInputPad::BUTTON_RIGHT_X, 0.0f, CInputPad::STICK_PLUS))
 	{//Qキー入力
 		m_rot.y += -D3DX_PI * ROTATE_SPEED * pInputPad->GetStickAdd(0, CInputPad::BUTTON_RIGHT_X, 0.0f, CInputPad::STICK_PLUS) * fMultiSlow;
 		if (m_rot.y < -D3DX_PI)
@@ -834,7 +834,7 @@ void CCamera::SlowShw(void)
 			m_rot.y += D3DX_PI * 2;
 		}
 	}
-	else if (pInputPad->GetStickPress(0, CInputPad::BUTTON_RIGHT_X, 0.0f, CInputPad::STICK_MINUS) == true)
+	else if (pInputPad->GetStickPress(0, CInputPad::BUTTON_RIGHT_X, 0.0f, CInputPad::STICK_MINUS))
 	{//Eキー入力
 		m_rot.y += -D3DX_PI * ROTATE_SPEED * pInputPad->GetStickAdd(0, CInputPad::BUTTON_RIGHT_X, 0.0f, CInputPad::STICK_MINUS) * fMultiSlow;
 

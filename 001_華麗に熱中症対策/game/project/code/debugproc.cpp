@@ -101,7 +101,7 @@ void CDebugProc::Update(void)
 {
 	CInputKeyboard *pInputKeyboard = CManager::GetInputKeyboard();	// キーボードのポインタ
 
-	//if(pInputKeyboard->GetTrigger(DIK_F1) == true)
+	//if(pInputKeyboard->GetTrigger(DIK_F1))
 	//{//F1キーが押されたとき
 	//	m_bDisp = m_bDisp ? false : true;
 	//}
@@ -134,7 +134,7 @@ void CDebugProc::Draw(void)
 
 	RECT rect = { 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT };
 
-	if (m_bDisp == true)
+	if (m_bDisp)
 	{//デバックモードがオンの時
 		//テキストの描画
 		m_pFont->DrawText(NULL, &m_aStr[0], -1, &rect, DT_LEFT, D3DCOLOR_RGBA(255, 255, 255, 255));

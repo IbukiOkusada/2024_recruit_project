@@ -127,18 +127,18 @@ void CPause::Update(void)
 	CInputPad *pInputPad = CManager::GetInputPad();
 	CFade *pFade = CManager::GetFade();
 
-	if (m_bSelect == true || CManager::GetFade()->GetState() != CFade::STATE_NONE)
+	if (m_bSelect || CManager::GetFade()->GetState() != CFade::STATE_NONE)
 	{// 押された状態の場合
 		return;
 	}
 
-	if (pInputKey->GetTrigger(DIK_P)|| pInputPad->GetTrigger(CInputPad::BUTTON_START, 0) == true)
+	if (pInputKey->GetTrigger(DIK_P)|| pInputPad->GetTrigger(CInputPad::BUTTON_START, 0))
 	{// 上移動キーが入力された
 		m_bState = m_bState ? false : true;
 
 		CObject::TYPE type = CObject::TYPE_NONE;
 
-		if (m_bState == false)
+		if (!m_bState)
 		{
 			type = CObject::TYPE_PAUSE;
 		}
@@ -158,7 +158,7 @@ void CPause::Update(void)
 		}
 	}
 
-	if (m_bState == false)
+	if (!m_bState)
 	{
 		return;
 	}
@@ -172,18 +172,18 @@ void CPause::Update(void)
 		m_fMoveCol_a *= -1.0f;	// 反転
 	}
 
-	if (pInputKey->GetTrigger(DIK_W) || pInputKey->GetRepeat(DIK_W) || pInputPad->GetTrigger(CInputPad::BUTTON_UP, 0) == true)
+	if (pInputKey->GetTrigger(DIK_W) || pInputKey->GetRepeat(DIK_W) || pInputPad->GetTrigger(CInputPad::BUTTON_UP, 0))
 	{// 上移動キーが入力された
 		m_SelectMenu = (MENU)((m_SelectMenu - 1 + MENU_MAX) % MENU_MAX);
 		ColorSet();
 	}
-	else if (pInputKey->GetTrigger(DIK_S) || pInputKey->GetRepeat(DIK_S) || pInputPad->GetTrigger(CInputPad::BUTTON_DOWN, 0) == true)
+	else if (pInputKey->GetTrigger(DIK_S) || pInputKey->GetRepeat(DIK_S) || pInputPad->GetTrigger(CInputPad::BUTTON_DOWN, 0))
 	{// 下移動キーが入力された
 		
 		m_SelectMenu = (MENU)((m_SelectMenu + 1) % MENU_MAX);
 		ColorSet();
 	}
-	else if (pInputKey->GetTrigger(DIK_RETURN) || pInputPad->GetTrigger(CInputPad::BUTTON_A, 0) == true)
+	else if (pInputKey->GetTrigger(DIK_RETURN) || pInputPad->GetTrigger(CInputPad::BUTTON_A, 0))
 	{// 決定キーが押された
 
 		if (pFade == NULL)

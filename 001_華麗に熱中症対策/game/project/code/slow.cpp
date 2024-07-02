@@ -70,7 +70,7 @@ void CSlow::Update(void)
 		{// スローの規定値を超えた場合
 			m_nTimeCnt = 0;
 
-			if (m_bUse == false)
+			if (!m_bUse)
 			{//使用しない場合
 				m_nTimer--;
 			}
@@ -115,7 +115,7 @@ void CSlow::SetSlow(bool bUse)
 	// 使用状態設定
 	m_bUse = bUse;
 
-	if (m_bUse == true)
+	if (m_bUse)
 	{// 使用する場合
 		m_nBoostCnt++;
 

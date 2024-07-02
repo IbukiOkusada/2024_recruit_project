@@ -105,7 +105,7 @@ void CLockOn::Uninit(void)
 //==========================================================
 void CLockOn::Update(void)
 {
-	if (m_bUse == false && m_type == TYPE_TARGET)
+	if (!m_bUse && m_type == TYPE_TARGET)
 	{
 		return;
 	}
@@ -183,7 +183,7 @@ void CLockOn::Update(void)
 //==========================================================
 void CLockOn::Draw(void)
 {
-	if ((m_bUse == false || m_bLock == false) && m_type == TYPE_TARGET)
+	if ((!m_bUse|| !m_bLock) && m_type == TYPE_TARGET)
 	{
 		return;
 	}
@@ -289,7 +289,7 @@ void CLockOn::LockOn(void)
 				continue;
 			}
 
-			if (pObj->GetDeath() == true)
+			if (pObj->GetDeath())
 			{
 				pObj = pObjectNext;	// 次のオブジェクトに移動
 				continue;
@@ -330,7 +330,7 @@ void CLockOn::LockOn(void)
 			{// 使用されている間繰り返し
 				CLockOn *pLockNext = pLock->m_pNext;	// 次を保持
 
-				if (pLock->m_bDeath == false && pLock->m_type == TYPE_MULTI)
+				if (!pLock->m_bDeath && pLock->m_type == TYPE_MULTI)
 				{
 					if (pLock->m_pObj == pEnemy)
 					{// 同じ標的の場合
@@ -465,7 +465,7 @@ CObject *CLockOn::GetTag(void)
 {
 	if (m_pObj != NULL)
 	{
-		if (m_pObj->GetDeath() == false)
+		if (!m_pObj->GetDeath())
 		{
 			CObject *pObj = m_pObj;
 			return pObj;
@@ -480,7 +480,7 @@ CObject *CLockOn::GetTag(void)
 //===============================================
 void CLockOn::DeathCheck(void)
 {
-	if (m_bDeath == true)
+	if (m_bDeath)
 	{
 		// リストから自分自身を削除する
 		if (m_pTop == this)
@@ -534,7 +534,7 @@ void CLockOn::Check(CEnemy *pObject)
 	{// 使用されている間繰り返し
 		CLockOn *pLockNext = pLock->m_pNext;	// 次を保持
 
-		if (pLock->m_bDeath == false && pLock->m_type == TYPE_MULTI)
+		if (!pLock->m_bDeath && pLock->m_type == TYPE_MULTI)
 		{
 			if (pLock->m_pObj == pObject)
 			{// 同じ標的の場合
@@ -557,7 +557,7 @@ void CLockOn::MultiDeath(void)
 	{// 使用されている間繰り返し
 		CLockOn *pLockNext = pLock->m_pNext;	// 次を保持
 
-		if (pLock->m_bDeath == false && pLock->m_type == TYPE_MULTI)
+		if (!pLock->m_bDeath && pLock->m_type == TYPE_MULTI)
 		{
 			pLock->Uninit();
 		}

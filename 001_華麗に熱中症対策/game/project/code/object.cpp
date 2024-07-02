@@ -172,7 +172,7 @@ void CObject::UpdateAll(void)
 		{// 使用されていない状態まで
 			CObject *pObjectNext = pObject->m_pNext;	// 次のオブジェクトへのポインタを取得
 
-			if (pObject->m_bDeath == false)
+			if (!pObject->m_bDeath)
 			{// 死亡していない場合
 				// 更新処理
 				pObject->Update();
@@ -275,7 +275,7 @@ void CObject::DeathCheck(void)
 		{// 使用されていない状態まで
 			CObject *pObjectNext = pObject->m_pNext;	// 次のオブジェクトへのポインタを取得
 
-			if (pObject->m_bDeath == true)
+			if (pObject->m_bDeath)
 			{
 				TYPE type = pObject->m_type;
 

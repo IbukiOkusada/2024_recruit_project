@@ -103,14 +103,20 @@ private:	// 自分だけがアクセス可能
 	void Controller(void);
 	void SetParticle(void);
 	void SetCol(void);
-	void UpdateNormal(void);
-	void UpdateCool(void);
-	void UpdateCoolDown(void);
-	void UpdateDown(void);
-	void UpdateHeat(void);
+	void StateNormal(void);
+	void StateCool(void);
+	void StateHot(void);
+	void StateCoolDown(void);
+	void StateDefCool(void);
+	void StateDown(void);
+	void StateHeat(void);
 	void SetBodyTemp(void);
 	void SetThermo(void);
 	void SetMove(void);
+
+	// メンバ関数リスト
+	typedef void(CEnemy::* STATE_FUNC)();
+	static STATE_FUNC m_StateFunc[];
 
 	// メンバ変数
 	static const char *m_apFileName[NUM_ROUTE];

@@ -390,9 +390,9 @@ void CGame::Update(void)
 	{
 		m_pPause->Update();
 
-		if (m_pPause->GetEnable() == true)
+		if (m_pPause->GetEnable())
 		{
-			if (m_pPause->GetSelect() == true)
+			if (m_pPause->GetSelect())
 			{
 				CManager::GetFade()->Update();
 			}
@@ -423,7 +423,7 @@ void CGame::Update(void)
 		m_pEditor->Update();
 	}
 
-	if (m_pEditor->GetActive() == true || m_pEditor->GetMeshActive() == true)
+	if (m_pEditor->GetActive() || m_pEditor->GetMeshActive())
 	{
 		// XVˆ—
 		CScene::Update();

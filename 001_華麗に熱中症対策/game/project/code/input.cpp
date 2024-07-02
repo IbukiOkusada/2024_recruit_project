@@ -169,7 +169,7 @@ void CInputKeyboard::Update(void)
 			m_aKeyStateRepeat[nCntKey] = m_aKeyStateTrigger[nCntKey];
 
 			//リピート取得
-			if (GetPress(nCntKey) == true)
+			if (GetPress(nCntKey))
 			{//プレスで入力されているとき
 				m_aRepeatCnt[nCntKey]++;
 
@@ -184,7 +184,7 @@ void CInputKeyboard::Update(void)
 				}
 			}
 
-			if (GetRelease(nCntKey) == true)
+			if (GetRelease(nCntKey))
 			{//リリース入力されたとき
 				m_aRepeatCnt[nCntKey] = 0;
 			}

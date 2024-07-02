@@ -1,14 +1,19 @@
 //==========================================================
 //
-// 敵の順路管理処理 [enemy_route.h]
+// 敵の順路管理処理 [enemy_route.cpp]
 // Author : Ibuki Okusada
 //
 //==========================================================
 #include "enemy_route.h"
 #include <stdio.h>
 
-// マクロ定義
-#define NEXTWAVECNT	(20)	// 各wave開始カウント
+//===============================================
+// 定数定義
+//===============================================
+namespace
+{
+	const int NEXTWAVECNT = (20);	// 各wave開始カウント
+}
 
 //==========================================================
 // コンストラクタ
@@ -79,7 +84,7 @@ CEnemyRoute::Route *CEnemyRoute::SetAddress(const char *pFileName)
 			// ファイル名を取得
 			strcpy(&m_apRoute[nCnt]->aName[0], pFileName);
 
-			if (Load(&m_apRoute[nCnt]->route, pFileName) == true)
+			if (Load(&m_apRoute[nCnt]->route, pFileName))
 			{
 				return &m_apRoute[nCnt]->route;
 			}
@@ -135,7 +140,7 @@ int CEnemyRoute::Regist(const char *pFileName)
 			// ファイル名を取得
 			strcpy(&m_apRoute[nCnt]->aName[0], pFileName);
 
-			if (Load(&m_apRoute[nCnt]->route, pFileName) == true)
+			if (Load(&m_apRoute[nCnt]->route, pFileName))
 			{
 				nIdx = nCnt;	// テクスチャ番号を設定
 				break;

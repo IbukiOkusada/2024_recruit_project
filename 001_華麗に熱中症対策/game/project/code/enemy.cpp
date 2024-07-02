@@ -31,7 +31,7 @@
 #include "sound.h"
 
 //===============================================
-// マクロ定義
+// 定数定義
 //===============================================
 namespace
 {
@@ -97,6 +97,7 @@ const char *CEnemy::m_apFileName[NUM_ROUTE]
 //===============================================
 // 静的メンバ変数宣言
 //===============================================
+// 状態管理カウンター
 const int CEnemy::m_aParticleCounter[STATE_MAX] =
 {
 	30,
@@ -104,6 +105,18 @@ const int CEnemy::m_aParticleCounter[STATE_MAX] =
 	30,
 	30,
 	30,
+};
+
+// 状態メンバ関数リスト
+CEnemy::STATE_FUNC CEnemy::m_StateFunc[] =
+{
+	&CEnemy::StateNormal,		// 通常
+	&CEnemy::StateHot,			// 暑い
+	&CEnemy::StateHeat,			// 熱中症
+	&CEnemy::StateDown,			// ダウン
+	&CEnemy::StateCool,			// 涼しい
+	&CEnemy::StateCoolDown,		// 涼しくなった直後
+	&CEnemy::StateDefCool,		// 最初から涼しい
 };
 
 //===============================================
@@ -247,43 +260,7 @@ void CEnemy::Update(void)
 	}
 
 	// 状態ごとに更新
-	switch (m_state)
-	{
-	case STATE_NORMAL:
-
-		UpdateNormal();
-		break;
-
-	case STATE_HOT:
-
-		UpdateNormal();
-		break;
-
-	case STATE_HEAT:
-
-		UpdateHeat();
-		break;
-
-	case STATE_DEFCOOL:
-
-		UpdateCool();
-		break;
-
-	case STATE_COOL:
-
-		UpdateCool();
-		break;
-
-	case STATE_COOLDOWN:
-
-		UpdateCoolDown();
-		break;
-
-	case STATE_DOWN:
-
-		UpdateDown();
-		break;
-	}
+	(this->*(m_StateFunc[m_state]))();
 
 	// 温度表示設定
 	SetThermo();
@@ -296,7 +273,7 @@ void CEnemy::Update(void)
 			m_fStateCnt = LEAVECNT;
 			m_nTargetPoint = 0;
 
-			if (m_bRescue == true && CManager::GetMode() == CScene::MODE_GAME)
+			if (m_bRescue && CManager::GetMode() == CScene::MODE_GAME)
 			{
 				CManager::GetScene()->GetEnemyManager()->AddSuv();
 			}
@@ -707,9 +684,9 @@ void CEnemy::SetCol(void)
 }
 
 //===============================================
-// 通常時の更新処理
+// 通常時の状態処理
 //===============================================
-void CEnemy::UpdateNormal(void)
+void CEnemy::StateNormal(void)
 {
 	if (m_fStateCnt < STATE_CNT)
 	{
@@ -730,9 +707,9 @@ void CEnemy::UpdateNormal(void)
 }
 
 //===============================================
-// 涼しいときの更新処理
+// 涼しいときの状態処理
 //===============================================
-void CEnemy::UpdateCool(void)
+void CEnemy::StateCool(void)
 {
 	m_fStateCnt -= CManager::GetSlow()->Get();
 
@@ -743,9 +720,9 @@ void CEnemy::UpdateCool(void)
 }
 
 //===============================================
-// 涼しくなった直後の更新処理
+// 涼しくなった直後の状態処理
 //===============================================
-void CEnemy::UpdateCoolDown(void)
+void CEnemy::StateCoolDown(void)
 {
 	CPlayer *pPlayer = CManager::GetScene()->GetPlayer();
 	m_fStateCnt -= CManager::GetSlow()->Get();
@@ -773,9 +750,9 @@ void CEnemy::UpdateCoolDown(void)
 }
 
 //===============================================
-// 熱中症状態の更新処理
+// 熱中症状態の状態処理
 //===============================================
-void CEnemy::UpdateHeat(void)
+void CEnemy::StateHeat(void)
 {
 	// 体温設定
 	SetBodyTemp();
@@ -799,9 +776,9 @@ void CEnemy::UpdateHeat(void)
 }
 
 //===============================================
-// ダウン時の更新処理
+// ダウン時の状態処理
 //===============================================
-void CEnemy::UpdateDown(void)
+void CEnemy::StateDown(void)
 {
 	m_fStateCnt -= CManager::GetSlow()->Get();
 
@@ -813,6 +790,22 @@ void CEnemy::UpdateDown(void)
 		}
 		Uninit();
 	}
+}
+
+//===============================================
+// 暑い時の状態処理
+//===============================================
+void CEnemy::StateHot(void)
+{
+	StateNormal();
+}
+
+//===============================================
+// 最初から涼しい時の状態処理
+//===============================================
+void CEnemy::StateDefCool(void)
+{
+	StateCool();
 }
 
 //===============================================
@@ -833,7 +826,7 @@ void CEnemy::SetBodyTemp(void)
 
 	if (m_state != STATE_DEFCOOL)
 	{
-		if (CMeshField::GetAreaHot(GetPosition()) == true)
+		if (CMeshField::GetAreaHot(GetPosition()))
 		{
 			// 体温上昇インターバル
 			m_Interval.fHot += CManager::GetSlow()->Get();
@@ -911,7 +904,7 @@ void CEnemy::SetMove(void)
 
 	float fMulti = 1.0f;
 
-	if (m_state == STATE_NORMAL && m_bRescue == true)
+	if (m_state == STATE_NORMAL && m_bRescue)
 	{
 		fMulti = 1.1f;
 	}

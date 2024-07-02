@@ -116,7 +116,7 @@ void CModel::Draw(void)
 		{
 			int nIdxTex = pFileData->pIdexTexture[nCntMat];	// テクスチャ番号
 
-			if (m_bChangeCol == false)
+			if (!m_bChangeCol)
 			{
 				//マテリアルの設定
 				pDevice->SetMaterial(&pMat[nCntMat].MatD3D);

@@ -149,7 +149,7 @@ void CRenderer::Update(void)
 #if _DEBUG	// デバッグ時
 	CInputKeyboard *pKey = CManager::GetInputKeyboard();
 
-	if (pKey->GetTrigger(DIK_F2) == true)
+	if (pKey->GetTrigger(DIK_F2))
 	{
 		// ワイヤーフレーム設定
 		SetWire(m_bWire ? false : true);

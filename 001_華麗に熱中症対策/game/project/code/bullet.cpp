@@ -9,7 +9,6 @@
 #include "renderer.h"
 #include "input.h"
 #include "debugproc.h"
-#include "explosion.h"
 #include "enemy.h"
 #include "effect.h"
 #include "particle.h"
@@ -155,7 +154,7 @@ void CBullet::Update(void)
 		m_nChangeTimer--;
 
 		//弾との当たり判定
-		if (Collision(pos, CObject::TYPE_ENEMY) == true)
+		if (Collision(pos, CObject::TYPE_ENEMY))
 		{// 当たった場合
 			//スコアの加算
 			CManager::GetSound()->Play(CSound::LABEL_SE_HIT);
@@ -280,7 +279,7 @@ void CBullet::Controller(void)
 
 		if (m_pTarget->pObj != NULL)
 		{
-			if (m_pTarget->pObj->GetDeath() == false && m_pTarget->pObj->GetType() == CObject::TYPE_ENEMY)
+			if (!m_pTarget->pObj->GetDeath() && m_pTarget->pObj->GetType() == CObject::TYPE_ENEMY)
 			{
 				CEnemy *pEnemy = pObj->GetEnemy();
 				if (pEnemy != NULL)
@@ -386,7 +385,7 @@ bool CBullet::Collision(D3DXVECTOR3 pos, CObject::TYPE ObjType)
 
 			CObject *pObjectNext = pObj->GetNext();	// 次のオブジェクトへのポインタを取得
 
-			if (pObj->GetDeath() == false)
+			if (!pObj->GetDeath())
 			{
 				CObject::TYPE type;	// 種類
 
@@ -500,7 +499,7 @@ void CBullet::Check(CObject *pObject, CBullet *pBullet)
 //===============================================
 void CBullet::DeathCheck(void)
 {
-	if (m_bDeath == true)
+	if (m_bDeath)
 	{
 		// リストから自分自身を削除する
 		if (m_pTop == this)

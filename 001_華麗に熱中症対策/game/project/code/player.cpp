@@ -10,7 +10,6 @@
 #include "input.h"
 #include "debugproc.h"
 #include "bullet.h"
-#include "explosion.h"
 #include "particle.h"
 #include "camera.h"
 #include "Xfile.h"
@@ -425,7 +424,7 @@ void CPlayer::Update(void)
 	// パーティクル
 	Particle();
 
-	if (m_bLock == false)
+	if (!m_bLock)
 	{// ロックオンしない
 		pCamera->SetRot(GetRotation());
 	}
@@ -571,34 +570,34 @@ void CPlayer::Controller(void)
 	m_bMove = false;	// 移動状態リセット
 
 	// 移動
-	if (m_bJump == false)
+	if (!m_bJump)
 	{// ジャンプしていない場合
 		Move();
 	}
 
-	if (m_bJump == false && m_bMove == true)
+	if (!m_bJump && m_bMove)
 	{// ジャンプしていない状態で移動
-		if (m_bAttack == false)
+		if (!m_bAttack)
 		{
 			m_pBody->GetMotion()->BlendSet(BMOTION_WALK);
 		}
 		m_pLeg->GetMotion()->BlendSet(LMOTION_WALK);
 	}
-	else if (m_bJump == false && m_bMove == false)
+	else if (!m_bJump && !m_bMove)
 	{
-		if (m_bAttack == false)
+		if (!m_bAttack)
 		{
 			m_pBody->GetMotion()->BlendSet(BMOTION_NEUTRAL);
 		}
 		m_pLeg->GetMotion()->BlendSet(LMOTION_NEUTRAL);
 	}
-	else if (m_bJump == true && m_bAttack == false)
+	else if (m_bJump && !m_bAttack)
 	{
 		m_pBody->GetMotion()->BlendSet(BMOTION_JUMP);
 	}
 
 	// 武器切り替え
-	if ((pInputKey->GetTrigger(DIK_Q) == true || pInputPad->GetTrigger(CInputPad::BUTTON_Y, 0)) && CManager::GetSlow()->Get() == 1.0f)
+	if ((pInputKey->GetTrigger(DIK_Q) || pInputPad->GetTrigger(CInputPad::BUTTON_Y, 0)) && CManager::GetSlow()->Get() == 1.0f)
 	{// Qキー
 		m_WepTypeOld = m_WepType;
 		m_WepType = (ATK)((m_WepType + 1) % ATK_MAX);
@@ -641,7 +640,7 @@ void CPlayer::Controller(void)
 	m_Info.move.y += fGravity;
 	pos.y += m_Info.move.y * CManager::GetSlow()->Get();
 
-	if (m_bJump == false)
+	if (!m_bJump)
 	{
 		m_Info.move.x += (0.0f - m_Info.move.x) * 0.12f;	//x座標
 		m_Info.move.z += (0.0f - m_Info.move.z) * 0.12f;	//x座標
@@ -727,7 +726,7 @@ void CPlayer::Controller(void)
 	// 車との当たり判定
 	m_pCar = CManager::GetScene()->GetCarManager()->Collision(pos, m_Info.posOld, m_Info.move, vtxMin, vtxMax, &m_bJump);
 
-	if (bOldJump == false && m_bJump == true)
+	if (!bOldJump && m_bJump)
 	{
 		m_bJump = bOldJump;
 	}
@@ -753,9 +752,9 @@ void CPlayer::Controller(void)
 		m_bJump = false;
 	}
 
-	if (m_bJump == true)
+	if (m_bJump)
 	{
-		if (m_bAttack == false)
+		if (!m_bAttack)
 		{
 			m_pBody->GetMotion()->BlendSet(BMOTION_JUMP);
 		}
@@ -763,7 +762,7 @@ void CPlayer::Controller(void)
 	}
 
 
-	if (m_bOld == true && m_bJump == false)
+	if (m_bOld && !m_bJump)
 	{
 		CManager::GetSound()->Play(CSound::LABEL_SE_LAND);
 	}
@@ -807,21 +806,21 @@ void CPlayer::Move(void)
 	CInputPad *pInputPad = CManager::GetInputPad();
 	float fSpeed = MOVE;	// 移動量
 
-	if (m_bAttack == true && m_WepType == ATK_SHOWER)
+	if (m_bAttack && m_WepType == ATK_SHOWER)
 	{
 		fSpeed = SHW_MOVE;
 	}
 
 	//プレイヤーの更新
-	if (pInputKey->GetPress(DIK_A) == true || pInputPad->GetStickPress(0, CInputPad::BUTTON_LEFT_X, 0.5f, CInputPad::STICK_MINUS) == true)
+	if (pInputKey->GetPress(DIK_A) || pInputPad->GetStickPress(0, CInputPad::BUTTON_LEFT_X, 0.5f, CInputPad::STICK_MINUS))
 	{
-		if (pInputKey->GetPress(DIK_W) == true || pInputPad->GetStickPress(0, CInputPad::BUTTON_LEFT_Y, 0.5f, CInputPad::STICK_PLUS))
+		if (pInputKey->GetPress(DIK_W) || pInputPad->GetStickPress(0, CInputPad::BUTTON_LEFT_Y, 0.5f, CInputPad::STICK_PLUS))
 		{
 			m_Info.move.x += cosf(CamRot.y + (-D3DX_PI * 0.75f)) * fSpeed;
 			m_Info.move.z += sinf(CamRot.y + (-D3DX_PI * 0.75f)) * fSpeed;
 			m_fRotDest = (-CamRot.y + D3DX_PI * 0.25f);
 		}
-		else if (pInputKey->GetPress(DIK_S) == true || pInputPad->GetStickPress(0, CInputPad::BUTTON_LEFT_Y, 0.5f, CInputPad::STICK_MINUS))
+		else if (pInputKey->GetPress(DIK_S) || pInputPad->GetStickPress(0, CInputPad::BUTTON_LEFT_Y, 0.5f, CInputPad::STICK_MINUS))
 		{
 			m_Info.move.x += cosf(CamRot.y + (-D3DX_PI * 0.25f)) * fSpeed;
 			m_Info.move.z += sinf(CamRot.y + (-D3DX_PI * 0.25f)) * fSpeed;
@@ -837,16 +836,16 @@ void CPlayer::Move(void)
 		// 移動した状態にする
 		m_bMove = true;
 	}
-	else if (pInputKey->GetPress(DIK_D) == true || pInputPad->GetStickPress(0, CInputPad::BUTTON_LEFT_X, 0.5f, CInputPad::STICK_PLUS) == true)
+	else if (pInputKey->GetPress(DIK_D) || pInputPad->GetStickPress(0, CInputPad::BUTTON_LEFT_X, 0.5f, CInputPad::STICK_PLUS))
 	{
-		if (pInputKey->GetPress(DIK_W) == true || pInputPad->GetStickPress(0, CInputPad::BUTTON_LEFT_Y, 0.5f, CInputPad::STICK_PLUS))
+		if (pInputKey->GetPress(DIK_W) || pInputPad->GetStickPress(0, CInputPad::BUTTON_LEFT_Y, 0.5f, CInputPad::STICK_PLUS))
 		{
 			m_Info.move.x += cosf(CamRot.y + (D3DX_PI * 0.75f)) * fSpeed;
 			m_Info.move.z += sinf(CamRot.y + (D3DX_PI * 0.75f)) * fSpeed;
 
 			m_fRotDest = (-CamRot.y + D3DX_PI * 0.75f);
 		}
-		else if (pInputKey->GetPress(DIK_S) == true || pInputPad->GetStickPress(0, CInputPad::BUTTON_LEFT_Y, 0.5f, CInputPad::STICK_MINUS))
+		else if (pInputKey->GetPress(DIK_S) || pInputPad->GetStickPress(0, CInputPad::BUTTON_LEFT_Y, 0.5f, CInputPad::STICK_MINUS))
 		{
 			m_Info.move.x += cosf(CamRot.y + (D3DX_PI * 0.25f)) * fSpeed;
 			m_Info.move.z += sinf(CamRot.y + (D3DX_PI * 0.25f)) * fSpeed;
@@ -863,7 +862,7 @@ void CPlayer::Move(void)
 		// 移動した状態にする
 		m_bMove = true;
 	}
-	else if (pInputKey->GetPress(DIK_W) == true || pInputPad->GetStickPress(0, CInputPad::BUTTON_LEFT_Y, 0.5f, CInputPad::STICK_PLUS))
+	else if (pInputKey->GetPress(DIK_W) || pInputPad->GetStickPress(0, CInputPad::BUTTON_LEFT_Y, 0.5f, CInputPad::STICK_PLUS))
 	{
 		m_Info.move.x += -cosf(CamRot.y) * fSpeed;
 		m_Info.move.z += -sinf(CamRot.y) * fSpeed;
@@ -873,7 +872,7 @@ void CPlayer::Move(void)
 		m_bMove = true;
 
 	}
-	else if (pInputKey->GetPress(DIK_S) == true || pInputPad->GetStickPress(0, CInputPad::BUTTON_LEFT_Y, 0.5f, CInputPad::STICK_MINUS))
+	else if (pInputKey->GetPress(DIK_S) || pInputPad->GetStickPress(0, CInputPad::BUTTON_LEFT_Y, 0.5f, CInputPad::STICK_MINUS))
 	{
 		m_Info.move.x += cosf(CamRot.y) * fSpeed;
 		m_Info.move.z += sinf(CamRot.y) * fSpeed;
@@ -894,13 +893,13 @@ void CPlayer::Slow(void)
 	CInputPad *pInputPad = CManager::GetInputPad();
 
 	// スロータイマー
-	if (m_bActiveSlow == false && m_bJump == true && m_nSlowTime == DEF_SLOWTIME)
+	if (!m_bActiveSlow && m_bJump && m_nSlowTime == DEF_SLOWTIME)
 	{// 入力可能
-		if (pInputKey->GetTrigger(DIK_RETURN) == true || pInputMouse->GetTrigger(CInputMouse::BUTTON_RBUTTON) == true || pInputPad->GetTrigger(CInputPad::BUTTON_LEFTBUTTON, 0))
+		if (pInputKey->GetTrigger(DIK_RETURN) || pInputMouse->GetTrigger(CInputMouse::BUTTON_RBUTTON) || pInputPad->GetTrigger(CInputPad::BUTTON_LEFTBUTTON, 0))
 		{// スロー対応ボタントリガー入力
 			m_bSlow = m_bSlow ? false : true;
 
-			if (m_bSlow == true)
+			if (m_bSlow)
 			{
 				CManager::GetSound()->Play(CSound::LABEL_SE_ZONE);
 				CManager::GetCamera()->SetOldRot(CManager::GetCamera()->GetRotation());
@@ -923,7 +922,7 @@ void CPlayer::Slow(void)
 		}
 	}
 
-	if (m_bSlow == true)
+	if (m_bSlow)
 	{// ENTERキーが入力された場合
 		if (m_nSlowTime > 0)
 		{// 残っている場合
@@ -1009,7 +1008,7 @@ void CPlayer::SetBodyRot(void)
 		m_bLock = true;
 	}
 
-	if (m_bLock == true)
+	if (m_bLock)
 	{
 		float fRotDiff = (-CamRot.y + D3DX_PI * 0.5f) - m_Info.rot.y;	// カメラの向いている方向に合わせる
 
@@ -1058,10 +1057,10 @@ void CPlayer::Attack(void)
 		return;
 	}
 
-	if (pInputKey->GetPress(DIK_L) == true || pInputMouse->GetPress(CInputMouse::BUTTON_LBUTTON) == true || pInputPad->GetPress(CInputPad::BUTTON_RIGHTBUTTON, 0))
+	if (pInputKey->GetPress(DIK_L) || pInputMouse->GetPress(CInputMouse::BUTTON_LBUTTON) || pInputPad->GetPress(CInputPad::BUTTON_RIGHTBUTTON, 0))
 	{//ENTERキーが押されたとき
 
-		if (m_bAttack == false)
+		if (!m_bAttack)
 		{// 攻撃していない
 			switch (m_WepType)
 			{
@@ -1146,7 +1145,7 @@ void CPlayer::Attack(void)
 					mtx = *m_pWeaponR->GetMtxWorld();
 				}
 
-				if (m_pLockon->GetLock() == false)
+				if (!m_pLockon->GetLock())
 				{// ロックオンしていない
 					BulletMove = { -cosf(CamRot.y) * GUN_BULMOVE, 0.0f, -sinf(CamRot.y) * GUN_BULMOVE };
 				}
@@ -1168,7 +1167,7 @@ void CPlayer::Attack(void)
 					D3DXVECTOR3(BulletMove.x, BulletMove.y, BulletMove.z), CBullet::TYPE_NONE);
 				CManager::GetSound()->Play(CSound::LABEL_SE_WATERGUN);
 
-				if (m_pLockon->GetLock() == true)
+				if (m_pLockon->GetLock())
 				{// ロックオンしている
 					pBullet->SetHom(&*m_pLockon->GetTag(), GUN_BULMOVE);
 				}
@@ -1181,7 +1180,7 @@ void CPlayer::Attack(void)
 				{// 使用されている間繰り返し
 					CLockOn *pBulNext = pLock->GetNext();	// 次を保持
 
-					if (pLock->GetDeath() == false && pLock->GetType() == CLockOn::TYPE_MULTI)
+					if (!pLock->GetDeath() && pLock->GetType() == CLockOn::TYPE_MULTI)
 					{
 						if (pLock->GetTag() != NULL)
 						{// 同じ標的の場合
@@ -1267,7 +1266,7 @@ void CPlayer::Attack(void)
 	}
 	else
 	{// 入力していない
-		if (m_bAttack == true)
+		if (m_bAttack)
 		{
 			if (m_pBody->GetMotion()->GetNowFrame() != 0)
 			{// そのキーの開始フレーム以外の場合
@@ -1295,13 +1294,13 @@ void CPlayer::Jump(void)
 	CInputPad *pInputPad = CManager::GetInputPad();
 
 	// ジャンプ
-	if (pInputKey->GetPress(DIK_SPACE) == true || pInputPad->GetTrigger(CInputPad::BUTTON_A, 0))
+	if (pInputKey->GetPress(DIK_SPACE) || pInputPad->GetTrigger(CInputPad::BUTTON_A, 0))
 	{// SPACEキー
-		if (m_bJump == false)
+		if (!m_bJump)
 		{// ジャンプしていない場合
 			m_bJump = true;
 			m_Info.move.y = PLAYER_JUMP;
-			if (m_bAttack == false)
+			if (!m_bAttack)
 			{
 				m_pBody->GetMotion()->BlendSet(BMOTION_JUMP);
 			}
@@ -1333,7 +1332,7 @@ void CPlayer::SlowShw(void)
 	CInputPad *pInputPad = CManager::GetInputPad();
 	CBullet *pBullet = NULL;
 
-	if (pInputKey->GetPress(DIK_L) == true || pInputMouse->GetPress(CInputMouse::BUTTON_LBUTTON) == true || pInputPad->GetPress(CInputPad::BUTTON_RIGHTBUTTON, 0))
+	if (pInputKey->GetPress(DIK_L) || pInputMouse->GetPress(CInputMouse::BUTTON_LBUTTON) || pInputPad->GetPress(CInputPad::BUTTON_RIGHTBUTTON, 0))
 	{//ENTERキーが押されたとき
 
 		m_pBody->GetMotion()->Set(BMOTION_SLOWSHW);
@@ -1467,7 +1466,7 @@ void CPlayer::SlowGun(void)
 			D3DXMATRIX mtx;
 			CBullet *pBullet;
 
-			if (pLock->GetDeath() == false && pLock->GetType() == CLockOn::TYPE_MULTI)
+			if (!pLock->GetDeath() && pLock->GetType() == CLockOn::TYPE_MULTI)
 			{
 				if (pLock->GetTag() != NULL)
 				{// 同じ標的の場合

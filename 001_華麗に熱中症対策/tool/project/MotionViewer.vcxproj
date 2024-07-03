@@ -19,96 +19,96 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="camera.cpp" />
-    <ClCompile Include="character.cpp" />
-    <ClCompile Include="debugproc.cpp" />
-    <ClCompile Include="edit.cpp" />
-    <ClCompile Include="fileload.cpp" />
-    <ClCompile Include="input.cpp" />
-    <ClCompile Include="light.cpp" />
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="manager.cpp" />
-    <ClCompile Include="mesh.cpp" />
-    <ClCompile Include="meshcylinder.cpp" />
-    <ClCompile Include="meshdome.cpp" />
-    <ClCompile Include="meshfield.cpp" />
-    <ClCompile Include="meshwall.cpp" />
-    <ClCompile Include="model.cpp" />
-    <ClCompile Include="motion.cpp" />
-    <ClCompile Include="object.cpp" />
-    <ClCompile Include="object2D.cpp" />
-    <ClCompile Include="object3D.cpp" />
-    <ClCompile Include="objectX.cpp" />
-    <ClCompile Include="player.cpp" />
-    <ClCompile Include="precompile.cpp">
+    <ClCompile Include="code\camera.cpp" />
+    <ClCompile Include="code\character.cpp" />
+    <ClCompile Include="code\debugproc.cpp" />
+    <ClCompile Include="code\edit.cpp" />
+    <ClCompile Include="code\fileload.cpp" />
+    <ClCompile Include="code\input.cpp" />
+    <ClCompile Include="code\light.cpp" />
+    <ClCompile Include="code\main.cpp" />
+    <ClCompile Include="code\manager.cpp" />
+    <ClCompile Include="code\mesh.cpp" />
+    <ClCompile Include="code\meshcylinder.cpp" />
+    <ClCompile Include="code\meshdome.cpp" />
+    <ClCompile Include="code\meshfield.cpp" />
+    <ClCompile Include="code\meshwall.cpp" />
+    <ClCompile Include="code\model.cpp" />
+    <ClCompile Include="code\motion.cpp" />
+    <ClCompile Include="code\object.cpp" />
+    <ClCompile Include="code\object2D.cpp" />
+    <ClCompile Include="code\object3D.cpp" />
+    <ClCompile Include="code\objectX.cpp" />
+    <ClCompile Include="code\player.cpp" />
+    <ClCompile Include="code\precompile.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="renderer.cpp" />
-    <ClCompile Include="shadow.cpp" />
-    <ClCompile Include="texture.cpp" />
-    <ClCompile Include="waist.cpp" />
-    <ClCompile Include="Xfile.cpp" />
+    <ClCompile Include="code\renderer.cpp" />
+    <ClCompile Include="code\shadow.cpp" />
+    <ClCompile Include="code\texture.cpp" />
+    <ClCompile Include="code\waist.cpp" />
+    <ClCompile Include="code\Xfile.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="camera.h" />
-    <ClInclude Include="character.h" />
-    <ClInclude Include="debugproc.h" />
-    <ClInclude Include="edit.h" />
-    <ClInclude Include="fileload.h" />
-    <ClInclude Include="input.h" />
-    <ClInclude Include="light.h" />
-    <ClInclude Include="main.h" />
-    <ClInclude Include="manager.h" />
-    <ClInclude Include="mesh.h" />
-    <ClInclude Include="meshcylinder.h" />
-    <ClInclude Include="meshdome.h" />
-    <ClInclude Include="meshfield.h" />
-    <ClInclude Include="meshwall.h" />
-    <ClInclude Include="model.h" />
-    <ClInclude Include="motion.h" />
-    <ClInclude Include="object.h" />
-    <ClInclude Include="object2D.h" />
-    <ClInclude Include="object3D.h" />
-    <ClInclude Include="objectX.h" />
-    <ClInclude Include="player.h" />
-    <ClInclude Include="precompile.h" />
-    <ClInclude Include="renderer.h" />
-    <ClInclude Include="shadow.h" />
-    <ClInclude Include="texture.h" />
-    <ClInclude Include="waist.h" />
-    <ClInclude Include="Xfile.h" />
+    <ClInclude Include="code\camera.h" />
+    <ClInclude Include="code\character.h" />
+    <ClInclude Include="code\debugproc.h" />
+    <ClInclude Include="code\edit.h" />
+    <ClInclude Include="code\fileload.h" />
+    <ClInclude Include="code\input.h" />
+    <ClInclude Include="code\light.h" />
+    <ClInclude Include="code\main.h" />
+    <ClInclude Include="code\manager.h" />
+    <ClInclude Include="code\mesh.h" />
+    <ClInclude Include="code\meshcylinder.h" />
+    <ClInclude Include="code\meshdome.h" />
+    <ClInclude Include="code\meshfield.h" />
+    <ClInclude Include="code\meshwall.h" />
+    <ClInclude Include="code\model.h" />
+    <ClInclude Include="code\motion.h" />
+    <ClInclude Include="code\object.h" />
+    <ClInclude Include="code\object2D.h" />
+    <ClInclude Include="code\object3D.h" />
+    <ClInclude Include="code\objectX.h" />
+    <ClInclude Include="code\player.h" />
+    <ClInclude Include="code\precompile.h" />
+    <ClInclude Include="code\renderer.h" />
+    <ClInclude Include="code\shadow.h" />
+    <ClInclude Include="code\texture.h" />
+    <ClInclude Include="code\waist.h" />
+    <ClInclude Include="code\Xfile.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{775C0DBA-A21F-4C2F-8E4B-BCB72E414725}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>MotionViewer</RootNamespace>
-    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
